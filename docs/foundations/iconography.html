@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiom Design System — Iconography Foundation</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--n50:#FAF9FC;--n100:#F1EDF7;--n200:#E8E4F0;--n300:#D7D3E0;--n500:#A7A1B2;--n600:#5C5570;--n700:#665E75;--n900:#161021;--pk100:#FFE5F6;--pk200:#FFCCED;--pk300:#FFB2E4;--pk600:#D9008D;--pk700:#C00080;--pk800:#A30070;--gn100:#E1FAED;--gn200:#C9F0DD;--gn600:#008043;--rd100:#FFE5E7;--rd200:#FFCCD0;--rd600:#D92130;--yw100:#FFF2BF;--yw400:#FFDA40;--yw700:#B85C00;--pr100:#F1E5FF;--pr200:#E4CCFF;--pr600:#6D17CE}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Noto Sans',-apple-system,sans-serif;background:var(--n50);color:var(--n900);line-height:1.6;-webkit-font-smoothing:antialiased}.pg{max-width:1080px;margin:0 auto;padding:0 48px}code,.mono{font-family:'DM Mono',monospace}
+  .bc{padding:32px 0 0;font-size:13px;color:var(--n600)}.bc span{color:var(--n500)}.hero{padding:24px 0 40px;border-bottom:1px solid var(--n200)}.hero h1{font-size:32px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:12px}.hero-d{font-size:15px;line-height:1.7;color:var(--n600);max-width:780px}.hero-bm{font-size:12px;color:var(--n500);margin-top:16px;line-height:1.8}
+  .s{padding:40px 0;border-bottom:1px solid var(--n200)}.s:last-of-type{border-bottom:none}.ey{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--n500);margin-bottom:10px}.st{font-size:22px;font-weight:700;letter-spacing:-0.01em;margin-bottom:6px}.sd{font-size:14px;color:var(--n600);max-width:700px;margin-bottom:28px;line-height:1.65}
+  .co{padding:14px 18px;border-radius:8px;font-size:13px;line-height:1.65;margin:20px 0;border-left:3px solid}.co strong{font-weight:700}.co-pk{background:var(--pk100);border-left-color:var(--pk600);color:var(--pk800)}.co-gn{background:var(--gn100);border-left-color:var(--gn600);color:#065F46}.co-yw{background:var(--yw100);border-left-color:var(--yw700);color:#78350F}.co-n{background:var(--n100);border-left-color:var(--n600);color:var(--n700)}
+  .sb{background:var(--n900);border-radius:10px;padding:24px 28px;margin:20px 0;font-family:'DM Mono',monospace}.sbr{display:flex;align-items:center;gap:12px;padding:5px 0}.sbs{font-size:11px;color:var(--n500);width:38px;text-align:right}.sbb{height:6px;border-radius:3px;background:var(--pk600);opacity:0.75}.sbl{font-size:10px;color:var(--pk300)}
+  .nb{background:var(--n900);color:white;border-radius:8px;padding:16px 20px;margin:16px 0;font-family:'DM Mono',monospace;font-size:13px}.nb .dm{color:var(--n500)}.nb .hl{color:var(--pk300)}.nb .nex{display:block;margin-top:6px;font-size:11px;color:var(--n500)}
+  .ev{background:var(--n900);border-radius:10px;padding:24px;margin:20px 0;color:white}.ev-title{font-size:12px;font-weight:700;margin-bottom:14px;color:var(--pk300);letter-spacing:0.02em}.ev-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0}.ev-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px}.ev-card h5{font-size:10px;font-weight:600;color:var(--pk300);margin-bottom:6px;letter-spacing:0.04em;text-transform:uppercase}.ev-card p{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6}
+  table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--n200);border-radius:8px;overflow:hidden;font-size:12px}thead th{background:white;padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--n600);border-bottom:1px solid var(--n200)}tbody td{padding:12px 14px;border-bottom:1px solid var(--n100);vertical-align:top;line-height:1.5}tbody tr:last-child td{border-bottom:none}
+  .gp{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;font-size:10px;font-weight:700;background:var(--pk100);color:var(--pk700)}
+  .act{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;white-space:nowrap}.act-k{background:var(--gn100);color:var(--gn600)}.act-m{background:var(--yw100);color:var(--yw700)}.act-r{background:var(--rd100);color:var(--rd600)}.act-x{background:var(--n100);color:var(--n600)}
+  .tt-n{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--pk700)}.tt-s{font-family:'DM Mono',monospace;font-size:11px;color:var(--n600)}.tt-u{font-size:12px;color:var(--n600);line-height:1.5}
+  .tgl{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;border-bottom:1px solid var(--n200)}.tgl-s{background:var(--pk100);color:var(--pk800)}.tgl-t{background:var(--gn100);color:var(--gn600)}.tgl-c{background:var(--yw100);color:var(--yw700)}
+  .pr{display:grid;grid-template-columns:36px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--n100)}.pr:last-child{border-bottom:none}.prn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:var(--n900);color:white}.prt{font-size:14px;font-weight:700;margin-bottom:3px}.prd{font-size:13px;color:var(--n600);line-height:1.6}
+  .wg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.wc{padding:20px;border-radius:8px;background:white;border:1px solid var(--n200)}.wc h3{font-size:13px;font-weight:700;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--n200)}.wc p{font-size:12px;line-height:1.65;color:var(--n600);margin-bottom:10px}.wc p strong{color:var(--n900)}
+  .tom{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}.tom-card{padding:16px 20px;border-radius:8px;background:white;border:1px solid var(--n200)}.tom-card h4{font-size:12px;font-weight:700;margin-bottom:8px;color:var(--n900)}.tom-card p{font-size:12px;line-height:1.6;color:var(--n600)}
+  .df{padding:32px 0 48px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--n500);flex-wrap:wrap;gap:10px}.df strong{color:var(--n900)}.fs{display:flex;gap:10px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:10px;color:var(--n600)}.fs span{padding:3px 8px;background:white;border-radius:4px;border:1px solid var(--n200)}
+  .ab{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--n200);border-radius:10px;overflow:hidden;margin:20px 0}.ac{background:white;padding:16px;text-align:center}.ac-name{font-size:13px;font-weight:700;margin-bottom:4px;color:var(--n900)}.ac-style{font-size:11px;color:var(--n600);margin-bottom:8px;line-height:1.4}.ac-pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;display:inline-block}.ac-r{background:var(--gn100);color:var(--gn600)}
+  .sc3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:20px 0}.sc3c{padding:20px;border-radius:8px;border:1px solid}.sc3c h4{font-size:16px;font-weight:700;margin-bottom:6px}.sc3-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:12px}.sc3-section{margin-bottom:12px}.sc3-label{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:3px}.sc3c p{font-size:11px;line-height:1.55;color:var(--n600)}
+  .sr{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--n200);border-radius:10px;overflow:hidden;margin-bottom:20px}.sc-s{background:white;padding:20px 14px;text-align:center}.snum{font-size:32px;font-weight:700;letter-spacing:-0.02em;color:var(--n900);line-height:1;margin-bottom:6px}.snum.pk{color:var(--pk600)}.snum.gn{color:var(--gn600)}.snum.pr{color:var(--pr600)}.snum.rd{color:var(--rd600)}.sl{font-size:11px;color:var(--n600);line-height:1.4}
+</style>
+</head>
+<body>
+<div class="pg">
+
+<div class="bc">Foundations / Iconography <span>&nbsp;·&nbsp; Next</span></div>
+
+<div class="hero">
+  <h1>Wiom Iconography Foundation</h1>
+  <div class="hero-d">Library choice, style and fill behavior, sizing model (4 tokens), icon categories, and governance rules — benchmarked against the apps our Tier 2/3 Indian users touch every day.</div>
+  <div class="hero-bm">User benchmark: WhatsApp · YouTube · Instagram · PhonePe · Google Pay · JioHotstar · Paytm · Truecaller</div>
+</div>
+
+<!-- ═══════ 1: LIBRARY ═══════ -->
+
+<div class="s">
+  <div class="ey">Library</div>
+  <div class="st">Why Material Symbols Rounded is the right choice for Wiom</div>
+  <div class="sd">Choosing an icon library for a design system isn't just about aesthetics. It has to work for Wiom's users, Wiom's devices, Wiom's codebase, and Wiom's team — today and three years from now. Here's the case for Material Symbols Rounded across each of those dimensions.</div>
+
+  <div class="ev">
+    <div class="ev-title">The 5 reasons — each one matters for Wiom specifically</div>
+    <div style="display:grid;grid-template-columns:1fr;gap:14px">
+
+      <div class="ev-card">
+        <h5>1. Users already know these icons</h5>
+        <p>Wiom's Tier 2/3 Indian audience spends their day inside WhatsApp, YouTube, PhonePe, Google Pay, Instagram, and JioHotstar. All of these apps use Material-family Rounded icons. When a Wiom user sees a rounded search icon, a rounded home icon, a rounded back arrow — they don't need to learn anything. The icons already mean something to them because they've tapped the same shapes hundreds of times in other apps. Any other library (Phosphor, Lucide, Font Awesome) would introduce a visual language our users have never seen. On budget devices in Tier 2/3 India, unfamiliarity doesn't register as "fresh design" — it registers as "this app feels different from everything else on my phone," which erodes trust.</p>
+      </div>
+
+      <div class="ev-card">
+        <h5>2. It works correctly across Wiom's size range</h5>
+        <p>Wiom uses icons at 16dp (inline indicators), 24dp (standard actions), and 48dp (hero/empty states). That's a 3× size range. With a static icon library, the same stroke weight is used at every size — so a 16dp icon looks too thick and a 48dp icon looks too thin. Material Symbols solves this with <strong>optical sizing</strong>: the stroke weight automatically adjusts based on the rendered size. At 16dp the strokes get thinner for clarity. At 48dp they get proportionally heavier for presence. This isn't a nice-to-have — it directly fixes Wiom's 16dp legibility problem on 720p budget Android screens where thick strokes at small sizes make icons look like blobs.</p>
+      </div>
+
+      <div class="ev-card">
+        <h5>3. It supports Wiom's fill behavior natively</h5>
+        <p>Wiom uses filled icons for selected nav tabs and active toggles (bookmark, favorite). This means we need both outlined and filled variants of the same icon, in the same Rounded style. Material Symbols has a built-in <strong>Fill axis</strong> (0 = outlined, 1 = filled) that provides this for every single icon — over 2,500 of them. No other library offers outlined→filled transitions for every icon in a single consistent family. With Phosphor or Lucide, achieving this would require maintaining separate icon sets or custom workarounds for state changes.</p>
+      </div>
+
+      <div class="ev-card">
+        <h5>4. It's native to Wiom's tech stack</h5>
+        <p>Wiom is an Android app built with Kotlin and Jetpack Compose. Material Symbols is Google's official icon system for Android. Every icon is available as an XML Vector Drawable — the native format for Android rendering. No conversion, no wrapper libraries, no third-party dependencies. Compare this to Phosphor (community wrapper with 3 GitHub stars, not battle-tested), Lucide (web-first, no official Android package), or Font Awesome (2MB+ font files, subscription model). Material Symbols also ships as individual drawable files, not a single massive font — which means Wiom only bundles the icons it actually uses, keeping the APK lean. The current <code class="mono" style="font-size:11px">material-icons-extended</code> dependency adds ~30MB to build cache; Material Symbols drawables eliminate this entirely.</p>
+      </div>
+
+      <div class="ev-card">
+        <h5>5. It's the only actively maintained option in the Material family</h5>
+        <p>Google stopped updating Material Icons in 2022. No new icons, no bug fixes, no support. As of 2026, the official Android documentation explicitly states Material Icons is "no longer recommended for new apps" and directs developers to Material Symbols. This isn't a deprecation warning buried in release notes — it's on the main Icons documentation page. Staying on a frozen library means: no new icons when Wiom adds features (e.g., no AI-related icons, no newer communication icons), no fixes for rendering issues on newer Android versions, and a growing divergence from what Google's own apps ship. Material Symbols is actively maintained with 2,500+ icons and growing — it's the library Google uses in Google Pay, YouTube, and Android system UI.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="co co-n"><strong>What about Phosphor, Lucide, Font Awesome?</strong> We evaluated each. Phosphor has beautiful weights but its Android/Compose wrapper has 3 GitHub stars — not production-ready for a mass-market Indian app. Lucide is web-first with no official Android package. Font Awesome requires a subscription for Pro icons and adds 2MB+ of font files. None of them match the visual language of the apps on our users' phones. The choice isn't close.</div>
+
+  <div class="co co-gn"><strong>Zero visual disruption.</strong> Material Symbols Rounded uses the same icon designs as Wiom's current Material Icons Rounded. Existing screens look identical after migration. The code change is mechanical: <code class="mono" style="font-size:11px">Icons.Rounded.Home</code> → <code class="mono" style="font-size:11px">painterResource(R.drawable.rounded_home)</code>.</div>
+</div>
+
+<!-- ═══════ 2: WHY ROUNDED ═══════ -->
+
+<div class="s">
+  <div class="ey">Style</div>
+  <div class="st">Why Rounded — benchmarked against our users' apps</div>
+  <div class="sd">Material Symbols offers 3 styles. We benchmarked against the 8 most-used apps by Wiom's user segment.</div>
+
+  <div class="ab">
+    <div class="ac"><div class="ac-name">WhatsApp</div><div class="ac-style">Rounded outlines<br>Soft terminals</div><div class="ac-pill ac-r">ROUNDED</div></div>
+    <div class="ac"><div class="ac-name">YouTube</div><div class="ac-style">"Bolder, more rounded"<br>2025 redesign</div><div class="ac-pill ac-r">ROUNDED</div></div>
+    <div class="ac"><div class="ac-name">Instagram</div><div class="ac-style">Custom rounded<br>Consistent weight</div><div class="ac-pill ac-r">ROUNDED</div></div>
+    <div class="ac"><div class="ac-name">PhonePe</div><div class="ac-style">Rounded filled<br>Soft corners</div><div class="ac-pill ac-r">ROUNDED</div></div>
+    <div class="ac"><div class="ac-name">Google Pay</div><div class="ac-style">Material Symbols<br>Rounded</div><div class="ac-pill ac-r">ROUNDED</div></div>
+    <div class="ac"><div class="ac-name">JioHotstar</div><div class="ac-style">Rounded + filled<br>M3 aligned</div><div class="ac-pill ac-r">ROUNDED</div></div>
+    <div class="ac"><div class="ac-name">Paytm</div><div class="ac-style">Custom rounded<br>Soft filled</div><div class="ac-pill ac-r">ROUNDED</div></div>
+    <div class="ac"><div class="ac-name">Truecaller</div><div class="ac-style">Material Rounded<br>Standard 24dp</div><div class="ac-pill ac-r">ROUNDED</div></div>
+  </div>
+
+  <div class="co co-gn"><strong>8/8 apps use Rounded.</strong> Rounded is the visual language our users have been trained on. This isn't a style preference — it's matching user expectation. It also pairs naturally with Noto Sans SemiBold/Bold and Wiom's rounded shape language (buttons, cards, chips).</div>
+
+  <div class="sc3">
+    <div class="sc3c" style="background:var(--rd100);border-color:var(--rd200)"><h4>Outlined</h4><div class="sc3-badge" style="background:var(--rd200);color:var(--rd600)">NOT A FIT</div><div class="sc3-section"><div class="sc3-label" style="color:var(--rd600)">Why not</div><p>Too thin on 720p budget devices. Hindi loses legibility. 0/8 user apps use this style.</p></div></div>
+    <div class="sc3c" style="background:var(--gn100);border-color:var(--gn200)"><h4>Rounded</h4><div class="sc3-badge" style="background:var(--gn200);color:var(--gn600)">WIOM'S PICK</div><div class="sc3-section"><div class="sc3-label" style="color:var(--gn600)">Why it fits</div><p>8/8 user apps. Pairs with Noto Sans. Legible on budget screens. Already in use — zero disruption.</p></div></div>
+    <div class="sc3c" style="background:var(--rd100);border-color:var(--rd200)"><h4>Sharp</h4><div class="sc3-badge" style="background:var(--rd200);color:var(--rd600)">NOT A FIT</div><div class="sc3-section"><div class="sc3-label" style="color:var(--rd600)">Why not</div><p>Clashes with Noto Sans and Wiom's rounded shapes (buttons, cards, chips). 0/8 user apps use this.</p></div></div>
+  </div>
+</div>
+
+<!-- ═══════ 3: FILL BEHAVIOR ═══════ -->
+
+<div class="s">
+  <div class="ey">Fill behavior</div>
+  <div class="st">Filled is default. Outlined is only for state transitions.</div>
+  <div class="sd">Wiom uses <strong>filled icons as the default</strong>. Outlined is reserved exclusively for the inactive/unselected state of interactive toggles — nav tabs and bookmark/favorite-type actions. Since these patterns are rare in Wiom, most icons across the app are filled.</div>
+
+  <table>
+    <thead><tr><th>Context</th><th>State</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Toolbar actions</strong></td><td>Rounded <strong>filled</strong></td><td>Back, search, share, more — all filled. Single-state icons, no toggle.</td></tr>
+      <tr><td><strong>List / card icons</strong></td><td>Rounded <strong>filled</strong></td><td>Leading icons, trailing chevrons, overflow — all filled.</td></tr>
+      <tr><td><strong>Button leading icons</strong></td><td>Rounded <strong>filled</strong></td><td>Filled matches the visual weight of the button.</td></tr>
+      <tr><td><strong>Status / feedback</strong></td><td>Rounded <strong>filled</strong></td><td>Success, error, warning, info — filled always.</td></tr>
+      <tr><td><strong>Empty states / hero (48dp)</strong></td><td>Rounded <strong>filled</strong></td><td>Hero icons are filled — provides visual presence at large size.</td></tr>
+      <tr><td><strong>Bottom nav / tabs</strong></td><td>Outlined default → <strong>filled</strong> selected</td><td>The only context where outlined→filled transition is used. Outlined = unselected, filled = active tab.</td></tr>
+      <tr><td><strong>Toggle actions</strong></td><td>Outlined off → <strong>filled</strong> on</td><td>Bookmark, favorite, like — outlined when off, filled when on. Rare in Wiom.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="co co-pk"><strong>One rule to remember:</strong> Filled is the default. Outlined is only used for the <em>inactive</em> state of interactive toggles (unselected nav tab, inactive bookmark). If an icon has no toggle state — it's filled. When in doubt, use filled.</div>
+
+  <div class="co co-n"><strong>Motion:</strong> Transition timing for outlined→filled state changes (duration, easing) will be defined in the motion foundation. The icon system defines <em>what</em> changes, the motion system defines <em>how fast</em>.</div>
+</div>
+
+<!-- ═══════ 4: AUDIT ═══════ -->
+
+<div class="s">
+  <div class="ey">Audit</div>
+  <div class="st">What we found in the codebase</div>
+
+  <div class="sr">
+    <div class="sc-s"><div class="snum rd">3</div><div class="sl">Style violations<br>(Filled/Outlined mixed in)</div></div>
+    <div class="sc-s"><div class="snum rd">36dp</div><div class="sl">Non-standard size<br>in several screens</div></div>
+    <div class="sc-s"><div class="snum pk">0</div><div class="sl">Size tokens<br>(all hardcoded dp)</div></div>
+    <div class="sc-s"><div class="snum gn">2</div><div class="sl">Sizes that work<br>(24dp + 48dp)</div></div>
+  </div>
+
+  <table>
+    <thead><tr><th style="width:28px"></th><th>Finding</th><th style="width:70px">Severity</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">1</span></td><td><strong>Mixed styles:</strong> Icons.Default (= Filled) is the most common mistake — devs forget to specify Rounded.</td><td><span class="act act-r">High</span></td></tr>
+      <tr><td><span class="gp">2</span></td><td><strong>36dp size:</strong> Not on any standard grid. A "guess" between 24dp actions and 48dp heroes.</td><td><span class="act act-r">High</span></td></tr>
+      <tr><td><span class="gp">3</span></td><td><strong>No size tokens:</strong> Every dev hardcodes <code class="mono" style="font-size:10px">Modifier.size(XX.dp)</code>.</td><td><span class="act act-r">High</span></td></tr>
+      <tr><td><span class="gp">4</span></td><td><strong>Touch targets missing:</strong> Many 24dp interactive icons lack the 48dp minimum tap zone.</td><td><span class="act act-m">Medium</span></td></tr>
+      <tr><td><span class="gp">5</span></td><td><strong>Custom icon naming:</strong> ic_whatsapp, whatsapp_icon, ic_wiom_share — no convention.</td><td><span class="act act-m">Medium</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════ 5: SIZING MODEL ═══════ -->
+
+<div class="s">
+  <div class="ey">Sizing model</div>
+  <div class="st">Glyph, container, and touch target — three different things</div>
+  <div class="sd">The #1 source of dev confusion: "should this icon be 24 or 48?" The answer is usually "24dp glyph inside a 48dp interactive container." These are separate concepts. Wiom uses 4 size tokens: 16dp (restricted), 20dp (compact), 24dp (default), 48dp (hero).</div>
+
+  <div class="ev">
+    <div class="ev-title">The three layers</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+      <div class="ev-card"><h5>Glyph size</h5><p>The visible icon itself. What the user sees. Controlled by WiomIcon tokens: 16, 24, or 48dp.</p></div>
+      <div class="ev-card"><h5>Container size</h5><p>The box the icon sits in. May include padding for visual balance. Often larger than the glyph.</p></div>
+      <div class="ev-card"><h5>Touch target</h5><p>The minimum tappable area. Google requires 48dp minimum. Always ≥ container. Invisible to user.</p></div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Token</th><th>Glyph</th><th>Container</th><th>Touch target</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td class="tt-n">icon.xs</td><td class="tt-s">16dp</td><td class="tt-s">24dp</td><td class="tt-s">40dp</td><td class="tt-u">Input trailing clear button — 16dp icon in 24dp visual frame, 40dp tap zone</td></tr>
+      <tr><td class="tt-n">icon.sm</td><td class="tt-s">20dp</td><td class="tt-s">32dp</td><td class="tt-s">40dp</td><td class="tt-u">Button leading icon — 20dp icon in 32dp container, 40dp tap zone</td></tr>
+      <tr><td class="tt-n">icon.md</td><td class="tt-s">24dp</td><td class="tt-s">40dp</td><td class="tt-s">48dp</td><td class="tt-u">Toolbar back arrow — 24dp icon in 40dp container, 48dp tap zone</td></tr>
+      <tr><td class="tt-n">icon.lg</td><td class="tt-s">48dp</td><td class="tt-s">56dp</td><td class="tt-s">56dp</td><td class="tt-u">Empty state hero — 48dp icon, container and touch area match at 56dp</td></tr>
+    </tbody>
+  </table>
+
+  <div class="co co-n"><strong>For developers:</strong> WiomIconButton handles this automatically. It takes the glyph size token and adds the correct container padding to meet touch target minimums. You set <code class="mono" style="font-size:11px">iconSize = WiomIcon.M</code> and the composable does the rest.</div>
+</div>
+
+<!-- ═══════ 6: TOKENS ═══════ -->
+
+<div class="s">
+  <div class="ey">Token system</div>
+  <div class="st">Size tokens + icon categories</div>
+  <div class="nb"><span class="dm">Scale:</span> <span class="hl">16dp</span> (restricted) → <span class="hl">20dp</span> (compact) → <span class="hl">24dp</span> (default) → <span class="hl">48dp</span> (hero)<span class="nex">Kotlin: WiomIcon.XS · WiomIcon.SM · WiomIcon.MD · WiomIcon.LG</span></div>
+
+  <div class="sb">
+    <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pk300);margin-bottom:12px">The icon scale — 4 sizes</div>
+    <div class="sbr"><span class="sbs">48dp</span><div class="sbb" style="width:100%"></div><span class="sbl">icon.lg — hero / empty state / onboarding</span></div>
+    <div class="sbr"><span class="sbs">24dp</span><div class="sbb" style="width:50%"></div><span class="sbl">icon.md — DEFAULT — toolbar / nav / list / chips / cards</span></div>
+    <div class="sbr"><span class="sbs">20dp</span><div class="sbb" style="width:42%"></div><span class="sbl">icon.sm — button icons / compact controls / dense UI</span></div>
+    <div class="sbr"><span class="sbs">16dp</span><div class="sbb" style="width:33%;opacity:0.4"></div><span class="sbl">icon.xs — restricted — inline indicators only</span></div>
+  </div>
+
+  <table>
+    <thead><tr><th style="width:100px">Token</th><th style="width:55px">Glyph</th><th style="width:90px">Kotlin</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td class="tt-n">icon.xs</td><td class="tt-s">16dp</td><td class="tt-s">WiomIcon.XS</td><td class="tt-u"><strong>Restricted.</strong> Inline indicators, input trailing icons only.</td></tr>
+      <tr><td class="tt-n">icon.sm</td><td class="tt-s">20dp</td><td class="tt-s">WiomIcon.SM</td><td class="tt-u">Button icons, compact controls, small trailing actions, dense UI.</td></tr>
+      <tr><td class="tt-n">icon.md</td><td class="tt-s">24dp</td><td class="tt-s">WiomIcon.MD</td><td class="tt-u"><strong>Default.</strong> Toolbar, nav, list, chips, cards, tabs.</td></tr>
+      <tr><td class="tt-n">icon.lg</td><td class="tt-s">48dp</td><td class="tt-s">WiomIcon.LG</td><td class="tt-u">Empty states, onboarding, hero features, status pages.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="co co-yw"><strong>36dp migration:</strong> "What is this icon's job?" Action → 24dp (icon.md). Button icon → 20dp (icon.sm). Hero/feature → 48dp (icon.lg). Role determines the token.</div>
+</div>
+
+<!-- ═══════ 7: ICON CATEGORIES ═══════ -->
+
+<div class="s">
+  <div class="ey">Icon categories</div>
+  <div class="st">Not all icons follow the same rules</div>
+  <div class="sd">Different icon types have different style, fill, and governance rules. Lumping everything into "icons" or "custom" causes confusion.</div>
+
+  <table>
+    <thead><tr><th style="width:120px">Category</th><th>Examples</th><th>Style rule</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Action</strong></td><td>Back, search, share, close, edit, more</td><td>Rounded <strong>filled</strong> always. Single-state icons.</td><td>Material Symbols</td></tr>
+      <tr><td><strong>Navigation</strong></td><td>Home, wallet, account, explore</td><td>Outlined when unselected → <strong>filled when selected</strong>. Only context where outlined is used.</td><td>Material Symbols</td></tr>
+      <tr><td><strong>Status</strong></td><td>Success, error, warning, info</td><td><strong>Filled always.</strong> Paired with semantic color tokens.</td><td>Material Symbols</td></tr>
+      <tr><td><strong>Toggle</strong></td><td>Bookmark, favorite, like, pin</td><td>Outlined when off → <strong>filled when on</strong>. Rare in Wiom.</td><td>Material Symbols</td></tr>
+      <tr><td><strong>Brand</strong></td><td>Wiom logo, Wiom SIM icon</td><td>Original brand colors. Exempt from tinting. Stored as <code class="mono" style="font-size:10px">ic_wiom_*</code></td><td>Custom — design team only</td></tr>
+      <tr><td><strong>Partner / social</strong></td><td>WhatsApp, Instagram, YouTube</td><td>Original brand colors. Exempt from Rounded style. Stored as <code class="mono" style="font-size:10px">ic_partner_*</code></td><td>Official brand assets</td></tr>
+    </tbody>
+  </table>
+
+  <div class="co co-pk"><strong>Custom icon governance:</strong> Only the design team can introduce new Brand or Partner icons. All custom icons must go through a naming review. Naming convention: <code class="mono" style="font-size:11px">ic_wiom_*</code> for brand, <code class="mono" style="font-size:11px">ic_partner_*</code> for social/partner logos. No dev should add custom icons without design approval.</div>
+</div>
+
+<!-- ═══════ 8: RULES ═══════ -->
+
+<div class="s">
+  <div class="ey">Rules</div>
+  <div class="st">8 rules for every icon decision</div>
+  <div class="pr"><div class="prn">1</div><div><div class="prt">Only approved size tokens — never hardcode dp</div><div class="prd">WiomIcon.XS, .SM, .MD, or .LG. If none fit, flag it — don't invent sizes.</div></div></div>
+  <div class="pr"><div class="prn">2</div><div><div class="prt">Rounded only — always specify explicitly</div><div class="prd">Icons.Default = Filled (wrong). Always write Icons.Rounded. After migration: painterResource(R.drawable.rounded_*).</div></div></div>
+  <div class="pr"><div class="prn">3</div><div><div class="prt">Filled is default. Outlined is only for toggle states.</div><div class="prd">All single-state icons are filled. Outlined is used only for the inactive state of toggles — unselected nav tab, inactive bookmark. If it doesn't toggle, it's filled.</div></div></div>
+  <div class="pr"><div class="prn">4</div><div><div class="prt">Glyph ≠ container ≠ touch target</div><div class="prd">Set the glyph size via token. WiomIconButton handles container padding and touch target automatically. Don't manually size the tap area.</div></div></div>
+  <div class="pr"><div class="prn">5</div><div><div class="prt">icon.xs (16dp) is restricted — like meta.xs in typography</div><div class="prd">Only inline indicators and input trailing. Minimum for tappable actions is 20dp (icon.sm).</div></div></div>
+  <div class="pr"><div class="prn">6</div><div><div class="prt">Icons alone must not carry critical meaning</div><div class="prd">Status icons (error, success, warning) must always be paired with text or color. Interactive icons need contentDescription. Decorative icons set contentDescription = null. Meaningful icons must meet 3:1 contrast ratio against their background (WCAG).</div></div></div>
+  <div class="pr"><div class="prn">7</div><div><div class="prt">No custom icons without design review</div><div class="prd">Brand icons: <code class="mono" style="font-size:11px">ic_wiom_*</code>. Partner icons: <code class="mono" style="font-size:11px">ic_partner_*</code>. Only design team can introduce new custom icons. All must be 4dp multiples.</div></div></div>
+  <div class="pr"><div class="prn">8</div><div><div class="prt">Color follows semantic tokens</div><div class="prd">Use onSurface, onSurfaceVariant, primary, error, etc. Never hardcode hex colors. Brand and partner icons use Color.Unspecified.</div></div></div>
+</div>
+
+<!-- ═══════ 9: ROLLOUT ═══════ -->
+
+<div class="s">
+  <div class="ey">Rollout</div>
+  <div class="st">What changes and when</div>
+  <div class="tom">
+    <div class="tom-card"><h4>Now — Foundation (Week 1–2)</h4><p>Ship WiomIcon object + WiomIconButton composable + dimens XML. Document fill behavior rules. All new code uses tokens + Rounded only.</p></div>
+    <div class="tom-card"><h4>Next — Audit (Week 2–3)</h4><p>Grep for hardcoded dp, Icons.Filled, Icons.Outlined. Tag with // TODO: iconography. Build violations tracker. Evaluate whether 32dp is needed.</p></div>
+    <div class="tom-card"><h4>Ongoing — Migrate on touch</h4><p>Fix icon violations when a screen is edited. 36dp → 24 or 48 by role. Non-Rounded → Rounded. Enforce naming for custom icons.</p></div>
+    <div class="tom-card"><h4>Quarter 2 — Material Symbols</h4><p>Replace Icons.Rounded.* with painterResource. Remove material-icons-extended. Build gets faster.</p></div>
+  </div>
+</div>
+
+<div class="df">
+  <div><strong>Wiom Design System</strong> — Iconography Foundation</div>
+  <div class="fs"><span>Material Symbols Rounded</span><span>4 size tokens (xs/sm/md/lg)</span><span>6 icon categories</span><span>Fill behavior defined</span></div>
+</div>
+<div style="text-align:center;padding:0 0 40px;font-size:11px;color:var(--n500)">April 2026</div>
+
+</div>
+</body>
+</html>

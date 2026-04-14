@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiom Design System — Typography Foundation</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --n50:#FAF9FC;--n100:#F1EDF7;--n200:#E8E4F0;--n300:#D7D3E0;--n500:#A7A1B2;--n600:#5C5570;--n700:#665E75;--n900:#161021;
+    --pk100:#FFE5F6;--pk200:#FFCCED;--pk300:#FFB2E4;--pk600:#D9008D;--pk700:#C00080;--pk800:#A30070;--pk900:#4A1535;
+    --gn100:#E1FAED;--gn200:#C9F0DD;--gn600:#008043;
+    --rd100:#FFE5E7;--rd200:#FFCCD0;--rd600:#D92130;
+    --yw100:#FFF2BF;--yw400:#FFDA40;--yw700:#B85C00;
+    --pr100:#F1E5FF;--pr200:#E4CCFF;--pr600:#6D17CE;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans',-apple-system,sans-serif;background:var(--n50);color:var(--n900);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .pg{max-width:1080px;margin:0 auto;padding:0 48px}
+  code,.mono{font-family:'DM Mono',monospace}
+
+  /* Hero — flat, report-like */
+  .bc{padding:32px 0 0;font-size:13px;color:var(--n600)}.bc span{color:var(--n500)}
+  .hero{padding:24px 0 40px;border-bottom:1px solid var(--n200)}
+  .hero h1{font-size:32px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:12px}
+  .hero-d{font-size:15px;line-height:1.7;color:var(--n600);max-width:780px}
+  .hero-bm{font-size:12px;color:var(--n500);margin-top:16px;line-height:1.8}
+
+  /* Sections */
+  .s{padding:40px 0;border-bottom:1px solid var(--n200)}.s:last-of-type{border-bottom:none}
+  .ey{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--n500);margin-bottom:10px}
+  .st{font-size:22px;font-weight:700;letter-spacing:-0.01em;margin-bottom:6px}
+  .sd{font-size:14px;color:var(--n600);max-width:700px;margin-bottom:28px;line-height:1.65}
+
+  /* Stats row */
+  .sr{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--n200);border-radius:10px;overflow:hidden;margin-bottom:20px}
+  .sc{background:white;padding:20px 14px;text-align:center}
+  .snum{font-size:32px;font-weight:700;letter-spacing:-0.02em;color:var(--n900);line-height:1;margin-bottom:6px}
+  .snum.pk{color:var(--pk600)}.snum.gn{color:var(--gn600)}.snum.pr{color:var(--pr600)}
+  .sl{font-size:11px;color:var(--n600);line-height:1.4}
+  .sa{display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--n500);background:white}
+
+  /* Callout — single style */
+  .co{padding:14px 18px;border-radius:8px;font-size:13px;line-height:1.65;margin:20px 0;border-left:3px solid}
+  .co strong{font-weight:700}
+  .co-pk{background:var(--pk100);border-left-color:var(--pk600);color:var(--pk800)}
+  .co-gn{background:var(--gn100);border-left-color:var(--gn600);color:#065F46}
+  .co-yw{background:var(--yw100);border-left-color:var(--yw700);color:#78350F}
+  .co-n{background:var(--n100);border-left-color:var(--n600);color:var(--n700)}
+
+  /* Scale bar */
+  .sb{background:var(--n900);border-radius:10px;padding:24px 28px;margin:20px 0;font-family:'DM Mono',monospace}
+  .sbr{display:flex;align-items:center;gap:12px;padding:5px 0}
+  .sbs{font-size:11px;color:var(--n500);width:32px;text-align:right}
+  .sbb{height:6px;border-radius:3px;background:var(--pk600);opacity:0.75}
+  .sbl{font-size:10px;color:var(--pk300)}
+
+  /* Naming box */
+  .nb{background:var(--n900);color:white;border-radius:8px;padding:16px 20px;margin:16px 0;font-family:'DM Mono',monospace;font-size:13px}
+  .nb .dm{color:var(--n500)}.nb .hl{color:var(--pk300)}.nb .nex{display:block;margin-top:6px;font-size:11px;color:var(--n500)}
+
+  /* Foundation 2x2 — simple cards */
+  .eg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+  .ec{padding:20px;border-radius:8px;border:1px solid var(--n200);background:white}
+  .ec h4{font-size:13px;font-weight:700;margin-bottom:6px}.ec p{font-size:12px;line-height:1.6;color:var(--n600)}
+  .eex{margin-top:10px;padding:8px 12px;border-radius:6px;background:var(--n50);font-family:'DM Mono',monospace;font-size:10px;line-height:1.6;color:var(--n700)}
+  .eex .g{color:var(--gn600)}.eex .r{color:var(--rd600)}
+
+  /* Before/After */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+  .bac{padding:24px;border-radius:10px;border:1px solid}
+  .bab{background:var(--rd100);border-color:var(--rd200)}.baa{background:var(--gn100);border-color:var(--gn200)}
+  .bal{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px}
+  .bab .bal{color:var(--rd600)}.baa .bal{color:var(--gn600)}
+  .ba-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+  .ba-item:last-of-type{border-bottom:none}
+  .ba-size{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border-radius:4px;white-space:nowrap;min-width:56px;text-align:center}
+  .bab .ba-size{background:rgba(217,33,48,0.1);color:var(--rd600)}
+  .baa .ba-size{background:rgba(0,128,67,0.1);color:var(--gn600)}
+  .ba-issue{font-size:10px;color:var(--rd600);font-weight:600;margin-top:2px}
+  .bn{margin-top:12px;font-size:12px;color:var(--n600);line-height:1.5}
+
+  /* Evidence — single dark block */
+  .ev{background:var(--n900);border-radius:10px;padding:24px;margin:20px 0;color:white}
+  .ev-title{font-size:12px;font-weight:700;margin-bottom:14px;color:var(--pk300);letter-spacing:0.02em}
+  .ev-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .ev-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px}
+  .ev-card h5{font-size:10px;font-weight:600;color:var(--pk300);margin-bottom:6px;letter-spacing:0.04em;text-transform:uppercase}
+  .ev-card p{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6}
+  .ev-code{font-family:'DM Mono',monospace;font-size:11px;background:rgba(0,0,0,0.3);border-radius:6px;padding:12px;line-height:1.7;margin:6px 0;color:rgba(255,255,255,0.75)}
+  .ev-code .cmt{color:var(--n500)}.ev-code .kw{color:var(--pk300)}.ev-code .str{color:var(--gn200)}
+
+  /* Weight test */
+  .wt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:20px 0}
+  .wt-card{padding:16px;border-radius:8px;border:1px solid var(--n200);text-align:center;background:white}
+  .wt-card .wt-label{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--n500);margin-bottom:10px}
+
+  /* Tables — unified */
+  table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--n200);border-radius:8px;overflow:hidden;font-size:12px}
+  thead th{background:white;padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--n600);border-bottom:1px solid var(--n200)}
+  tbody td{padding:12px 14px;border-bottom:1px solid var(--n100);vertical-align:top;line-height:1.5}
+  tbody tr:last-child td{border-bottom:none}
+
+  /* Pills — one style */
+  .pill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;white-space:nowrap}
+  .pill-f{background:var(--gn100);color:var(--gn600)}
+  .gp{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;font-size:10px;font-weight:700;background:var(--pk100);color:var(--pk700)}
+
+  /* Migration table */
+  .tk{font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+  .tk-o{color:var(--n600)}.tk-n{color:var(--pk700)}
+  .act{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;white-space:nowrap}
+  .act-k{background:var(--gn100);color:var(--gn600)}.act-m{background:var(--yw100);color:var(--yw700)}
+  .act-r{background:var(--rd100);color:var(--rd600)}.act-l{background:var(--pr100);color:var(--pr600)}
+  .act-x{background:var(--n100);color:var(--n600)}
+  .rk{border-left:3px solid}
+  .rk-k{border-left-color:var(--gn600)}.rk-m{border-left-color:var(--yw700)}.rk-r{border-left-color:var(--rd600)}.rk-l{border-left-color:var(--pr600)}
+  .grp td{background:var(--n50)!important;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--n600);padding:6px 14px!important}
+
+  /* Token table group labels */
+  .tgl{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;border-bottom:1px solid var(--n200)}
+  .tgl-d{background:var(--pk100);color:var(--pk800)}.tgl-h{background:var(--pr100);color:var(--pr600)}
+  .tgl-t{background:#EFF6FF;color:#2563EB}.tgl-b{background:var(--gn100);color:var(--gn600)}
+  .tgl-l{background:var(--yw100);color:var(--yw700)}.tgl-m{background:var(--n100);color:var(--n600)}
+  .tt-n{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--pk700)}
+  .tt-s{font-family:'DM Mono',monospace;font-size:11px;color:var(--n600)}
+  .tt-u{font-size:12px;color:var(--n600);line-height:1.5}
+
+  /* Specimen */
+  .spec-row{display:grid;grid-template-columns:110px 1fr 1fr;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid var(--n100)}
+  .spec-row:last-child{border-bottom:none}
+  .spec-token{font-family:'DM Mono',monospace;font-size:10px;color:var(--pk600);font-weight:500}
+  .spec-en{color:var(--n900)}.spec-hi{color:var(--n900)}
+  .spec-meta{font-family:'DM Mono',monospace;font-size:9px;color:var(--n500);margin-top:2px}
+
+  /* Migration flow */
+  .mig-example{background:white;border:1px solid var(--n200);border-radius:8px;padding:20px;margin:16px 0}
+  .mig-title{font-size:12px;font-weight:700;margin-bottom:14px;color:var(--n900)}
+  .mig-row{display:grid;grid-template-columns:1fr 32px 1fr;gap:6px;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--n100)}
+  .mig-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .mig-from,.mig-to{padding:8px 12px;border-radius:6px;font-size:11px}
+  .mig-from{background:var(--rd100);border:1px solid var(--rd200)}
+  .mig-to{background:var(--gn100);border:1px solid var(--gn200)}
+  .mig-arrow{text-align:center;font-size:14px;color:var(--n500)}
+  .mig-from .mig-screen{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--rd600);margin-bottom:3px}
+  .mig-to .mig-screen{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--gn600);margin-bottom:3px}
+  .mig-from .mig-spec,.mig-to .mig-spec{font-family:'DM Mono',monospace;font-size:10px;color:var(--n700)}
+
+  /* 3-col grid */
+  .wg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .wc{padding:20px;border-radius:8px;background:white;border:1px solid var(--n200)}
+  .wc h3{font-size:13px;font-weight:700;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--n200)}
+  .wc p{font-size:12px;line-height:1.65;color:var(--n600);margin-bottom:10px}.wc p strong{color:var(--n900)}
+  .wc code{font-family:'DM Mono',monospace;font-size:11px;background:var(--pr100);color:var(--pr600);padding:1px 5px;border-radius:3px}
+
+  /* Principles */
+  .pr{display:grid;grid-template-columns:36px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--n100)}
+  .pr:last-child{border-bottom:none}
+  .prn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:var(--n900);color:white}
+  .prt{font-size:14px;font-weight:700;margin-bottom:3px}.prd{font-size:13px;color:var(--n600);line-height:1.6}
+
+  /* Tiers */
+  .tg{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px}
+  .ti{border-radius:8px;padding:20px;border:1px solid}
+  .ti-k{background:var(--gn100);border-color:var(--gn200)}.ti-m{background:var(--yw100);border-color:var(--yw400)}
+  .ti-l{background:var(--pr100);border-color:var(--pr200)}.ti-r{background:var(--rd100);border-color:var(--rd200)}
+  .ti h4{font-size:14px;font-weight:700;margin-bottom:4px}
+  .ti-k h4{color:var(--gn600)}.ti-m h4{color:var(--yw700)}.ti-l h4{color:var(--pr600)}.ti-r h4{color:var(--rd600)}
+  .ti p{font-size:12px;line-height:1.5;color:var(--n600);margin-bottom:10px}
+  .ti ul{list-style:none;padding:0}.ti li{font-family:'DM Mono',monospace;font-size:11px;padding:2px 0;color:var(--n900)}.ti li::before{content:'→ ';color:var(--n500)}
+
+  /* Tomorrow */
+  .tom{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+  .tom-card{padding:16px 20px;border-radius:8px;background:white;border:1px solid var(--n200)}
+  .tom-card h4{font-size:12px;font-weight:700;margin-bottom:8px;color:var(--n900)}
+  .tom-card p{font-size:12px;line-height:1.6;color:var(--n600)}
+
+  /* Footer */
+  .df{padding:32px 0 48px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--n500);flex-wrap:wrap;gap:10px}
+  .df strong{color:var(--n900)}
+  .fs{display:flex;gap:10px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:10px;color:var(--n600)}
+  .fs span{padding:3px 8px;background:white;border-radius:4px;border:1px solid var(--n200)}
+</style>
+</head>
+<body>
+<div class="pg">
+
+<div class="bc">Foundations / Typography <span>&nbsp;·&nbsp; Next</span></div>
+
+<!-- HERO — flat, report-like -->
+<div class="hero">
+  <h1>How We Built the Next Typography System</h1>
+  <div class="hero-d">A complete report on how we audited, benchmarked, and rebuilt the Wiom typography foundation — from 24 unstructured legacy tokens with overlapping weights to 13 clean, purpose-driven semantic tokens. This scale is calibrated for both English and Hindi, with small-size choices constrained to remain readable in Devanagari on budget Android devices.</div>
+  <div class="hero-bm">Benchmarked against: Material Design 3 · Apple HIG · Fluent 2 · Lightning · Carbon · Polaris · Primer · Spectrum · Atlassian DS · Base Web</div>
+</div>
+
+<!-- ═══════ PART 1: CONTEXT ═══════ -->
+
+<!-- Foundation pillars -->
+<div class="s">
+  <div class="ey">What is a typography foundation</div>
+  <div class="st">Four pillars that govern every text decision</div>
+  <div class="sd">In the Wiom system, weight is the primary role signal at shared sizes: Bold anchors structure, Medium marks navigational emphasis, SemiBold distinguishes interactive labels, and Regular carries readable content. This is a calibrated system choice, not a universal rule.</div>
+  <div class="nb"><span class="dm">Naming:</span> type.<span class="hl">{role}</span>.<span class="hl">{size}</span><span class="nex">e.g. type.display.lg · type.heading.xl · type.title.lg · type.body.md · type.label.lg · type.label.sm · type.meta.xs</span></div>
+  <div class="eg">
+    <div class="ec"><h4>Scale = Controlled Sizes</h4><p>8 fixed sizes aligned with common industry scales used by systems like Primer and Stripe.</p><div class="eex"><span class="g">✓ 10 · 12 · 14 · 16 · 20 · 24 · 32 · 48</span><br><span class="r">✗ 10 · 11 · 13 · 14 · 15 · 16 · 18 · 20 · 22 · 24 · 28</span></div></div>
+    <div class="ec"><h4>Weight = Role Signal</h4><p>At shared sizes (20, 16, 14, 12), weight carries the semantic role. Structural tokens use Bold, interactive tokens use SemiBold, and reading tokens use Regular.</p><div class="eex"><span class="g">✓ 20px Bold → heading.md · 20px Medium → title.lg</span><br><span class="g">✓ 16px Bold → title.sm · 16px SemiBold → label.lg · 16px Regular → body.lg</span></div></div>
+    <div class="ec"><h4>Rhythm = 4px Grid</h4><p>Every line-height is a 4px multiple. Components stack predictably without pixel-nudging.</p><div class="eex">Display 48 → LH 64 · Heading 24 → LH 32<br>Body 14 → LH 20 · Meta 10 → LH 16</div></div>
+    <div class="ec"><h4>Hierarchy = Clear Jumps</h4><p>Each scale step has enough contrast to be distinguishable on budget Android in outdoor light.</p><div class="eex"><span class="g">✓ 48 → 32 → 24 → 20 → 16 (clear jumps)</span><br><span class="r">✗ 22 → 20 → 18 → 16 (invisible difference)</span></div></div>
+  </div>
+</div>
+
+<!-- Problem visualized -->
+<div class="s">
+  <div class="ey">The problem, visualized</div>
+  <div class="st">What happens when 3 developers build the same screen without a foundation</div>
+  <div class="sd">Three developers were asked to build a "Section Title" for the recharge flow. Each picked a different token from the 24-token legacy system. All three choices were technically valid — that's the problem.</div>
+  <div class="ba">
+    <div class="bac bab">
+      <div class="bal">✗ Without foundation — 3 devs, 3 results</div>
+      <div class="ba-item"><span class="ba-size">18px / 600</span><div><div style="font-size:18px;font-weight:600">छोटे रिचार्ज से शुरू करें</div><div class="ba-issue">Dev A picked T3_18_SemiBold</div></div></div>
+      <div class="ba-item"><span class="ba-size">16px / 700</span><div><div style="font-size:16px;font-weight:700">छोटे रिचार्ज से शुरू करें</div><div class="ba-issue">Dev B picked T4_16_Bold</div></div></div>
+      <div class="ba-item"><span class="ba-size">20px / 500</span><div><div style="font-size:20px;font-weight:500">छोटे रिचार्ज से शुरू करें</div><div class="ba-issue">Dev C picked T3_20_Medium</div></div></div>
+      <div class="bn">All three are "correct" in the legacy system. The user sees three different screens for the same component. No review catches this because each dev used a valid token.</div>
+    </div>
+    <div class="bac baa">
+      <div class="bal">✓ With foundation — 3 devs, 1 result</div>
+      <div class="ba-item"><span class="ba-size">20px / 700</span><div><div style="font-size:20px;font-weight:700">छोटे रिचार्ज से शुरू करें</div><div style="font-size:10px;color:var(--gn600);font-weight:600;margin-top:2px">Dev A → heading.md ✓</div></div></div>
+      <div class="ba-item"><span class="ba-size">20px / 700</span><div><div style="font-size:20px;font-weight:700">छोटे रिचार्ज से शुरू करें</div><div style="font-size:10px;color:var(--gn600);font-weight:600;margin-top:2px">Dev B → heading.md ✓</div></div></div>
+      <div class="ba-item"><span class="ba-size">20px / 700</span><div><div style="font-size:20px;font-weight:700">छोटे रिचार्ज से शुरू करें</div><div style="font-size:10px;color:var(--gn600);font-weight:600;margin-top:2px">Dev C → heading.md ✓</div></div></div>
+      <div class="bn">One role = one token = one output. Even Claude Code picks the same token every time because there's no ambiguity.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PART 2: AUDIT ═══════ -->
+
+<div class="s">
+  <div class="ey">The transformation</div>
+  <div class="st">Legacy vs Next — at a glance</div>
+  <div class="sr">
+    <div class="sc"><div class="snum">24</div><div class="sl">Legacy tokens</div></div>
+    <div class="sc sa">→</div>
+    <div class="sc"><div class="snum pk">13</div><div class="sl">Next tokens</div></div>
+    <div class="sc"><div class="snum gn">5+1</div><div class="sl">Core groups +<br>1 restricted utility</div></div>
+    <div class="sc"><div class="snum pr">8/8</div><div class="sl">Audit gaps closed</div></div>
+  </div>
+  <div class="co co-pk"><strong>50% fewer tokens. Zero functionality lost.</strong> 16px alone had 6 variants across Bold, SemiBold, Medium, and Regular. The Next system uses 13 tokens on the scale 10 · 12 · 14 · 16 · 20 · 24 · 32 · 48.</div>
+  <div class="sb">
+    <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pk300);margin-bottom:12px">The type scale — 8 sizes</div>
+    <div class="sbr"><span class="sbs">48</span><div class="sbb" style="width:100%"></div><span class="sbl">display.lg — Bold</span></div>
+    <div class="sbr"><span class="sbs">32</span><div class="sbb" style="width:67%"></div><span class="sbl">heading.xl — Bold</span></div>
+    <div class="sbr"><span class="sbs">24</span><div class="sbb" style="width:50%"></div><span class="sbl">heading.lg — Bold</span></div>
+    <div class="sbr"><span class="sbs">20</span><div class="sbb" style="width:42%"></div><span class="sbl">heading.md (Bold) · title.lg (Medium)</span></div>
+    <div class="sbr"><span class="sbs">16</span><div class="sbb" style="width:33%"></div><span class="sbl">title.sm (Bold) · label.lg (SemiBold) · body.lg (Regular)</span></div>
+    <div class="sbr"><span class="sbs">14</span><div class="sbb" style="width:29%"></div><span class="sbl">label.md (SemiBold) · body.md (Regular)</span></div>
+    <div class="sbr"><span class="sbs">12</span><div class="sbb" style="width:25%"></div><span class="sbl">label.sm (SemiBold) · body.sm (Regular)</span></div>
+    <div class="sbr"><span class="sbs">10</span><div class="sbb" style="width:21%;opacity:0.4"></div><span class="sbl">meta.xs (Regular) — restricted, not for Hindi body text</span></div>
+  </div>
+</div>
+
+<div class="s">
+  <div class="ey">Where we started</div>
+  <div class="st">8 gaps found in the legacy system</div>
+  <table>
+    <thead><tr><th style="width:28px"></th><th>Problem</th><th>Industry finding</th><th style="width:70px">Status</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gp">1</span></td><td>16px had 6 tokens across Bold/SemiBold/Medium/Regular</td><td>0/10 systems have &gt;2 tokens at the same size</td><td><span class="pill pill-f">Fixed</span></td></tr>
+      <tr><td><span class="gp">2</span></td><td>14 distinct sizes including non-standard 11, 13, 15, 18, 22, 28</td><td>Top systems use 7–8 sizes max</td><td><span class="pill pill-f">Fixed</span></td></tr>
+      <tr><td><span class="gp">3</span></td><td>22px and 18px break the 4px baseline grid</td><td>10/10 enforce 4px or 8px grid</td><td><span class="pill pill-f">Fixed</span></td></tr>
+      <tr><td><span class="gp">4</span></td><td>Duplicate tokens: multiple 16px Regular variants, identical output</td><td>No top system has duplicates</td><td><span class="pill pill-f">Fixed</span></td></tr>
+      <tr><td><span class="gp">5</span></td><td>11px tokens fail readability on budget Android + Devanagari</td><td>12px is industry minimum</td><td><span class="pill pill-f">Fixed</span></td></tr>
+      <tr><td><span class="gp">6</span></td><td>No restricted usage for 10px — used freely across screens</td><td>Sub-12px is gated in top systems</td><td><span class="pill pill-f">Fixed</span></td></tr>
+      <tr><td><span class="gp">7</span></td><td>Missing Noto Sans Medium (500) variant causing rendering gaps</td><td>All systems ship complete weight sets</td><td><span class="pill pill-f">Fixed</span></td></tr>
+      <tr><td><span class="gp">8</span></td><td>Names describe appearance (T1_32_Bold) not purpose</td><td>10/10 use role-based naming</td><td><span class="pill pill-f">Fixed</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="s">
+  <div class="ey">Industry benchmark</div>
+  <table>
+    <thead><tr><th>System</th><th>Tokens</th><th>Comparison</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Material Design 3</strong></td><td>15 (5 roles × 3 sizes)</td><td><span class="pill" style="background:var(--gn100);color:var(--gn600)">Wiom 13 — leaner</span></td></tr>
+      <tr><td><strong>Polaris (Shopify)</strong></td><td>~13</td><td><span class="pill" style="background:var(--pr100);color:var(--pr600)">Wiom 13 — aligned</span></td></tr>
+      <tr><td><strong>Carbon (IBM)</strong></td><td>14</td><td><span class="pill" style="background:var(--gn100);color:var(--gn600)">Wiom 13 — leaner</span></td></tr>
+      <tr><td><strong>Primer (GitHub)</strong></td><td>~12</td><td><span class="pill" style="background:var(--pr100);color:var(--pr600)">Wiom 13 — aligned</span></td></tr>
+      <tr><td><strong>Atlassian</strong></td><td>11</td><td><span class="pill" style="background:var(--pr100);color:var(--pr600)">Wiom 13 — aligned</span></td></tr>
+      <tr><td><strong>Stripe</strong></td><td>~10</td><td><span class="pill" style="background:var(--pr100);color:var(--pr600)">Wiom 13 — comparable</span></td></tr>
+      <tr style="background:var(--pk100)"><td style="font-weight:600;color:var(--pk800)">Wiom (legacy)</td><td style="color:var(--pk800)">24</td><td><span class="pill" style="background:var(--rd100);color:var(--rd600)">Overbuilt — 50% reduction</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════ PART 3: THE CASE FOR CHANGE ═══════ -->
+
+<!-- Why fewer tokens -->
+<div class="s">
+  <div class="ey">Why fewer tokens</div>
+  <div class="st">Problem → Industry pattern → Wiom decision</div>
+  <div class="sd">24 tokens created decision paralysis for both humans and AI. Fewer tokens directly reduce ambiguity, speed up AI-assisted development, and lower QA cost.</div>
+
+  <div class="ev">
+    <div class="ev-title">Illustrative example: expected AI variance with 24 vs 13 tokens</div>
+    <div class="ev-row">
+      <div class="ev-card">
+        <h5>With 24 tokens</h5>
+        <div class="ev-code"><span class="cmt">// "Use the right font for a card title"</span><br><span class="kw">style</span> = T4_16_Bold &nbsp; <span class="cmt">// Run 1</span><br><span class="kw">style</span> = T3_20_Medium <span class="cmt">// Run 2</span><br><span class="kw">style</span> = L1_16_Bold &nbsp; <span class="cmt">// Run 3</span><br><span class="kw">style</span> = B1_16_Bold &nbsp; <span class="cmt">// Run 4</span><br><span class="cmt">// 4 runs, 4 different valid answers.</span></div>
+        <p>More options at the same size = more variance = each generation needs manual review.</p>
+      </div>
+      <div class="ev-card">
+        <h5>With 13 tokens</h5>
+        <div class="ev-code"><span class="cmt">// "Use the right font for a card title"</span><br><span class="kw">style</span> = <span class="str">type.title.sm</span> <span class="cmt">// Run 1</span><br><span class="kw">style</span> = <span class="str">type.title.sm</span> <span class="cmt">// Run 2</span><br><span class="kw">style</span> = <span class="str">type.title.sm</span> <span class="cmt">// Run 3</span><br><span class="kw">style</span> = <span class="str">type.title.sm</span> <span class="cmt">// Run 4</span><br><span class="cmt">// Semantic name → consistent output.</span></div>
+        <p>The name alone tells AI what to pick. No system context required.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wg">
+    <div class="wc"><h3>For designers</h3><p><strong>Faster decisions:</strong> 13 tokens scan in seconds. 24 require scrolling and second-guessing.</p><p><strong>No more "which one?":</strong> Legacy had 6 tokens at 16px. Every collision forced an unresolvable decision.</p></div>
+    <div class="wc"><h3>For developers</h3><p><strong>Weight = meaning:</strong> At any shared size, check weight: Bold = heading/title, SemiBold = label, Regular = body.</p><p><strong>IDE autocomplete:</strong> Type "heading" → 3 options, all correct for headings. Not 12 ambiguous T-prefixed options.</p></div>
+    <div class="wc"><h3>For AI workflows</h3><p><strong>Consistent generation:</strong> Semantic names map to component roles. Claude Code, Cursor, and Copilot produce much more consistent outputs when token names describe purpose.</p><p><strong>Less review:</strong> Expected reduction in typography-related review comments when using constrained, semantic tokens.</p></div>
+  </div>
+  <div class="co co-gn"><strong>Industry pattern:</strong> Shopify reduced their typography tokens from 24+ to ~13 (Polaris v10) and reported that typography-related questions in PRs dropped. Atlassian, Stripe, and GitHub all maintain 10–13 tokens despite much larger product surfaces.</div>
+</div>
+
+<!-- Why these weights -->
+<div class="s">
+  <div class="ey">Why these weights</div>
+  <div class="st">Problem → Industry pattern → Wiom decision</div>
+  <div class="sd">SemiBold (600) and Medium (500) cannot coexist at the same font size on Wiom's target devices.</div>
+
+  <div class="wt-grid">
+    <div class="wt-card">
+      <div class="wt-label">Medium 500</div>
+      <div style="font-size:14px;font-weight:500;margin-bottom:4px">रिचार्ज विकल्प</div>
+      <div style="font-size:14px;font-weight:500;color:var(--n600)">Recharge option</div>
+    </div>
+    <div class="wt-card" style="border-color:var(--rd200);background:var(--rd100)">
+      <div class="wt-label" style="color:var(--rd600)">Gap = 100 units</div>
+      <div style="font-size:28px;font-weight:700;color:var(--rd600);margin:4px 0">Too close</div>
+      <div style="font-size:10px;color:var(--rd600)">In practice, differences below ~200 weight units are not reliably distinct at small sizes on budget Android screens.</div>
+    </div>
+    <div class="wt-card">
+      <div class="wt-label">SemiBold 600</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">रिचार्ज विकल्प</div>
+      <div style="font-size:14px;font-weight:600;color:var(--n600)">Recharge option</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Weight pairing</th><th>Gap</th><th>On budget 720p Android</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Bold 700 + Regular 400</strong></td><td>300</td><td>Clearly distinct</td><td><span class="pill pill-f">✓ Use</span></td></tr>
+      <tr><td><strong>Bold 700 + Medium 500</strong></td><td>200</td><td>Distinguishable</td><td><span class="pill pill-f">✓ Use</span></td></tr>
+      <tr><td><strong>SemiBold 600 + Regular 400</strong></td><td>200</td><td>Distinguishable</td><td><span class="pill pill-f">✓ Use</span></td></tr>
+      <tr style="background:var(--rd100)"><td><strong>SemiBold 600 + Medium 500</strong></td><td style="color:var(--rd600);font-weight:700">100</td><td style="color:var(--rd600)">Not reliably distinct at ≤16px</td><td><span class="act act-r">✗ Don't pair</span></td></tr>
+      <tr style="background:var(--rd100)"><td><strong>Medium 500 + Regular 400</strong></td><td style="color:var(--rd600);font-weight:700">100</td><td style="color:var(--rd600)">Not reliably distinct at ≤14px</td><td><span class="act act-r">✗ Don't pair</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="co co-n"><strong>Note on the 16px exception:</strong> 16px is the only size with 3 tokens — title.sm (Bold 700), label.lg (SemiBold 600), and body.lg (Regular 400). The 100-unit gap between title.sm and label.lg would normally violate our ≥200 rule, but buttons are isolated, contained components. They never appear inline next to card titles competing for hierarchy. The semantic distinction ("this is a button" vs "this is a card title") is what matters — and the token name handles that. The SemiBold + Medium pairing (100 gap) remains prohibited because those roles do appear inline together.</div>
+</div>
+
+<!-- Why semantic naming -->
+<div class="s">
+  <div class="ey">Why semantic naming</div>
+  <div class="st">Problem → Industry pattern → Wiom decision</div>
+  <div class="sd">Semantic names make token selection self-documenting for both AI tools and new team members.</div>
+
+  <table>
+    <thead><tr><th>Scenario</th><th style="width:40%">Numeric: T4_16_Bold</th><th style="width:40%">Semantic: type.title.sm</th></tr></thead>
+    <tbody>
+      <tr><td><strong>New dev reads code</strong></td><td>"What's T4? A component? A tier? Let me search docs..."</td><td>"A small title. Got it."</td></tr>
+      <tr><td><strong>Designer says "use card title"</strong></td><td>"T4_16_Bold? L1_16_Bold? B1_16_Bold? All are 16px bold..."</td><td>"title.sm — one title token at this level."</td></tr>
+      <tr><td><strong>Code review</strong></td><td>Reviewer must open Figma and cross-reference</td><td>Reviewer reads "heading.md" and knows immediately</td></tr>
+      <tr><td><strong>AI autocomplete</strong></td><td>Types "T" → 12 ambiguous options</td><td>Types "heading" → 3 options, all correct for headings</td></tr>
+      <tr><td><strong>Claude Code prompt</strong></td><td>AI must know entire system context to choose</td><td>AI maps "screen header" → "heading" with no docs needed</td></tr>
+    </tbody>
+  </table>
+  <div class="co co-pk"><strong>Industry pattern:</strong> 10/10 benchmarked systems use role-based naming. Token names are documentation — every tool in the chain (Figma, IDE, Claude Code, code review) works better when names describe purpose.</div>
+</div>
+
+<!-- ═══════ PART 4: THE SOLUTION ═══════ -->
+
+<div class="s">
+  <div class="ey">Design principles</div>
+  <div class="st">5 rules that govern every decision</div>
+  <div class="pr"><div class="prn">1</div><div><div class="prt">Weight carries role at shared sizes</div><div class="prd">In the Wiom system, weight is primarily used this way: Bold = structural heading, Medium = navigational title, SemiBold = interactive label, Regular = readable body. At 16px, three tokens coexist (title.sm Bold, label.lg SemiBold, body.lg Regular) because buttons are isolated components that don't compete inline with titles or body text.</div></div></div>
+  <div class="pr"><div class="prn">2</div><div><div class="prt">Token name = purpose</div><div class="prd">type.heading.xl describes its role. T1_32_Bold does not. Figma token names match Kotlin code names exactly.</div></div></div>
+  <div class="pr"><div class="prn">3</div><div><div class="prt">All line-heights 4px-grid aligned</div><div class="prd">Every LH is a 4px multiple: 16, 20, 24, 28, 32, 44, 64. Vertical rhythm stays consistent in layouts.</div></div></div>
+  <div class="pr"><div class="prn">4</div><div><div class="prt">Max 2 tokens per size, ≥200 weight gap — with one exception</div><div class="prd">At most sizes, two tokens with ≥200 weight gap. At 16px, three tokens are permitted (Bold 700 / SemiBold 600 / Regular 400) because label.lg serves isolated interactive components (buttons) that never sit inline beside title.sm or body.lg.</div></div></div>
+  <div class="pr"><div class="prn">5</div><div><div class="prt">Every decision benchmarked against 10 systems</div><div class="prd">Material 3, Polaris, Carbon, Atlassian, Primer, Fluent, Spectrum, Lightning, Base Web, Apple HIG.</div></div></div>
+</div>
+
+<!-- Token table -->
+<div class="s">
+  <div class="ey">The final system</div>
+  <div class="st">Typography Tokens</div>
+  <div class="sd">13 semantic tokens across 5 core groups + 1 restricted utility. Zero duplicate tokens. All values in <strong>sp</strong> (scaleable pixels) — tokens scale automatically with Android accessibility font-size preferences.</div>
+  <table>
+    <thead><tr><th style="width:110px">Token</th><th style="width:82px">Figma Style</th><th style="width:36px">Size</th><th style="width:68px">Weight</th><th style="width:30px">LH</th><th style="width:46px">Tracking</th><th>Use for</th><th style="width:150px">Do NOT use for</th></tr></thead>
+    <tbody>
+      <tr><td colspan="8" class="tgl tgl-d">Display — hero, splash, marketing</td></tr>
+      <tr><td class="tt-n">type.display.lg</td><td class="tt-s">Type/Display/LG</td><td class="tt-s">48</td><td class="tt-s">Bold 700</td><td class="tt-s">64</td><td class="tt-s">-0.02em</td><td class="tt-u">Splash hero, onboarding headline, marketing header</td><td class="tt-u" style="color:var(--rd600)">Section titles, body text, buttons</td></tr>
+      <tr><td colspan="8" class="tgl tgl-h">Heading — section and page-level structure</td></tr>
+      <tr><td class="tt-n">type.heading.xl</td><td class="tt-s">Type/Heading/XL</td><td class="tt-s">32</td><td class="tt-s">Bold 700</td><td class="tt-s">44</td><td class="tt-s">-0.01em</td><td class="tt-u">Section heroes, feature highlights, promo headers</td><td class="tt-u" style="color:var(--rd600)">Card titles, nav titles, body, buttons</td></tr>
+      <tr><td class="tt-n">type.heading.lg</td><td class="tt-s">Type/Heading/LG</td><td class="tt-s">24</td><td class="tt-s">Bold 700</td><td class="tt-s">32</td><td class="tt-s">-0.01em</td><td class="tt-u">Page titles, dialog headers, primary section heads</td><td class="tt-u" style="color:var(--rd600)">Card titles, nav titles, buttons</td></tr>
+      <tr><td class="tt-n">type.heading.md</td><td class="tt-s">Type/Heading/MD</td><td class="tt-s">20</td><td class="tt-s">Bold 700</td><td class="tt-s">28</td><td class="tt-s">-0.01em</td><td class="tt-u">Card group titles, bottom sheet headers, sub-sections</td><td class="tt-u" style="color:var(--rd600)">Card titles, nav titles, buttons, body</td></tr>
+      <tr><td colspan="8" class="tgl tgl-t">Title — navigational emphasis, card-level anchors</td></tr>
+      <tr><td class="tt-n">type.title.lg</td><td class="tt-s">Type/Title/LG</td><td class="tt-s">20</td><td class="tt-s">Medium 500</td><td class="tt-s">28</td><td class="tt-s">-0.01em</td><td class="tt-u">Nav titles, toolbar titles, prominent card titles</td><td class="tt-u" style="color:var(--rd600)">Section headings, buttons, body text</td></tr>
+      <tr><td class="tt-n">type.title.sm</td><td class="tt-s">Type/Title/SM</td><td class="tt-s">16</td><td class="tt-s">Bold 700</td><td class="tt-s">24</td><td class="tt-s">0</td><td class="tt-u">Card titles, list group headers, section subheads</td><td class="tt-u" style="color:var(--rd600)">Buttons (use label.lg), body, nav titles</td></tr>
+      <tr><td colspan="8" class="tgl tgl-b">Body — readable content</td></tr>
+      <tr><td class="tt-n">type.body.lg</td><td class="tt-s">Type/Body/LG</td><td class="tt-s">16</td><td class="tt-s">Regular 400</td><td class="tt-s">24</td><td class="tt-s">0</td><td class="tt-u">Long-form reading, descriptions, onboarding copy</td><td class="tt-u" style="color:var(--rd600)">Headings, titles, buttons, labels</td></tr>
+      <tr><td class="tt-n">type.body.md</td><td class="tt-s">Type/Body/MD</td><td class="tt-s">14</td><td class="tt-s">Regular 400</td><td class="tt-s">20</td><td class="tt-s">0</td><td class="tt-u">Default paragraph, input values, chat messages</td><td class="tt-u" style="color:var(--rd600)">Headings, titles, buttons, labels</td></tr>
+      <tr><td class="tt-n">type.body.sm</td><td class="tt-s">Type/Body/SM</td><td class="tt-s">12</td><td class="tt-s">Regular 400</td><td class="tt-s">16</td><td class="tt-s">0</td><td class="tt-u">Captions, helper text, footnotes, supporting info</td><td class="tt-u" style="color:var(--rd600)">Primary content, buttons, headings</td></tr>
+      <tr><td colspan="8" class="tgl tgl-l">Label — interactive UI elements</td></tr>
+      <tr><td class="tt-n">type.label.lg</td><td class="tt-s">Type/Label/LG</td><td class="tt-s">16</td><td class="tt-s">SemiBold 600</td><td class="tt-s">24</td><td class="tt-s">+0.01em</td><td class="tt-u">Default button text, primary/secondary CTA labels</td><td class="tt-u" style="color:var(--rd600)">Card titles (use title.sm), headings, body</td></tr>
+      <tr><td class="tt-n">type.label.md</td><td class="tt-s">Type/Label/MD</td><td class="tt-s">14</td><td class="tt-s">SemiBold 600</td><td class="tt-s">20</td><td class="tt-s">+0.01em</td><td class="tt-u">Input labels, nav items, form fields, smaller buttons</td><td class="tt-u" style="color:var(--rd600)">Primary CTA (use label.lg), body, headings</td></tr>
+      <tr><td class="tt-n">type.label.sm</td><td class="tt-s">Type/Label/SM</td><td class="tt-s">12</td><td class="tt-s">SemiBold 600</td><td class="tt-s">16</td><td class="tt-s">+0.01em</td><td class="tt-u">Chips, badges, small buttons, tag labels</td><td class="tt-u" style="color:var(--rd600)">Primary buttons, body text, headings</td></tr>
+      <tr><td colspan="8" class="tgl tgl-m">Meta — restricted utility (timestamps, badges only)</td></tr>
+      <tr><td class="tt-n">type.meta.xs</td><td class="tt-s">Type/Meta/XS</td><td class="tt-s">10</td><td class="tt-s">Regular 400</td><td class="tt-s">16</td><td class="tt-s">+0.02em</td><td class="tt-u">Timestamps and badges only. Not for Hindi body text.</td><td class="tt-u" style="color:var(--rd600)">Any Hindi reading text, buttons, labels, body</td></tr>
+    </tbody>
+  </table>
+
+  <div class="co co-n" style="margin-top:20px"><strong>Letter-spacing logic:</strong> Negative tracking (-0.01 to -0.02em) on display/heading sizes — tighter feels confident and saves horizontal space on mobile. Zero tracking on body — default readability, no interference. Positive tracking (+0.01 to +0.02em) on label/meta — opens up legibility at small sizes, especially critical for Devanagari glyphs at 12px and below.</div>
+
+  <div class="co co-pk" style="margin-top:12px"><strong>Units: sp, not dp.</strong> All typography tokens use <strong>sp</strong> (scaleable pixels). This means tokens automatically scale when a user changes their Android font-size accessibility setting (Settings → Display → Font size). This is a deliberate choice — Wiom's audience includes users who rely on larger text settings. If tokens used dp instead, accessibility scaling would be ignored.</div>
+
+  <div class="co co-n" style="margin-top:12px"><strong>Legacy consolidation:</strong> <span class="mono" style="font-size:11px">T4_16_Bold + L1_16_Bold + B1_16_Bold → title.sm &nbsp;·&nbsp; B1_16_SemiBold → label.lg &nbsp;·&nbsp; T4_16_Regular + B1_16_Regular → body.lg &nbsp;·&nbsp; L2_14_SemiBold → label.md &nbsp;·&nbsp; B4_10_Regular → meta.xs</span></div>
+</div>
+
+<!-- Token architecture -->
+<div class="s">
+  <div class="ey">Token architecture</div>
+  <div class="st">3-layer system: primitive → semantic → component</div>
+  <div class="sd">The 13 semantic tokens are the middle layer. Beneath them sit raw primitives (size, weight, line-height values). Above them sit component bindings that map UI elements to specific tokens. This structure makes the system extensible and auditable.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;gap:0;align-items:stretch;margin:20px 0">
+    <!-- Primitive layer -->
+    <div style="background:var(--n100);border:1px solid var(--n200);border-radius:8px;padding:16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--n600);margin-bottom:12px">Layer 1 — Primitive</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;line-height:2;color:var(--n700)">
+        font.family.noto-sans<br>
+        font.size.10<br>
+        font.size.12<br>
+        font.size.14<br>
+        font.size.16<br>
+        font.size.20<br>
+        font.size.24<br>
+        font.size.32<br>
+        font.size.48<br>
+        font.weight.regular (400)<br>
+        font.weight.medium (500)<br>
+        font.weight.semibold (600)<br>
+        font.weight.bold (700)<br>
+        font.lineheight.16<br>
+        font.lineheight.20<br>
+        font.lineheight.24<br>
+        font.lineheight.28<br>
+        font.lineheight.32<br>
+        font.lineheight.44<br>
+        font.lineheight.64<br>
+        font.tracking.tight (-0.02)<br>
+        font.tracking.snug (-0.01)<br>
+        font.tracking.normal (0)<br>
+        font.tracking.wide (+0.01)<br>
+        font.tracking.wider (+0.02)
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--n500)">→</div>
+
+    <!-- Semantic layer -->
+    <div style="background:var(--pk100);border:1px solid var(--pk200);border-radius:8px;padding:16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--pk700);margin-bottom:12px">Layer 2 — Semantic (the 13 tokens)</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;line-height:2;color:var(--pk800)">
+        type.display.lg<br>
+        type.heading.xl<br>
+        type.heading.lg<br>
+        type.heading.md<br>
+        type.title.lg<br>
+        type.title.sm<br>
+        type.body.lg<br>
+        type.body.md<br>
+        type.body.sm<br>
+        type.label.lg<br>
+        type.label.md<br>
+        type.label.sm<br>
+        type.meta.xs
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--n500)">→</div>
+
+    <!-- Component layer -->
+    <div style="background:var(--gn100);border:1px solid var(--gn200);border-radius:8px;padding:16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gn600);margin-bottom:12px">Layer 3 — Component binding</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;line-height:2;color:#065F46">
+        button.text → type.label.lg<br>
+        button.text.compact → type.label.md<br>
+        card.title → type.title.sm<br>
+        toolbar.title → type.title.lg<br>
+        sheet.header → type.heading.md<br>
+        page.title → type.heading.lg<br>
+        input.label → type.label.md<br>
+        input.value → type.body.md<br>
+        input.helper → type.body.sm<br>
+        chip.label → type.label.sm<br>
+        chat.message → type.body.md<br>
+        timestamp → type.meta.xs<br>
+        hero.headline → type.display.lg
+      </div>
+    </div>
+  </div>
+
+  <div class="co co-n"><strong>How to read this:</strong> A designer or AI picks from Layer 2 (semantic tokens). Layer 1 (primitives) is the raw material underneath — useful for Figma variables and Kotlin code generation. Layer 3 (component bindings) is the quick-reference shortcut — if you know the component, you know the token. All three layers point to the same 13 approved tokens.</div>
+</div>
+
+<!-- Specimen -->
+<div class="s">
+  <div class="ey">Type specimen</div>
+  <div class="st">Each token rendered in English and Hindi</div>
+  <div style="background:white;border:1px solid var(--n200);border-radius:8px;padding:28px 32px">
+    <div class="spec-row"><span class="spec-token">display.lg</span><span class="spec-en" style="font-size:48px;font-weight:700;line-height:64px">Quick brown fox</span><span class="spec-hi" style="font-size:48px;font-weight:700;line-height:64px">तेज़ भूरी लोमड़ी</span></div>
+    <div class="spec-row"><span class="spec-token">heading.xl</span><span class="spec-en" style="font-size:32px;font-weight:700;line-height:44px">Quick brown fox</span><span class="spec-hi" style="font-size:32px;font-weight:700;line-height:44px">तेज़ भूरी लोमड़ी</span></div>
+    <div class="spec-row"><span class="spec-token">heading.lg</span><span class="spec-en" style="font-size:24px;font-weight:700;line-height:32px">Quick brown fox jumps</span><span class="spec-hi" style="font-size:24px;font-weight:700;line-height:32px">तेज़ भूरी लोमड़ी कूदती</span></div>
+    <div class="spec-row"><span class="spec-token">heading.md</span><span class="spec-en" style="font-size:20px;font-weight:700;line-height:28px">Quick brown fox jumps over</span><span class="spec-hi" style="font-size:20px;font-weight:700;line-height:28px">तेज़ भूरी लोमड़ी कूदती है</span></div>
+    <div class="spec-row"><span class="spec-token">title.lg</span><span class="spec-en" style="font-size:20px;font-weight:500;line-height:28px">Quick brown fox jumps over</span><span class="spec-hi" style="font-size:20px;font-weight:500;line-height:28px">तेज़ भूरी लोमड़ी कूदती है</span></div>
+    <div class="spec-row"><span class="spec-token">title.sm</span><span class="spec-en" style="font-size:16px;font-weight:700;line-height:24px">Quick brown fox jumps over the lazy</span><span class="spec-hi" style="font-size:16px;font-weight:700;line-height:24px">तेज़ भूरी लोमड़ी आलसी कुत्ते के</span></div>
+    <div class="spec-row"><span class="spec-token">body.lg</span><span class="spec-en" style="font-size:16px;font-weight:400;line-height:24px">The quick brown fox jumps over the lazy dog.</span><span class="spec-hi" style="font-size:16px;font-weight:400;line-height:24px">तेज़ भूरी लोमड़ी आलसी कुत्ते के ऊपर कूदती है।</span></div>
+    <div class="spec-row"><span class="spec-token">body.md</span><span class="spec-en" style="font-size:14px;font-weight:400;line-height:20px">The quick brown fox jumps over the lazy dog.</span><span class="spec-hi" style="font-size:14px;font-weight:400;line-height:20px">तेज़ भूरी लोमड़ी आलसी कुत्ते के ऊपर कूदती है।</span></div>
+    <div class="spec-row"><span class="spec-token">body.sm</span><span class="spec-en" style="font-size:12px;font-weight:400;line-height:16px;color:var(--n600)">The quick brown fox jumps over the lazy dog.</span><span class="spec-hi" style="font-size:12px;font-weight:400;line-height:16px;color:var(--n600)">तेज़ भूरी लोमड़ी आलसी कुत्ते के ऊपर कूदती है।</span></div>
+    <div class="spec-row"><span class="spec-token">label.lg</span><span class="spec-en" style="font-size:16px;font-weight:600;line-height:24px">Button Label · CTA Text</span><span class="spec-hi" style="font-size:16px;font-weight:600;line-height:24px">बटन लेबल · रिचार्ज करें</span></div>
+    <div class="spec-row"><span class="spec-token">label.md</span><span class="spec-en" style="font-size:14px;font-weight:600;line-height:20px">Input Label · Nav Item</span><span class="spec-hi" style="font-size:14px;font-weight:600;line-height:20px">इनपुट लेबल · नेव आइटम</span></div>
+    <div class="spec-row"><span class="spec-token">label.sm</span><span class="spec-en" style="font-size:12px;font-weight:600;line-height:16px">Badge · Chip · Tag</span><span class="spec-hi" style="font-size:12px;font-weight:600;line-height:16px">बैज · चिप · टैग</span></div>
+    <div class="spec-row"><span class="spec-token">meta.xs</span><span class="spec-en" style="font-size:10px;font-weight:400;line-height:16px;color:var(--n500)">12:45 PM · Yesterday</span><span class="spec-hi" style="font-size:10px;font-weight:400;line-height:16px;color:var(--n500)">12:45 PM · कल</span></div>
+  </div>
+  <div class="co co-yw"><strong>Bilingual note:</strong> This scale is calibrated for both English and Hindi. Devanagari glyphs are taller than Latin at the same pixel size. display.lg (48/64) and heading.xl (32/44) use increased line-heights to provide safe clearance for Devanagari matras on multi-line wrap. meta.xs (10px) is restricted to timestamps and tags only — it must never carry Hindi reading text. The minimum readable size for Hindi body content is 12px (body.sm).</div>
+</div>
+
+<!-- ═══════ PART 4B: AI & HUMAN DECISION AIDS ═══════ -->
+
+<!-- Token selection flowchart -->
+<div class="s">
+  <div class="ey">Which token? — Decision flowchart</div>
+  <div class="st">A structured path to exactly one token</div>
+  <div class="sd">For both human designers and AI agents. Every branch ends at exactly one token — no guessing, no ambiguity.</div>
+
+  <div style="background:white;border:1px solid var(--n200);border-radius:8px;padding:24px;font-size:13px;line-height:2">
+    <div style="font-weight:700;margin-bottom:16px;color:var(--n900)">Start → "What is this text's job on the screen?"</div>
+
+    <div style="padding-left:20px;border-left:2px solid var(--pk200);margin-bottom:20px">
+      <div style="font-weight:600;color:var(--pk700)">Is it a hero, splash, or marketing headline?</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Primary hero → <span class="mono" style="color:var(--pk700)">display.lg</span> (48 Bold)</div>
+    </div>
+
+    <div style="padding-left:20px;border-left:2px solid var(--pr200);margin-bottom:20px">
+      <div style="font-weight:600;color:var(--pr600)">Is it a page or section heading?</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Section hero / feature highlight → <span class="mono" style="color:var(--pr600)">heading.xl</span> (32 Bold)</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Page title / dialog header → <span class="mono" style="color:var(--pr600)">heading.lg</span> (24 Bold)</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Card group title / sub-section → <span class="mono" style="color:var(--pr600)">heading.md</span> (20 Bold)</div>
+    </div>
+
+    <div style="padding-left:20px;border-left:2px solid #93C5FD;margin-bottom:20px">
+      <div style="font-weight:600;color:#2563EB">Is it a card or nav bar title?</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Toolbar / nav bar / prominent card → <span class="mono" style="color:#2563EB">title.lg</span> (20 Medium)</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Card title / list group header → <span class="mono" style="color:#2563EB">title.sm</span> (16 Bold)</div>
+    </div>
+
+    <div style="padding-left:20px;border-left:2px solid var(--gn200);margin-bottom:20px">
+      <div style="font-weight:600;color:var(--gn600)">Is it readable paragraph content?</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Long-form / description / onboarding → <span class="mono" style="color:var(--gn600)">body.lg</span> (16 Regular)</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Default paragraph / chat / input value → <span class="mono" style="color:var(--gn600)">body.md</span> (14 Regular)</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Caption / helper text / footnote → <span class="mono" style="color:var(--gn600)">body.sm</span> (12 Regular)</div>
+    </div>
+
+    <div style="padding-left:20px;border-left:2px solid var(--yw400);margin-bottom:20px">
+      <div style="font-weight:600;color:var(--yw700)">Is it a button, chip, or interactive label?</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Default button / primary-secondary CTA → <span class="mono" style="color:var(--yw700)">label.lg</span> (16 SemiBold)</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Input label / nav item / compact button → <span class="mono" style="color:var(--yw700)">label.md</span> (14 SemiBold)</div>
+      <div style="padding-left:20px;color:var(--n600)">→ Chip / badge / tag → <span class="mono" style="color:var(--yw700)">label.sm</span> (12 SemiBold)</div>
+    </div>
+
+    <div style="padding-left:20px;border-left:2px solid var(--n300);margin-bottom:20px">
+      <div style="font-weight:600;color:var(--n600)">Is it a timestamp or badge number?</div>
+      <div style="padding-left:20px;color:var(--n600)">→ <span class="mono">meta.xs</span> (10 Regular) — ⚠ restricted, not for Hindi body text</div>
+    </div>
+
+    <div style="padding:10px 14px;border-radius:6px;background:var(--n50);font-size:12px;color:var(--n600)"><strong>If unsure:</strong> default to <span class="mono">body.md</span> for reading text, <span class="mono">label.md</span> for interactive text.</div>
+  </div>
+</div>
+
+<!-- Component-to-token mapping -->
+<div class="s">
+  <div class="ey">Component-to-token mapping</div>
+  <div class="st">Every common UI element → exactly one token</div>
+  <div class="sd">The fastest reference for both humans and AI. If a component isn't listed, use the flowchart above.</div>
+
+  <table>
+    <thead><tr><th style="width:200px">UI Component</th><th style="width:120px">Token</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Primary CTA button</strong></td><td class="tt-n">label.lg</td><td class="tt-u">16sp SemiBold — confident with Hindi text</td></tr>
+      <tr><td><strong>Secondary button</strong></td><td class="tt-n">label.md</td><td class="tt-u">14sp SemiBold — secondary interactive</td></tr>
+      <tr><td><strong>Full-width action button</strong></td><td class="tt-n">label.lg</td><td class="tt-u">16sp SemiBold — wide CTAs need presence</td></tr>
+      <tr><td><strong>Compact / inline button</strong></td><td class="tt-n">label.md</td><td class="tt-u">14sp SemiBold — tighter spaces</td></tr>
+      <tr><td><strong>Card title</strong></td><td class="tt-n">title.sm</td><td class="tt-u">16sp Bold — card-level structural anchor</td></tr>
+      <tr><td><strong>Toolbar / nav bar title</strong></td><td class="tt-n">title.lg</td><td class="tt-u">20sp Medium — navigational emphasis</td></tr>
+      <tr><td><strong>Bottom sheet header</strong></td><td class="tt-n">heading.md</td><td class="tt-u">20sp Bold — structural anchor</td></tr>
+      <tr><td><strong>Section header on home</strong></td><td class="tt-n">heading.md</td><td class="tt-u">20sp Bold — groups cards under it</td></tr>
+      <tr><td><strong>Page title / dialog header</strong></td><td class="tt-n">heading.lg</td><td class="tt-u">24sp Bold — page-level anchor</td></tr>
+      <tr><td><strong>Chat message body</strong></td><td class="tt-n">body.md</td><td class="tt-u">14sp Regular — default paragraph</td></tr>
+      <tr><td><strong>Plan description text</strong></td><td class="tt-n">body.lg</td><td class="tt-u">16sp Regular — longer reading</td></tr>
+      <tr><td><strong>Input field label</strong></td><td class="tt-n">label.md</td><td class="tt-u">14sp SemiBold — interactive form label</td></tr>
+      <tr><td><strong>Input field value</strong></td><td class="tt-n">body.md</td><td class="tt-u">14sp Regular — user-entered content</td></tr>
+      <tr><td><strong>Input helper text</strong></td><td class="tt-n">body.sm</td><td class="tt-u">12sp Regular — supporting context</td></tr>
+      <tr><td><strong>Chip / tag label</strong></td><td class="tt-n">label.sm</td><td class="tt-u">12sp SemiBold — small interactive</td></tr>
+      <tr><td><strong>Tab bar label</strong></td><td class="tt-n">label.md</td><td class="tt-u">14sp SemiBold — interactive navigation</td></tr>
+      <tr><td><strong>Price on card</strong></td><td class="tt-n">title.sm</td><td class="tt-u">16sp Bold — emphasis, card-level</td></tr>
+      <tr><td><strong>Recharge amount (hero)</strong></td><td class="tt-n">heading.lg</td><td class="tt-u">24sp Bold — page-level number</td></tr>
+      <tr><td><strong>Timestamp in chat</strong></td><td class="tt-n">meta.xs</td><td class="tt-u">10sp Regular — restricted ⚠</td></tr>
+      <tr><td><strong>Badge count</strong></td><td class="tt-n">meta.xs</td><td class="tt-u">10sp Regular — restricted ⚠</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DO / DON'T rules -->
+<div class="s">
+  <div class="ey">Rules — flat reference</div>
+  <div class="st">DO and DON'T — scannable for humans and AI</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0">
+    <div style="background:var(--gn100);border:1px solid var(--gn200);border-radius:8px;padding:20px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gn600);margin-bottom:12px">DO</div>
+      <div style="font-size:12px;line-height:2.2;color:#065F46">
+        ✓ Always use token names, never raw px values<br>
+        ✓ Use weight to distinguish roles at the same size<br>
+        ✓ Match Figma style name to code token name exactly<br>
+        ✓ Test Hindi strings when verifying typography<br>
+        ✓ Ask "what is this text's job?" before picking a token<br>
+        ✓ Default to body.md for reading text if unsure<br>
+        ✓ Default to label.md for interactive text if unsure<br>
+        ✓ Migrate legacy tokens when you touch a screen<br>
+        ✓ Mark deprecated tokens with @Deprecated + ReplaceWith<br>
+        ✓ Use display.lg and heading.xl sparingly — hero and section-level only
+      </div>
+    </div>
+    <div style="background:var(--rd100);border:1px solid var(--rd200);border-radius:8px;padding:20px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--rd600);margin-bottom:12px">DON'T</div>
+      <div style="font-size:12px;line-height:2.2;color:var(--rd600)">
+        ✗ Use heading tokens for card titles (use title.sm)<br>
+        ✗ Use heading tokens for buttons (use label.lg)<br>
+        ✗ Use title.sm for buttons (use label.lg)<br>
+        ✗ Use label tokens for non-interactive text<br>
+        ✗ Use body tokens for buttons or headings<br>
+        ✗ Use meta.xs for Hindi body text (minimum 12px)<br>
+        ✗ Use meta.xs in new contexts without approval<br>
+        ✗ Pair SemiBold + Medium at the same font size<br>
+        ✗ Use sizes outside the scale (no 11, 13, 15, 18, 22, 28)<br>
+        ✗ Use line-heights that aren't 4px multiples<br>
+        ✗ Use any font other than Noto Sans
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PART 5: MIGRATION ═══════ -->
+
+<!-- Migration table -->
+<div class="s">
+  <div class="ey">Migration mapping</div>
+  <div class="st">Keep, merge, legacy, or remove</div>
+  <div class="sd">Every legacy token mapped to its future state. 13 kept, 5 merged, 1 legacy, 6 removed.</div>
+  <table>
+    <thead><tr><th style="width:170px">Current Style</th><th>Future State</th><th style="width:72px">Action</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="3">Display — 48, 40</td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">D1_48_Bold</td><td><span class="tk tk-n">display.lg</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-m"><td class="tk tk-o">D2_40_Regular</td><td>Merge into display tier or expressive-only</td><td><span class="act act-m">Merge</span></td></tr>
+      <tr class="grp"><td colspan="3">Heading — 32, 24</td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">T1_32_Bold</td><td><span class="tk tk-n">heading.xl</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">T2_24_Bold</td><td><span class="tk tk-n">heading.lg</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-r"><td class="tk tk-o">T2_24_Regular</td><td>Retire from active set</td><td><span class="act act-r">Remove</span></td></tr>
+      <tr class="grp"><td colspan="3">Heading / Title — 20</td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">T3_20_Bold</td><td><span class="tk tk-n">heading.md</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">T3_20_Medium</td><td><span class="tk tk-n">title.lg</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-l"><td class="tk tk-o">T3_20_Regular</td><td>Legacy only if truly needed</td><td><span class="act act-l">Legacy</span></td></tr>
+      <tr class="grp"><td colspan="3">Title / Body — 16</td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">T4_16_Bold</td><td><span class="tk tk-n">title.sm</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-m"><td class="tk tk-o">T4_16_Regular</td><td>Merge into body.lg</td><td><span class="act act-m">Merge</span></td></tr>
+      <tr class="grp"><td colspan="3">Label — 16, 14, 12</td></tr>
+      <tr class="rk rk-m"><td class="tk tk-o">L1_16_Bold</td><td>If button/CTA → <span class="tk tk-n">label.lg</span>. If card title → <span class="tk tk-n">title.sm</span></td><td><span class="act act-m">Merge</span></td></tr>
+      <tr class="rk rk-r"><td class="tk tk-o">L1_16_Regular</td><td>Retire from active set</td><td><span class="act act-r">Remove</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">L2_14_SemiBold</td><td><span class="tk tk-n">label.md</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-r"><td class="tk tk-o">L2_14_Regular</td><td>Retire from active set</td><td><span class="act act-r">Remove</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">L3_12_SemiBold</td><td><span class="tk tk-n">label.sm</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="grp"><td colspan="3">Body — 16, 14, 12, 10</td></tr>
+      <tr class="rk rk-m"><td class="tk tk-o">B1_16_Bold / Semi / Med</td><td>Bold → <span class="tk tk-n">title.sm</span>. SemiBold → <span class="tk tk-n">label.lg</span>. Medium → <span class="tk tk-n">body.lg</span></td><td><span class="act act-m">Merge</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">B1_16_Regular</td><td><span class="tk tk-n">body.lg</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-m"><td class="tk tk-o">B2_14_Semibold</td><td>Move to label role</td><td><span class="act act-m">Merge</span></td></tr>
+      <tr class="rk rk-r"><td class="tk tk-o">B2_14_Medium</td><td>Retire from active set</td><td><span class="act act-r">Remove</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">B2_14_Regular</td><td><span class="tk tk-n">body.md</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">B3_12_Regular</td><td><span class="tk tk-n">body.sm</span></td><td><span class="act act-k">Keep</span></td></tr>
+      <tr class="rk rk-k"><td class="tk tk-o">B4_10_Regular</td><td><span class="tk tk-n">meta.xs</span> — restricted</td><td><span class="act act-x">Restrict</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Mixed fonts migration -->
+<div class="s">
+  <div class="ey">Screen-by-screen migration</div>
+  <div class="st">How mixed fonts at the same level resolve</div>
+  <div class="sd">Today's codebase uses different legacy tokens for the same role on different screens. Here's how each maps to the new system.</div>
+
+  <div class="mig-example">
+    <div class="mig-title">Heading level — 3 different tokens across screens → 1 answer per level</div>
+    <div class="mig-row"><div class="mig-from"><div class="mig-screen">Recharge screen</div><div class="mig-spec">T3_20_Medium → 20/500</div></div><div class="mig-arrow">→</div><div class="mig-to"><div class="mig-screen">New</div><div class="mig-spec">type.heading.md → 20/700</div></div></div>
+    <div class="mig-row"><div class="mig-from"><div class="mig-screen">Home screen</div><div class="mig-spec">T4_16_Bold → 16/700</div></div><div class="mig-arrow">→</div><div class="mig-to"><div class="mig-screen">New</div><div class="mig-spec">type.title.sm → 16/700 (card-level)</div></div></div>
+    <div class="mig-row"><div class="mig-from"><div class="mig-screen">Profile screen</div><div class="mig-spec">T2_24_Regular → 24/400</div></div><div class="mig-arrow">→</div><div class="mig-to"><div class="mig-screen">New</div><div class="mig-spec">type.heading.lg → 24/700 (page-level)</div></div></div>
+  </div>
+
+  <div class="mig-example">
+    <div class="mig-title">Body level — the decision framework</div>
+    <div class="mig-row"><div class="mig-from"><div class="mig-screen">Helper text</div><div class="mig-spec">B2_14_Medium → 14/500</div></div><div class="mig-arrow">→</div><div class="mig-to"><div class="mig-screen">Decision</div><div class="mig-spec">Is it a button? → label.lg (16/600)<br>Is it a label? → label.md (14/600)<br>Is it body? → body.md (14/400)</div></div></div>
+    <div class="mig-row"><div class="mig-from"><div class="mig-screen">Bold description</div><div class="mig-spec">B1_16_Bold → 16/700</div></div><div class="mig-arrow">→</div><div class="mig-to"><div class="mig-screen">Decision</div><div class="mig-spec">Is it a title? → title.sm (16/700)<br>Is it emphasis? → body.lg + bold attr</div></div></div>
+  </div>
+
+  <div class="co co-yw"><strong>The migration question:</strong> For every legacy token, ask: "What is this text's job on the screen?" If it anchors a section → heading. If it names a card → title. If it's read as a paragraph → body. If it triggers an action → label. The role determines the token.</div>
+</div>
+
+<!-- Rollout -->
+<div class="s">
+  <div class="ey">Rollout</div>
+  <div class="st">4-tier migration + what changes tomorrow</div>
+  <div class="tg">
+    <div class="ti ti-k"><h4>Keep</h4><p>13 approved tokens.</p><ul><li>display.lg (48 Bold)</li><li>heading.xl/l/m</li><li>title.lg (20 Med)</li><li>title.sm (16 Bold)</li><li>body.lg/m/s</li><li>label.lg (16 Semi)</li><li>label.md/s</li><li>meta.xs (10) ⚠</li></ul></div>
+    <div class="ti ti-m"><h4>Merge</h4><p>Absorb into active.</p><ul><li>D2_40 → display</li><li>T4_16_Reg → body.lg</li><li>L1_16_Bold → label.lg or title.sm</li><li>B1_16_Semi → label.lg</li><li>B1_16_B/M → title.sm / body.lg</li><li>B2_14_Semi → label.md</li></ul></div>
+    <div class="ti ti-l"><h4>Legacy</h4><p>Existing screens only.</p><ul><li>T3_20_Regular</li></ul></div>
+    <div class="ti ti-r"><h4>Remove</h4><p>Replace on touch.</p><ul><li>T2_24_Regular</li><li>L1_16_Regular</li><li>L2_14_Regular</li><li>B2_14_Medium</li></ul></div>
+  </div>
+
+  <div style="font-size:14px;font-weight:700;margin:28px 0 14px">What changes tomorrow?</div>
+  <div class="tom">
+    <div class="tom-card"><h4>For new designs</h4><p>Only use the 12 active tokens. If a token isn't in the active list, it doesn't exist for new work.</p></div>
+    <div class="tom-card"><h4>For existing screens</h4><p>Migrate on touch. When you edit a screen, swap legacy tokens to their new mapping. No big-bang rewrite.</p></div>
+    <div class="tom-card"><h4>For code</h4><p>Keep legacy aliases in the Kotlin stylesheet temporarily. Mark them @Deprecated with ReplaceWith hints pointing to new tokens.</p></div>
+    <div class="tom-card"><h4>For QA</h4><p>Verify role alignment, not just size/weight. The question is "does this text use the right role token?" not "is this 16px bold?"</p></div>
+  </div>
+</div>
+
+<!-- V2 Roadmap -->
+<div class="s">
+  <div class="ey">Documented for v2</div>
+  <div class="st">Parked items — not in scope for v1, planned for next iteration</div>
+  <div class="sd">The following areas were identified during the audit and review process. They are not blockers for v1 but are logged here as committed v2 work items.</div>
+
+  <table>
+    <thead><tr><th style="width:200px">Item</th><th>Status</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Color × Typography mapping</strong></td><td>Covered separately</td><td>Semantic text-color tokens (text.primary, text.secondary, text.disabled, text.error) and their mapping to typography roles will be documented in the <strong>Color Foundation skill</strong>, not duplicated here.</td></tr>
+      <tr><td><strong>Responsive typography</strong></td><td>v2</td><td>These sizes are fixed for mobile (5.5–6.5" screens). Tablet and large-screen behaviour will be defined when those platforms are prioritised. Current scale is mobile-only by design — consistent with Stripe and Primer's approach.</td></tr>
+      <tr><td><strong>Dark mode weight adjustment</strong></td><td>v2</td><td>Light-on-dark text renders thinner. Some systems bump weight by +100 on dark surfaces. Will be tested with Noto Sans on Wiom's dark surfaces and documented when dark mode is implemented.</td></tr>
+      <tr><td><strong>Truncation / overflow patterns</strong></td><td>v2 — component level</td><td>Text-overflow behaviour (single-line ellipsis, multi-line clamp) belongs in component-level specs, not the typography foundation. Will be documented per component.</td></tr>
+      <tr><td><strong>Paragraph spacing tokens</strong></td><td>v2</td><td>Margin-bottom per type role for vertical rhythm. Will be defined alongside the spacing foundation.</td></tr>
+      <tr><td><strong>display.md (40px)</strong></td><td>Parked</td><td>D2_40_Regular was merged out. If marketing or onboarding needs a 40px size, it can be added as display.md without breaking the system. Not adding pre-emptively.</td></tr>
+      <tr><td><strong>Text decoration patterns</strong></td><td>v2</td><td>Link underline, strikethrough, emphasis styling. Will be documented with interactive component specs.</td></tr>
+      <tr><td><strong>Font loading strategy</strong></td><td>v2</td><td>Noto Sans loading behaviour on slow connections for budget Android devices. Practical concern for target audience, needs performance testing.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FOOTER -->
+<div class="df">
+  <div><strong>Wiom Design System</strong> — Next Typography Foundation</div>
+  <div class="fs"><span>13 semantic tokens</span><span>8 sizes</span><span>5 core groups + 1 restricted</span><span>8/8 gaps closed</span></div>
+</div>
+<div style="text-align:center;padding:0 0 40px;font-size:11px;color:var(--n500)">April 2026</div>
+
+</div>
+</body>
+</html>

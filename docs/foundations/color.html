@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<!-- saved from url=(0084)file:///C:/Work/wiom-design-system/figma/references/wiom-color-system-reference.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiom Design System — Color Foundation Reference</title>
+<style>
+  :root {
+    --brand: #D9008D;
+    --brand-hover: #C00080;
+    --brand-pressed: #A30070;
+    --brand-soft: #FFB2E4;
+    --brand-subtle: #FFCCED;
+    --brand-tint: #FFE5F6;
+    --brand-secondary: #4A1535;
+    --text-primary: #161021;
+    --text-secondary: #5C5570;
+    --text-disabled: #A7A1B2;
+    --text-inverse: #FAF9FC;
+    --surface-base: #FAF9FC;
+    --surface-subtle: #F1EDF7;
+    --surface-muted: #E8E4F0;
+    --surface-strong: #D7D3E0;
+    --border-default: #D7D3E0;
+    --border-subtle: #E8E4F0;
+    --positive: #008043;
+    --negative: #D92130;
+    --warning: #B85C00;
+    --warning-soft: #FFDA40;
+    --info: #6D17CE;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--surface-base);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--brand-secondary);
+    color: var(--text-inverse);
+    padding: 36px 24px 24px;
+    text-align: center;
+    position: relative;
+  }
+  .site-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--brand), var(--brand-soft), var(--brand));
+  }
+  .site-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .site-header .subtitle {
+    font-size: 13px;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  /* ── Tabs ── */
+  .tab-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn:hover {
+    color: var(--text-primary);
+  }
+  .tab-btn.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+  }
+
+  /* ── Content area ── */
+  .tab-content {
+    display: none;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+  .tab-content.active {
+    display: block;
+  }
+
+  /* ── Typography ── */
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 40px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--brand-tint);
+  }
+  h2:first-child { margin-top: 0; }
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 32px 0 12px;
+  }
+  h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin: 24px 0 8px;
+  }
+  p {
+    margin: 0 0 14px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+  p.note {
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: var(--surface-subtle);
+    border-left: 3px solid var(--brand-soft);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 16px 0;
+  }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+  ul, ol {
+    margin: 0 0 14px 20px;
+    font-size: 15px;
+  }
+  li { margin-bottom: 6px; line-height: 1.6; }
+  li code { font-size: 13px; }
+  hr {
+    border: none;
+    border-top: 1px solid var(--border-default);
+    margin: 32px 0;
+  }
+
+  /* ── Code ── */
+  code {
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
+    font-size: 13px;
+    background: var(--surface-subtle);
+    color: var(--brand-pressed);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  /* ── Decision tree blocks ── */
+  .decision-tree {
+    background: var(--surface-subtle);
+    border: 1px solid var(--border-default);
+    border-left: 4px solid var(--brand);
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 16px 0 20px;
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    color: var(--text-primary);
+    overflow-x: auto;
+  }
+  .decision-tree .arrow {
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  /* ── Architecture diagram block ── */
+  .arch-block {
+    background: var(--brand-secondary);
+    color: var(--text-inverse);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0 20px;
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* ── Tables ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 16px 0 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-default);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead th {
+    background: var(--brand-secondary);
+    color: var(--text-inverse);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  tbody tr { border-top: 1px solid var(--border-subtle); }
+  tbody tr:nth-child(even) { background: var(--surface-subtle); }
+  tbody tr:hover { background: var(--brand-tint); }
+  td {
+    padding: 10px 16px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  td code {
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+
+  /* ── Color swatch ── */
+  .swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 6px;
+    border: 1px solid rgba(0,0,0,0.1);
+    flex-shrink: 0;
+  }
+  .hex-val {
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .swatch-cell {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── Section callouts ── */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0 20px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .callout-brand {
+    background: var(--brand-tint);
+    border: 1px solid var(--brand-soft);
+  }
+  .callout-positive {
+    background: #E1FAED;
+    border: 1px solid #A5E5C6;
+  }
+  .callout-warning {
+    background: #FFF2BF;
+    border: 1px solid #FFDA40;
+  }
+  .callout-info {
+    background: #F1E5FF;
+    border: 1px solid #D6B2FF;
+  }
+  .callout-negative {
+    background: #FFE5E7;
+    border: 1px solid #FFB3B9;
+  }
+
+  /* ── Section number badge ── */
+  .section-num {
+    display: inline-block;
+    background: var(--brand);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 13px;
+    color: var(--text-disabled);
+    border-top: 1px solid var(--border-default);
+  }
+
+  /* ── Gap/status badges ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+  }
+  .badge-fixed { background: #E1FAED; color: #008043; }
+  .badge-ready { background: #F1E5FF; color: #6D17CE; }
+  .badge-p0 { background: #FFE5E7; color: #D92130; }
+  .badge-p1 { background: #FFF2BF; color: #B85C00; }
+  .badge-p2 { background: #F1E5FF; color: #6D17CE; }
+  .badge-p3 { background: var(--surface-muted); color: var(--text-secondary); }
+
+  /* ── Do/Don't cards ── */
+  .do-dont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .do-card, .dont-card {
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+  .do-card {
+    background: #E1FAED;
+    border-left: 4px solid #008043;
+  }
+  .dont-card {
+    background: #FFE5E7;
+    border-left: 4px solid #D92130;
+  }
+  .do-card h4, .dont-card h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+  }
+  .do-card h4 { color: #008043; }
+  .dont-card h4 { color: #D92130; }
+  .do-card li, .dont-card li { font-size: 13px; margin-bottom: 4px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .site-header h1 { font-size: 18px; }
+    .tab-btn { padding: 12px 14px; font-size: 13px; }
+    .tab-content { padding: 20px 16px 48px; }
+    h2 { font-size: 19px; }
+    table { font-size: 13px; }
+    td, thead th { padding: 8px 10px; }
+    .do-dont { grid-template-columns: 1fr; }
+    .decision-tree { padding: 14px 16px; font-size: 12px; }
+    .arch-block { padding: 14px 16px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER ════════════════ -->
+<header class="site-header">
+  <h1>Wiom Design System — Color Foundation Reference</h1>
+  <div class="subtitle">V1 Color Token System · 33 Primitives · 39 Semantic Tokens · 8 Groups</div>
+</header>
+
+<!-- ════════════════ TAB BAR ════════════════ -->
+<nav class="tab-bar">
+  <button class="tab-btn" data-tab="response">Response</button>
+  <button class="tab-btn" data-tab="token-spec">Token Spec</button>
+  <button class="tab-btn" data-tab="usage-guide">Usage Guide</button>
+  <button class="tab-btn" data-tab="decision-log">Decision Log</button>
+  <button class="tab-btn active" data-tab="legacy-audit">Legacy Audit</button>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- TAB 1: RESPONSE                                            -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="response">
+
+  <p>Here's how each of the points maps to the new system.</p>
+
+  <!-- 1. Icon usage -->
+  <h2><span class="section-num">1</span>Icon usage</h2>
+  <p>Icons now use the text and semantic token families instead of dedicated icon tokens.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Old token</th><th>New token</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td>IconNeutralNoAction</td><td><code>color.text.secondary</code> <span class="swatch" style="background:#5C5570"></span><span class="hex-val">#5C5570</span></td><td>Default/passive icons</td></tr>
+        <tr><td>IconNeutralAction</td><td><code>color.text.primary</code> <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td><td>Actionable/tappable icons</td></tr>
+        <tr><td>IconBrand</td><td><code>color.brand.primary</code> <span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></td><td>Brand-accent icons</td></tr>
+        <tr><td>IconPositive</td><td><code>color.positive.primary</code> <span class="swatch" style="background:#008043"></span><span class="hex-val">#008043</span></td><td>Success/confirmation icons</td></tr>
+        <tr><td>IconNegative</td><td><code>color.negative.primary</code> <span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></td><td>Error/destructive icons</td></tr>
+        <tr><td>IconWarning</td><td><code>color.warning.soft</code> <span class="swatch" style="background:#FFDA40"></span><span class="hex-val">#FFDA40</span></td><td>Warning/alert icons</td></tr>
+        <tr><td>IconInfo</td><td><code>color.info.primary</code> <span class="swatch" style="background:#6D17CE"></span><span class="hex-val">#6D17CE</span></td><td>Informational icons</td></tr>
+        <tr><td>Disabled icons</td><td><code>color.text.disabled</code> <span class="swatch" style="background:#A7A1B2"></span><span class="hex-val">#A7A1B2</span></td><td>Icons in disabled components</td></tr>
+        <tr><td>Icons on brand/dark fills</td><td><code>color.text.on-color</code> <span class="swatch" style="background:#FFFFFF;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FFFFFF</span></td><td>Icons on colored backgrounds</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">This is how Polaris, Carbon, and Primer handle it — icons follow text hierarchy, not a separate system.</p>
+
+  <!-- 2. Button/CTA usage -->
+  <h2><span class="section-num">2</span>Button / CTA usage</h2>
+  <p>All covered — named by role instead of by component.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Old token</th><th>New token</th></tr></thead>
+      <tbody>
+        <tr><td>PriCtaBg</td><td><code>color.brand.primary</code> <span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></td></tr>
+        <tr><td>PriCtaFg</td><td><code>color.text.on-color</code> <span class="swatch" style="background:#FFFFFF;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FFFFFF</span></td></tr>
+        <tr><td>PriCtaDisableBg</td><td><code>color.brand.primary</code> at 40% opacity</td></tr>
+        <tr><td>SecCtaBg (stroke)</td><td><code>color.brand.primary</code> <span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></td></tr>
+        <tr><td>SecCtaFg</td><td><code>color.brand.primary</code> <span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></td></tr>
+        <tr><td>BookingCtaBg / BookingCtaFg</td><td>Same as primary CTA — <code>color.brand.primary</code> + <code>color.text.on-color</code></td></tr>
+        <tr><td>LinkLabelFg</td><td><code>color.text.link</code> <span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Hover and pressed states are now formally defined:</p>
+  <ul>
+    <li>Primary CTA hover → <code>color.brand.primary-hover</code> <span class="swatch" style="background:#C00080"></span><span class="hex-val">#C00080</span></li>
+    <li>Primary CTA pressed → <code>color.brand.primary-pressed</code> <span class="swatch" style="background:#A30070"></span><span class="hex-val">#A30070</span></li>
+    <li>Secondary button hover → <code>color.brand.primary-tint</code> <span class="swatch" style="background:#FFE5F6"></span><span class="hex-val">#FFE5F6</span></li>
+    <li>Secondary button pressed → <code>color.brand.primary-subtle</code> <span class="swatch" style="background:#FFCCED"></span><span class="hex-val">#FFCCED</span></li>
+    <li>Destructive hover → <code>color.negative.primary-hover</code> <span class="swatch" style="background:#BF1D2A"></span><span class="hex-val">#BF1D2A</span></li>
+    <li>Destructive pressed → <code>color.negative.primary-pressed</code> <span class="swatch" style="background:#A31824"></span><span class="hex-val">#A31824</span></li>
+  </ul>
+
+  <p class="note">Full interaction state decision tree is in the <strong>Token Spec</strong> tab.</p>
+
+  <!-- 3. Chat surface tiers -->
+  <h2><span class="section-num">3</span>Chat surface tiers</h2>
+  <p>BgChatPri/Sec/Tertiary/Quad were product-specific — intentionally removed from foundation. The architecture has a planned Tier 3 (component tokens) where these will live. When the chat component is spec'd, the likely mapping is:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Old token</th><th>New mapping</th></tr></thead>
+      <tbody>
+        <tr><td>BgChatPri</td><td><code>color.surface.base</code> <span class="swatch" style="background:#FAF9FC"></span><span class="hex-val">#FAF9FC</span></td></tr>
+        <tr><td>BgChatSec</td><td><code>color.surface.subtle</code> <span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></td></tr>
+        <tr><td>BgChatTertiary</td><td><code>color.surface.muted</code> <span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></td></tr>
+        <tr><td>BgChatQuad</td><td><code>color.surface.strong</code> <span class="swatch" style="background:#D7D3E0"></span><span class="hex-val">#D7D3E0</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">Not lost — they now compose from the surface scale instead of being standalone tokens.</p>
+
+  <!-- 4. Warning / caution pairing logic -->
+  <h2><span class="section-num">4</span>Warning / caution pairing logic</h2>
+  <p>Warning and Caution are merged into a single Warning family. <strong>0 out of 10</strong> benchmarked design systems maintain separate Warning and Caution families. This removes the "is this warning or caution?" decision paralysis.</p>
+
+  <h3>Pairing rules</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Context</th><th>Token</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Warning text on light backgrounds</td><td><code>color.warning.primary</code> <span class="swatch" style="background:#B85C00"></span><span class="hex-val">#B85C00</span></td><td>Passes AA at 5.57:1</td></tr>
+        <tr><td>Warning icon/indicator</td><td><code>color.warning.soft</code> <span class="swatch" style="background:#FFDA40"></span><span class="hex-val">#FFDA40</span></td><td></td></tr>
+        <tr><td>Warning banner/surface fill</td><td><code>color.warning.subtle</code> <span class="swatch" style="background:#FFF2BF"></span><span class="hex-val">#FFF2BF</span></td><td></td></tr>
+        <tr><td>Text on warning surfaces</td><td><code>color.text.primary</code> <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td><td>Passes at 16.55:1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">Urgency levels (old warning vs caution distinction) are communicated through copy, icons, and placement — not separate color families.</p>
+
+  <!-- 5. Focus / state stroke intent -->
+  <h2><span class="section-num">5</span>Focus / state stroke intent</h2>
+  <p>Old per-family focus strokes (StrokeBrandFocus, StrokePositiveFocus, StrokeNegativeFocus, etc.) are consolidated. Two tokens cover all focus rings:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Context</th><th>Focus ring token</th></tr></thead>
+      <tbody>
+        <tr><td>All non-destructive components</td><td><code>color.border.brand</code> <span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></td></tr>
+        <tr><td>Destructive components only</td><td><code>color.negative.soft</code> <span class="swatch" style="background:#FFB3B9"></span><span class="hex-val">#FFB3B9</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">Matches Polaris and Atlassian — focus identity lives at brand level, not per-semantic-family.</p>
+
+  <!-- 6. Product-specific mappings -->
+  <h2><span class="section-num">6</span>Product-specific mappings</h2>
+  <p>BgPartnerHeader, BookingCta, etc. — removed from foundation. The architecture separates this:</p>
+  <ul>
+    <li><strong>Tier 2 (semantic)</strong> → role-based, universal</li>
+    <li><strong>Tier 3 (component, future)</strong> → application-specific</li>
+  </ul>
+  <p>The use cases still exist. Mappings live in component specs. For reference:</p>
+  <ul>
+    <li><code>BgPartnerHeader</code> → <code>color.brand.secondary</code> <span class="swatch" style="background:#4A1535"></span><span class="hex-val">#4A1535</span></li>
+    <li><code>BookingCta</code> → <code>color.brand.primary</code> <span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></li>
+  </ul>
+
+  <hr>
+
+  <!-- On the optimization question -->
+  <h2>On the optimization question</h2>
+  <p>The answer is: <strong>minimize the decision surface, not the total architecture.</strong></p>
+
+  <div class="callout callout-brand">
+    <ul style="margin-left:16px;">
+      <li><strong>39 semantic tokens</strong> — the only layer designers, developers, and AI interact with</li>
+      <li><strong>33 primitives</strong> — underneath for theming, never directly used in UI</li>
+      <li><strong>Component tokens (Tier 3, future)</strong> — handles product-specific mappings</li>
+    </ul>
+  </div>
+
+  <p>A designer picks from 39 tokens. That's the decision surface. Layers underneath can be as deep as needed — they're invisible to the consumer. Same model as Material Design 3, Polaris, Carbon, and Atlassian.</p>
+
+  <hr>
+
+  <h2>Reference docs</h2>
+  <p>The other tabs on this page contain the full reference documentation:</p>
+  <ul>
+    <li><strong>Token Spec</strong> — All 39 tokens, architecture, decision trees, contrast pairings</li>
+    <li><strong>Usage Guide</strong> — Per-token usage rules, do/don't, state rules, identified gaps</li>
+    <li><strong>Decision Log</strong> — All 9 design decisions with rationale and industry benchmarks</li>
+    <li><strong>Legacy Audit</strong> — Full gap analysis of old system vs top 10 design systems</li>
+  </ul>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- TAB 2: TOKEN SPEC                                          -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="token-spec">
+
+  <h2>Architecture</h2>
+  <p>This library uses a <strong>two-tier token system</strong> — the same architecture used by Material Design 3, Polaris, Atlassian, and Carbon.</p>
+
+  <div class="arch-block">┌──────────────────────────────────────────────────┐
+│  TIER 1: PRIMITIVES                              │
+│  Raw color values. For theming only.             │
+│  33 tokens. NOT used directly in UI.             │
+├──────────────────────────────────────────────────┤
+│  TIER 2: SEMANTIC TOKENS                         │
+│  Role-based aliases. The only tokens exposed     │
+│  to designers and developers.                    │
+│  39 tokens across 8 groups.                      │
+├──────────────────────────────────────────────────┤
+│  TIER 3: COMPONENT TOKENS (future)               │
+│  Component-specific overrides.                   │
+│  Not in scope for Next.                          │
+└──────────────────────────────────────────────────┘</div>
+
+  <p><strong>Rule:</strong> Developers and designers use ONLY Tier 2 tokens. Tier 1 exists for theming infrastructure (e.g., dark mode swap).</p>
+
+  <hr>
+
+  <h2>Naming convention</h2>
+  <p>Pattern: <code>color.{family}.{role}</code></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Part</th><th>Values</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>color</code></td><td>always <code>color</code></td><td>Token category</td></tr>
+        <tr><td><code>family</code></td><td>brand, text, surface, border, positive, negative, warning, info, overlay</td><td>What system this color belongs to</td></tr>
+        <tr><td><code>role</code></td><td>primary, secondary, soft, subtle, tint, hover, pressed, default, inverse, etc.</td><td>What job the color performs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <h2>Token inventory — 39 semantic tokens</h2>
+
+  <!-- 1. Brand -->
+  <h3>1. Brand (7 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Role</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.brand.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></span></td><td>Interactive fills</td><td>Primary CTA button fill, checked checkbox/radio fill, selected state indicators, focused input stroke</td><td>Body text, large surface fills, decorative use</td></tr>
+        <tr><td><code>color.brand.primary-hover</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#C00080"></span><span class="hex-val">#C00080</span></span></td><td>Hover state</td><td>Primary CTA hover, brand interactive hover</td><td>Static elements, text</td></tr>
+        <tr><td><code>color.brand.primary-pressed</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A30070"></span><span class="hex-val">#A30070</span></span></td><td>Pressed state</td><td>Primary CTA pressed/active, tap feedback on mobile</td><td>Static elements, text</td></tr>
+        <tr><td><code>color.brand.primary-soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></span></td><td>Accent borders</td><td>Focus ring (all components), brand-accent borders</td><td>Text, primary fills</td></tr>
+        <tr><td><code>color.brand.primary-subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFCCED"></span><span class="hex-val">#FFCCED</span></span></td><td>Tinted surfaces</td><td>Secondary button pressed fill, brand-tinted card backgrounds</td><td>Primary fills, text</td></tr>
+        <tr><td><code>color.brand.primary-tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE5F6"></span><span class="hex-val">#FFE5F6</span></span></td><td>Lightest brand</td><td>Secondary/tertiary button hover fill, lightest brand background</td><td>Text, borders, strong emphasis</td></tr>
+        <tr><td><code>color.brand.secondary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#4A1535"></span><span class="hex-val">#4A1535</span></span></td><td>Deep accent</td><td>Premium surfaces, deep brand accent, partner headers</td><td>Primary interactive fills</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2. Text -->
+  <h3>2. Text (7 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Role</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.text.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></span></td><td>Primary content</td><td>Headings, body text, labels, input values, text on light colored fills</td><td>De-emphasized content, disabled text</td></tr>
+        <tr><td><code>color.text.secondary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#5C5570"></span><span class="hex-val">#5C5570</span></span></td><td>Supporting content</td><td>Descriptions, supporting text, placeholders, helpers, metadata, timestamps</td><td>Primary headings, interactive labels</td></tr>
+        <tr><td><code>color.text.disabled</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A7A1B2"></span><span class="hex-val">#A7A1B2</span></span></td><td>Disabled</td><td>All disabled text, disabled labels, disabled icons</td><td>Active or interactive text</td></tr>
+        <tr><td><code>color.text.inverse</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></span></td><td>On dark neutral fills</td><td>Text on dark neutral surfaces (surface.inverse, brand.secondary)</td><td>Text on light backgrounds</td></tr>
+        <tr><td><code>color.text.link</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></span></td><td>Inline links</td><td>Text links (default state)</td><td>Non-interactive text, headings</td></tr>
+        <tr><td><code>color.text.link-hover</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#C00080"></span><span class="hex-val">#C00080</span></span></td><td>Link hover</td><td>Text links on hover/focus</td><td>Default link state</td></tr>
+        <tr><td><code>color.text.on-color</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFFFFF;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FFFFFF</span></span></td><td>On colored fills</td><td>Text on any colored fill (brand.primary, positive, negative, info)</td><td>Text on light or dark neutral surfaces</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. Surface -->
+  <h3>3. Surface (5 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Role</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.surface.base</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></span></td><td>Default canvas</td><td>Page bg, card bg, input fill, modal bg, menu bg</td><td>Emphasis backgrounds, tinted states</td></tr>
+        <tr><td><code>color.surface.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></span></td><td>Tinted surface</td><td>Hover tint, disabled fill, section cards, option hover row</td><td>Full-page backgrounds</td></tr>
+        <tr><td><code>color.surface.muted</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></span></td><td>Grouped surface</td><td>Grouped sections, alternating rows, secondary cards</td><td>Borders, text, interactive fills</td></tr>
+        <tr><td><code>color.surface.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D7D3E0"></span><span class="hex-val">#D7D3E0</span></span></td><td>Emphasis surface</td><td>Stronger background differentiation, reserved</td><td>Primary backgrounds, large surfaces</td></tr>
+        <tr><td><code>color.surface.inverse</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></span></td><td>Dark surface</td><td>Dark sections, inverse hero, preview blocks, footers</td><td>Regular product screens</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 4. Border -->
+  <h3>4. Border (4 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Role</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.border.default</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D7D3E0"></span><span class="hex-val">#D7D3E0</span></span></td><td>Standard boundary</td><td>Input borders, card borders, list dividers, section separators</td><td>Small controls (20px) where it's too faint</td></tr>
+        <tr><td><code>color.border.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></span></td><td>Light boundary</td><td>Inner-card dividers, specimen borders, light separators</td><td>Primary form borders</td></tr>
+        <tr><td><code>color.border.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#665E75"></span><span class="hex-val">#665E75</span></span></td><td>Small control</td><td>Checkbox border (unchecked), radio border (unchecked), small controls</td><td>Large surface borders</td></tr>
+        <tr><td><code>color.border.brand</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></span></td><td>Brand boundary</td><td>Focus rings, brand-accent borders, selected card highlights</td><td>Default form borders</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>Size rule:</strong> Large containers (100px+) → <code>default</code>. Small controls (20px) → <code>strong</code>.</p>
+
+  <!-- 5. Positive -->
+  <h3>5. Positive (4 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.positive.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#008043"></span><span class="hex-val">#008043</span></span></td><td>Success text, icons, status indicators, do-card border</td></tr>
+        <tr><td><code>color.positive.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A5E5C6"></span><span class="hex-val">#A5E5C6</span></span></td><td>Success outline, light positive border</td></tr>
+        <tr><td><code>color.positive.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#C9F0DD"></span><span class="hex-val">#C9F0DD</span></span></td><td>Success card background</td></tr>
+        <tr><td><code>color.positive.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E1FAED"></span><span class="hex-val">#E1FAED</span></span></td><td>Success banner fill, lightest positive</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When:</strong> Payment successful, plan activated, recharge complete, connection active, validation passed.</p>
+
+  <!-- 6. Negative -->
+  <h3>6. Negative (6 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.negative.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></span></td><td>Error text/border, destructive button fill, required asterisk</td></tr>
+        <tr><td><code>color.negative.primary-hover</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#BF1D2A"></span><span class="hex-val">#BF1D2A</span></span></td><td>Destructive button hover</td></tr>
+        <tr><td><code>color.negative.primary-pressed</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A31824"></span><span class="hex-val">#A31824</span></span></td><td>Destructive button pressed</td></tr>
+        <tr><td><code>color.negative.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB3B9"></span><span class="hex-val">#FFB3B9</span></span></td><td>Destructive focus ring, negative outline</td></tr>
+        <tr><td><code>color.negative.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFCCD0"></span><span class="hex-val">#FFCCD0</span></span></td><td>Error card background</td></tr>
+        <tr><td><code>color.negative.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE5E7"></span><span class="hex-val">#FFE5E7</span></span></td><td>Error banner fill, lightest negative</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When:</strong> Validation error, payment failed, destructive action, connection lost, required field.</p>
+
+  <!-- 7. Warning -->
+  <h3>7. Warning (3 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.warning.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#B85C00"></span><span class="hex-val">#B85C00</span></span></td><td>Warning text on light backgrounds</td></tr>
+        <tr><td><code>color.warning.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFDA40"></span><span class="hex-val">#FFDA40</span></span></td><td>Warning icons, indicator fills</td></tr>
+        <tr><td><code>color.warning.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFF2BF"></span><span class="hex-val">#FFF2BF</span></span></td><td>Warning banner fill</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When:</strong> Low balance, plan expiring, action required before deadline, system maintenance, auto-pay not enabled, any non-error alert.</p>
+
+  <!-- 8. Info -->
+  <h3>8. Info (4 tokens)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.info.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#6D17CE"></span><span class="hex-val">#6D17CE</span></span></td><td>Info icon, badge, status indicator</td></tr>
+        <tr><td><code>color.info.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D6B2FF"></span><span class="hex-val">#D6B2FF</span></span></td><td>Info outline, light info border</td></tr>
+        <tr><td><code>color.info.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E4CCFF"></span><span class="hex-val">#E4CCFF</span></span></td><td>Info card background</td></tr>
+        <tr><td><code>color.info.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#F1E5FF"></span><span class="hex-val">#F1E5FF</span></span></td><td>Info banner fill, lightest info</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When:</strong> Helpful tips, system information, feature announcements, neutral status.</p>
+
+  <!-- 9. Overlay -->
+  <h3>9. Overlay (1 token)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.overlay.default</code></td><td><span class="swatch-cell"><span class="swatch" style="background:rgba(22,16,33,0.50)"></span><span class="hex-val">rgba(22,16,33, 0.50)</span></span></td><td>Modal backdrop, bottom sheet scrim, blocking overlays</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>Note:</strong> Skeleton loading states use existing surface tokens: <code>surface.muted</code> (#E8E4F0) for placeholder fills, <code>surface.subtle</code> (#F1EDF7) for shimmer highlights. Documented in component specs, not as separate tokens.</p>
+
+  <hr>
+
+  <!-- Decision trees -->
+  <h2>Decision trees</h2>
+
+  <h3>Which text color?</h3>
+  <div class="decision-tree">Is the text on a colored fill (brand, positive, negative, info)?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.on-color (#FFFFFF)
+
+Is the text on a dark neutral surface (surface.inverse, brand.secondary)?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.inverse (#FAF9FC)
+
+Is the text on a light colored surface (warning.subtle)?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.primary (#161021)
+
+Is the component disabled?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.disabled
+
+Is it a text link?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.link (hover: color.text.link-hover)
+
+Is it a heading, label, input value, or primary content?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.primary
+
+Is it a description, helper, placeholder, metadata, or timestamp?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.secondary</div>
+
+  <h3>Which surface color?</h3>
+  <div class="decision-tree">Standard page, card, input, or modal background?
+  <span class="arrow">→</span> color.surface.base
+
+Hover tint, disabled fill, or info card?
+  <span class="arrow">→</span> color.surface.subtle
+
+Grouped section or alternating row?
+  <span class="arrow">→</span> color.surface.muted
+
+Dark or inverse context?
+  <span class="arrow">→</span> color.surface.inverse</div>
+
+  <h3>Which border color?</h3>
+  <div class="decision-tree">Large container (input, card, menu: 100px+ wide)?
+  <span class="arrow">→</span> color.border.default
+
+Small control (checkbox, radio: 20px)?
+  <span class="arrow">→</span> color.border.strong
+
+Light inner separator?
+  <span class="arrow">→</span> color.border.subtle
+
+Brand-accented boundary or focus ring?
+  <span class="arrow">→</span> color.border.brand</div>
+
+  <h3>Which interaction state?</h3>
+  <div class="decision-tree">Element is interactive and hovered?
+  <span class="arrow">→</span> Use {family}-hover token
+    <span class="arrow">→</span> Brand CTA: color.brand.primary-hover
+    <span class="arrow">→</span> Destructive: color.negative.primary-hover
+    <span class="arrow">→</span> Secondary/tertiary: color.brand.primary-tint
+
+Element is pressed/active?
+  <span class="arrow">→</span> Use {family}-pressed token
+    <span class="arrow">→</span> Brand CTA: color.brand.primary-pressed
+    <span class="arrow">→</span> Destructive: color.negative.primary-pressed
+    <span class="arrow">→</span> Secondary/tertiary: color.brand.primary-subtle
+
+Element is focused?
+  <span class="arrow">→</span> Focus ring: color.border.brand (#FFB2E4)
+  <span class="arrow">→</span> Exception: Destructive → color.negative.soft (#FFB3B9)
+
+Element is disabled?
+  <span class="arrow">→</span> Surface: color.surface.muted
+  <span class="arrow">→</span> Content: color.text.disabled</div>
+
+  <hr>
+
+  <!-- Contrast pairings -->
+  <h2>Approved contrast pairings</h2>
+
+  <h3>Guaranteed safe (all pass WCAG AA 4.5:1)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Text</th><th>Surface</th><th>Ratio</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td>text.primary <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td><td>surface.base <span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></td><td>18.58:1</td><td>Default UI</td></tr>
+        <tr><td>text.primary <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td><td>surface.subtle <span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></td><td>16.10:1</td><td>Cards, sections</td></tr>
+        <tr><td>text.primary <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td><td>surface.muted <span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></td><td>14.85:1</td><td>Grouped areas</td></tr>
+        <tr><td>text.secondary <span class="swatch" style="background:#5C5570"></span><span class="hex-val">#5C5570</span></td><td>surface.base <span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></td><td>~5.5:1</td><td>Descriptions, metadata</td></tr>
+        <tr><td>text.inverse <span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></td><td>surface.inverse <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td><td>18.58:1</td><td>Dark sections</td></tr>
+        <tr><td>text.on-color <span class="swatch" style="background:#FFFFFF;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FFFFFF</span></td><td>brand.primary <span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></td><td>4.97:1</td><td>Primary CTA label</td></tr>
+        <tr><td>text.on-color <span class="swatch" style="background:#FFFFFF;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FFFFFF</span></td><td>negative.primary <span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></td><td>5.12:1</td><td>Destructive CTA label</td></tr>
+        <tr><td>text.on-color <span class="swatch" style="background:#FFFFFF;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FFFFFF</span></td><td>info.primary <span class="swatch" style="background:#6D17CE"></span><span class="hex-val">#6D17CE</span></td><td>8.04:1</td><td>Info badge label</td></tr>
+        <tr><td>text.primary <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td><td>warning.subtle <span class="swatch" style="background:#FFF2BF"></span><span class="hex-val">#FFF2BF</span></td><td>16.55:1</td><td>Warning banner text</td></tr>
+        <tr><td>warning.primary <span class="swatch" style="background:#B85C00"></span><span class="hex-val">#B85C00</span></td><td>warning.subtle <span class="swatch" style="background:#FFF2BF"></span><span class="hex-val">#FFF2BF</span></td><td>5.57:1</td><td>Warning badge text</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Pairings to avoid</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Text</th><th>Surface</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>text.secondary</td><td>surface.muted</td><td>Reduced contrast — test on budget screens</td></tr>
+        <tr><td>text.disabled</td><td>surface.muted</td><td>Very low contrast — disabled on tinted surface</td></tr>
+        <tr><td>text.inverse</td><td>surface.base</td><td>Invisible — white on near-white</td></tr>
+        <tr><td>brand.primary</td><td>brand.primary-tint</td><td>Needs validation — may be insufficient</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Mobile note</h3>
+  <p class="note">Brand primary (#D9008D) on white passes AA at 4.84:1 but fails AAA. For Wiom's target audience (lower-end Android, outdoor use, variable brightness), test critical small text on actual devices. Consider <code>color.brand.primary-hover</code> (#C00080, ~5.5:1) for small brand-colored text.</p>
+
+  <hr>
+
+  <!-- Gaps closed -->
+  <h2>Gaps closed from legacy audit</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Legacy gap</th><th>Status</th><th>How it's resolved</th></tr></thead>
+      <tbody>
+        <tr><td>GAP 1: No interaction states</td><td><span class="badge badge-fixed">Fixed</span></td><td>Added brand hover/pressed, negative hover/pressed. Disabled uses text.disabled + surface.muted</td></tr>
+        <tr><td>GAP 2: Numeric naming</td><td><span class="badge badge-fixed">Fixed</span></td><td>All tokens are role-based semantic names</td></tr>
+        <tr><td>GAP 3: Duplicate tokens</td><td><span class="badge badge-fixed">Fixed</span></td><td>Single primitive neutral/900; semantic aliases handle different roles</td></tr>
+        <tr><td>GAP 4: Hex mismatches</td><td><span class="badge badge-fixed">Fixed</span></td><td>Two-tier aliasing — semantic tokens reference primitives, drift impossible</td></tr>
+        <tr><td>GAP 5: No overlay/scrim</td><td><span class="badge badge-fixed">Fixed</span></td><td>Added overlay.default (single token, matches 10/10 systems)</td></tr>
+        <tr><td>GAP 6: No link states</td><td><span class="badge badge-fixed">Fixed</span></td><td>Added text.link, text.link-hover</td></tr>
+        <tr><td>GAP 7: Inconsistent scales</td><td><span class="badge badge-fixed">Fixed</span></td><td>Consistent primary/soft/subtle/tint pattern across all families</td></tr>
+        <tr><td>GAP 8: Dark mode readiness</td><td><span class="badge badge-ready">Ready</span></td><td>Two-tier architecture supports mode-swap by reassigning primitives</td></tr>
+        <tr><td>GAP 9: No skeleton/loading</td><td><span class="badge badge-fixed">Fixed</span></td><td>Uses surface.muted + surface.subtle (matches 6/10 systems)</td></tr>
+        <tr><td>GAP 10: Component tokens in foundation</td><td><span class="badge badge-fixed">Fixed</span></td><td>Foundation is role-only; component mappings live in component specs</td></tr>
+        <tr><td>GAP 11: Contrast documentation</td><td><span class="badge badge-fixed">Fixed</span></td><td>Approved pairing table with ratios; mobile-specific guidance</td></tr>
+        <tr><td>GAP 12: Missing on_* tokens</td><td><span class="badge badge-fixed">Fixed</span></td><td>Simplified to text.on-color (#FFF) + text.inverse (#FAF9FC). Matches Polaris/Carbon pattern</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- Implementation files -->
+  <h2>Implementation files</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>tokens/color-tokens.json</code></td><td>Machine-readable token definitions (Design Tokens Community Group format)</td></tr>
+        <tr><td><code>tokens/color-tokens.css</code></td><td>CSS custom properties for web implementation</td></tr>
+        <tr><td><code>tokens/v1-color-tokens-final.md</code></td><td>This specification document</td></tr>
+        <tr><td><code>docs/color-usage.md</code></td><td>Detailed usage rules and decision trees per token</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- Change log -->
+  <h2>Change log</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>2026-03-31</td><td>Next initial: 58 semantic + 33 primitives. All 12 audit gaps closed.</td></tr>
+        <tr><td>2026-04-01</td><td>Removed effects tokens (gold gradient, shadow color) from the design system.</td></tr>
+        <tr><td>2026-04-01</td><td>Simplified on-surface text tokens: 7 per-family tokens → 2 (text.inverse, text.on-color). See decision-log #002, #003.</td></tr>
+        <tr><td>2026-04-01</td><td>Simplified text hierarchy: 4 levels → 3. Removed text.tertiary; updated text.secondary to #5C5570. See decision-log #004.</td></tr>
+        <tr><td>2026-04-01</td><td>Merged border.focus into border.brand — same hex (#FFB2E4), same purpose. See decision-log #005.</td></tr>
+        <tr><td>2026-04-01</td><td>Merged Warning + Caution into single Warning family (yellow). Removed Caution entirely. Dropped orange #FF8000. See decision-log #006.</td></tr>
+        <tr><td>2026-04-01</td><td>Reduced overlay from 3 to 1 token (keep default only). Removed skeleton tokens. See decision-log #007.</td></tr>
+        <tr><td>2026-04-01</td><td>Changed brand.secondary from #443152 to #4A1535 (derived from primary, hue 328°). See decision-log #008.</td></tr>
+        <tr><td>2026-04-01</td><td>Removed Interactive group (5 tokens) — all were exact duplicates. See decision-log #009.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- TAB 3: USAGE GUIDE                                         -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="usage-guide">
+
+  <h2>How to use this guide</h2>
+  <ol>
+    <li>Identify the <strong>UI context</strong> (text, surface, border, icon, semantic feedback).</li>
+    <li>Look up the <strong>token</strong> mapped to that context.</li>
+    <li>Use the token — do not use raw hex values or custom colors.</li>
+  </ol>
+  <p class="note">If your use case is not covered here, do not invent a new color. Flag it as a gap for the design system team.</p>
+
+  <hr>
+
+  <!-- 1. Text colors -->
+  <h2><span class="section-num">1</span>Text colors</h2>
+  <p>Text is the most frequent color decision in any product screen. Every text element must use one of these tokens.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.text.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></span></td><td>Headings, body text, labels, input text, option labels, primary readable content</td><td>Placeholder text, disabled text, muted annotations</td></tr>
+        <tr><td><code>color.text.secondary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#5C5570"></span><span class="hex-val">#5C5570</span></span></td><td>Supporting descriptions, secondary information, page purpose text, placeholder text, helper text, prefix/suffix text, icons in default state, metadata, timestamps, annotations</td><td>Primary headings, interactive labels</td></tr>
+        <tr><td><code>color.text.disabled</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A7A1B2"></span><span class="hex-val">#A7A1B2</span></span></td><td>Disabled input text, disabled labels, disabled helper text, disabled icons, any text in a disabled component</td><td>Active or interactive text</td></tr>
+        <tr><td><code>color.text.inverse</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></span></td><td>Text on dark or brand-colored fills (primary button label, checked checkbox icon, radio dot, text on inverse surfaces)</td><td>Text on light backgrounds</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Text color decision tree</h3>
+  <div class="decision-tree">Is the text on a dark/brand fill?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.inverse
+
+Is the component disabled?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.disabled
+
+Is it a heading, label, input value, or primary content?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.primary
+
+Is it a supporting description, secondary explanation, placeholder, hint, annotation, helper text, or metadata?
+  <span class="arrow">→</span> Yes <span class="arrow">→</span> color.text.secondary</div>
+
+  <hr>
+
+  <!-- 2. Surface colors -->
+  <h2><span class="section-num">2</span>Surface colors</h2>
+  <p>Surfaces are backgrounds — the fill behind content. Every screen, card, input, modal, and section uses a surface color.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.surface.base</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></span></td><td>Page background, card background, input field fill, modal/sheet background, menu background, default canvas</td><td>Emphasis backgrounds, tinted states</td></tr>
+        <tr><td><code>color.surface.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></span></td><td>Disabled input fill, hover state background on small controls, section cards, option hover row</td><td>Primary page background</td></tr>
+        <tr><td><code>color.surface.muted</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></span></td><td>Grouped section backgrounds, alternating row tint, secondary card surfaces</td><td>Borders, text, or interactive fills</td></tr>
+        <tr><td><code>color.surface.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D7D3E0"></span><span class="hex-val">#D7D3E0</span></span></td><td>Currently unused as a fill in V1. Reserved for stronger background differentiation.</td><td>Primary backgrounds, large surfaces</td></tr>
+        <tr><td><code>color.surface.inverse</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></span></td><td>Dark specimen blocks, inverse hero areas, dark headers, footer backgrounds</td><td>Regular product screens</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Surface color decision tree</h3>
+  <div class="decision-tree">Is this a standard page, card, input, or modal background?
+  <span class="arrow">→</span> color.surface.base
+
+Is this a hover tint, disabled fill, or info card background?
+  <span class="arrow">→</span> color.surface.subtle
+
+Is this a grouped/alternating background needing slight contrast from subtle?
+  <span class="arrow">→</span> color.surface.muted
+
+Is this a dark or inverse context (preview, hero, dark header)?
+  <span class="arrow">→</span> color.surface.inverse</div>
+
+  <hr>
+
+  <!-- 3. Border colors -->
+  <h2><span class="section-num">3</span>Border colors</h2>
+  <p>Borders define boundaries — input outlines, card edges, dividers, and separators.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.border.default</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D7D3E0"></span><span class="hex-val">#D7D3E0</span></span></td><td>Input field stroke, card borders, menu borders, list dividers, section separators</td><td>Small interactive elements (20px) where too faint</td></tr>
+        <tr><td><code>color.border.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></span></td><td>Swatch card preview borders, specimen card borders, light separators within cards</td><td>Primary form field borders</td></tr>
+        <tr><td><code>color.border.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#665E75"></span><span class="hex-val">#665E75</span></span></td><td>Checkbox indicator border (unchecked), radio indicator border (unchecked), small controls</td><td>Large surface borders</td></tr>
+        <tr><td><code>color.border.brand</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></span></td><td>Brand-accented borders, selected card highlights, promotional card outlines</td><td>Default form borders</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>When to use default vs strong</h3>
+  <p>The key rule: <strong>element size determines border weight</strong>.</p>
+  <ul>
+    <li>Large containers (inputs, cards, menus: 100+ px wide) → <code>color.border.default</code></li>
+    <li>Small controls (checkbox, radio indicators: 20 px) → <code>color.border.strong</code></li>
+  </ul>
+  <p class="note"><code>color.border.default</code> (#D7D3E0) appears faint on small elements, reducing clickability signals.</p>
+
+  <hr>
+
+  <!-- 4. Brand colors -->
+  <h2><span class="section-num">4</span>Brand colors</h2>
+  <p>Brand colors express Wiom identity. They are used for interactive elements, selection states, and visual emphasis — not for large surface fills or body text.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th><th>Do NOT use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.brand.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></span></td><td>Primary button fill, secondary button stroke and label, tertiary button label, focused input stroke, checked controls</td><td>Body text, surface fills on large areas</td></tr>
+        <tr><td><code>color.brand.primary-soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></span></td><td>Focus ring color (all components), brand border token</td><td>Text, primary fills</td></tr>
+        <tr><td><code>color.brand.primary-subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFCCED"></span><span class="hex-val">#FFCCED</span></span></td><td>Secondary button pressed fill, brand-tinted card backgrounds</td><td>Primary button fill, text, focus rings</td></tr>
+        <tr><td><code>color.brand.primary-tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE5F6"></span><span class="hex-val">#FFE5F6</span></span></td><td>Secondary/tertiary button hover fill, lightest brand background tint</td><td>Text, borders, strong visual emphasis</td></tr>
+        <tr><td><code>color.brand.secondary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#4A1535"></span><span class="hex-val">#4A1535</span></span></td><td>Deep brand accent, premium surfaces, supporting dark tone alongside primary pink</td><td>Primary interactive fills</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Brand color hierarchy (strongest to lightest)</h3>
+  <div class="decision-tree">color.brand.primary        → fills, strokes, interactive signals     (strongest)
+color.brand.primary-soft   → focus rings, brand borders
+color.brand.primary-subtle → pressed states, tinted backgrounds
+color.brand.primary-tint   → hover states, lightest background       (lightest)</div>
+
+  <hr>
+
+  <!-- 5. Positive -->
+  <h2><span class="section-num">5</span>Semantic colors — Positive</h2>
+  <p>Used for success, completion, confirmation, and healthy states.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.positive.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#008043"></span><span class="hex-val">#008043</span></span></td><td>Success text/icon, positive status indicator, do-card border, success banner icon</td></tr>
+        <tr><td><code>color.positive.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A5E5C6"></span><span class="hex-val">#A5E5C6</span></span></td><td>Positive outline, light positive border</td></tr>
+        <tr><td><code>color.positive.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#C9F0DD"></span><span class="hex-val">#C9F0DD</span></span></td><td>Positive card background, subtle success surface</td></tr>
+        <tr><td><code>color.positive.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E1FAED"></span><span class="hex-val">#E1FAED</span></span></td><td>Success banner background, do-card fill, lightest positive background</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When to use Positive:</strong> Payment successful, plan activated, recharge complete, connection active, validation passed.</p>
+
+  <hr>
+
+  <!-- 6. Negative -->
+  <h2><span class="section-num">6</span>Semantic colors — Negative</h2>
+  <p>Used for errors, failures, destructive actions, and critical problems.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.negative.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></span></td><td>Error text, error border, destructive button fill, required field asterisk</td></tr>
+        <tr><td><code>color.negative.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB3B9"></span><span class="hex-val">#FFB3B9</span></span></td><td>Destructive button focus ring, negative outline</td></tr>
+        <tr><td><code>color.negative.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFCCD0"></span><span class="hex-val">#FFCCD0</span></span></td><td>Negative card background, subtle error surface</td></tr>
+        <tr><td><code>color.negative.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE5E7"></span><span class="hex-val">#FFE5E7</span></span></td><td>Error banner background, don't-card fill, lightest negative background</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When to use Negative:</strong> Validation error, destructive action confirmation, payment failed, connection lost, required field indicator.</p>
+
+  <hr>
+
+  <!-- 7. Warning -->
+  <h2><span class="section-num">7</span>Semantic colors — Warning</h2>
+  <p>Used for urgent attention, important notices, and blocking conditions that are not errors.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.warning.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#B85C00"></span><span class="hex-val">#B85C00</span></span></td><td>Warning icon, warning badge, attention-drawing indicators</td></tr>
+        <tr><td><code>color.warning.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#B85C00"></span><span class="hex-val">#B85C00</span></span></td><td>Warning text (on light backgrounds), warning badge text</td></tr>
+        <tr><td><code>color.warning.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE6CC"></span><span class="hex-val">#FFE6CC</span></span></td><td>Warning banner background, flagged item background</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When to use Warning:</strong> Low balance alert, plan expiring soon, action required before deadline, system maintenance notice.</p>
+
+  <hr>
+
+  <!-- 8. Info -->
+  <h2><span class="section-num">8</span>Semantic colors — Info</h2>
+  <p>Used for informational messages, highlights, and neutral system communications.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Hex</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.info.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#6D17CE"></span><span class="hex-val">#6D17CE</span></span></td><td>Info icon, info badge, informational status indicator</td></tr>
+        <tr><td><code>color.info.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D6B2FF"></span><span class="hex-val">#D6B2FF</span></span></td><td>Info outline, light informational border</td></tr>
+        <tr><td><code>color.info.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E4CCFF"></span><span class="hex-val">#E4CCFF</span></span></td><td>Info card background</td></tr>
+        <tr><td><code>color.info.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#F1E5FF"></span><span class="hex-val">#F1E5FF</span></span></td><td>Lightest info background, informational banner fill</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>When to use Info:</strong> Helpful tips and guidance, system information, feature announcements, neutral status.</p>
+
+  <hr>
+
+  <!-- 9. Interactive state colors -->
+  <h2><span class="section-num">9</span>Interactive state colors</h2>
+
+  <h3>Current V1 state: partially resolved</h3>
+  <p>The V1 color proposal defines base colors but <strong>does not yet define formal tokens for hover and pressed states</strong>. This gap is flagged across all component specs.</p>
+
+  <h3>How components currently handle interaction states</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>State</th><th>Current approach</th><th>Token used</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Hover (secondary/tertiary button)</strong></td><td>Brand tint fill</td><td><code>color.brand.primary-tint</code> <span class="swatch" style="background:#FFE5F6"></span><span class="hex-val">#FFE5F6</span></td></tr>
+        <tr><td><strong>Pressed (secondary/tertiary button)</strong></td><td>Brand subtle fill</td><td><code>color.brand.primary-subtle</code> <span class="swatch" style="background:#FFCCED"></span><span class="hex-val">#FFCCED</span></td></tr>
+        <tr><td><strong>Hover (primary button)</strong></td><td>Manual 10% darkening</td><td>No token — <strong>gap</strong></td></tr>
+        <tr><td><strong>Pressed (primary button)</strong></td><td>Manual 20% darkening</td><td>No token — <strong>gap</strong></td></tr>
+        <tr><td><strong>Hover (destructive button)</strong></td><td>Manual darkening</td><td>No token — <strong>gap</strong></td></tr>
+        <tr><td><strong>Hover (checkbox/radio unchecked)</strong></td><td>Subtle surface fill on indicator</td><td><code>color.surface.subtle</code> <span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></td></tr>
+        <tr><td><strong>Hover (checkbox/radio checked)</strong></td><td>Unresolved</td><td>No token — <strong>gap</strong></td></tr>
+        <tr><td><strong>Hover (select option row)</strong></td><td>Subtle surface fill</td><td><code>color.surface.subtle</code> <span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></td></tr>
+        <tr><td><strong>Focused (all components)</strong></td><td>Focus ring via drop shadow</td><td><code>color.brand.primary-soft</code> <span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></td></tr>
+        <tr><td><strong>Disabled (all components)</strong></td><td>40% opacity on base color</td><td>Opacity modifier, not a separate token</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Recommended future tokens (not yet in V1)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Proposed token</th><th>Purpose</th><th>Possible value</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.brand.primary-hover</code></td><td>Primary button hover fill</td><td>~10% darker than #D9008D</td></tr>
+        <tr><td><code>color.brand.primary-pressed</code></td><td>Primary button pressed fill</td><td>~20% darker than #D9008D</td></tr>
+        <tr><td><code>color.negative.primary-hover</code></td><td>Destructive button hover fill</td><td>~10% darker than #D92130</td></tr>
+        <tr><td><code>color.negative.primary-pressed</code></td><td>Destructive button pressed fill</td><td>~20% darker than #D92130</td></tr>
+        <tr><td><code>color.brand.primary-hover-checked</code></td><td>Checked checkbox/radio hover</td><td>~10% darker than #D9008D</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- 10. Focus ring -->
+  <h2><span class="section-num">10</span>Focus ring color mapping</h2>
+  <p>The focus ring is a critical accessibility signal. Every interactive component uses it.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Component context</th><th>Focus ring token</th><th>Hex</th></tr></thead>
+      <tbody>
+        <tr><td>Button (Primary, Secondary, Tertiary)</td><td><code>color.brand.primary-soft</code></td><td><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></td></tr>
+        <tr><td>Button (Destructive)</td><td><code>color.negative.soft</code></td><td><span class="swatch" style="background:#FFB3B9"></span><span class="hex-val">#FFB3B9</span></td></tr>
+        <tr><td>Input Field</td><td><code>color.brand.primary-soft</code></td><td><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></td></tr>
+        <tr><td>Checkbox</td><td><code>color.brand.primary-soft</code></td><td><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></td></tr>
+        <tr><td>Radio</td><td><code>color.brand.primary-soft</code></td><td><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></td></tr>
+        <tr><td>Select (trigger)</td><td><code>color.brand.primary-soft</code></td><td><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>Rule:</strong> All non-destructive components share the same brand-soft focus ring. Destructive components use negative-soft to maintain semantic association.</p>
+
+  <hr>
+
+  <!-- 11. Disabled state -->
+  <h2><span class="section-num">11</span>Disabled state color rules</h2>
+  <p>Disabled states follow a consistent pattern across all components.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Element type</th><th>Disabled treatment</th></tr></thead>
+      <tbody>
+        <tr><td>Text (labels, values, helpers)</td><td><code>color.text.disabled</code> <span class="swatch" style="background:#A7A1B2"></span><span class="hex-val">#A7A1B2</span></td></tr>
+        <tr><td>Fill (primary button, checked indicator)</td><td>Base color at <strong>40% opacity</strong></td></tr>
+        <tr><td>Stroke (input borders, button outlines)</td><td>Base color at <strong>40% opacity</strong></td></tr>
+        <tr><td>Surface (input container, unchecked indicator)</td><td><code>color.surface.subtle</code> <span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></td></tr>
+        <tr><td>Icons</td><td><code>color.text.disabled</code> <span class="swatch" style="background:#A7A1B2"></span><span class="hex-val">#A7A1B2</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>Rule:</strong> Disabled = no pointer events. The visual change signals that the element cannot be interacted with. Do not use disabled colors on active elements.</p>
+
+  <hr>
+
+  <!-- 12. Error state -->
+  <h2><span class="section-num">12</span>Error state color rules</h2>
+  <p>Error states follow a consistent pattern across form components.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Element</th><th>Error treatment</th><th>Token</th></tr></thead>
+      <tbody>
+        <tr><td>Border/stroke</td><td>Changes to negative primary</td><td><code>color.negative.primary</code> <span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></td></tr>
+        <tr><td>Stroke width</td><td>Thickens to <code>stroke.2</code></td><td>—</td></tr>
+        <tr><td>Error text (below field)</td><td>Negative primary</td><td><code>color.negative.primary</code> <span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></td></tr>
+        <tr><td>Trailing icon (if error icon shown)</td><td>Negative primary</td><td><code>color.negative.primary</code> <span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></td></tr>
+        <tr><td>Checkbox/radio indicator fill (checked + error)</td><td>Negative primary replaces brand</td><td><code>color.negative.primary</code> <span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></td></tr>
+        <tr><td>Label, input text</td><td><strong>No change</strong> — stays primary</td><td><code>color.text.primary</code> <span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>Rule:</strong> Error states change the boundary and supporting text, not the primary content. The user's input and labels remain readable.</p>
+
+  <hr>
+
+  <!-- 13. Contrast pairing rules -->
+  <h2><span class="section-num">13</span>Color combination rules (contrast pairing)</h2>
+  <p>These are the approved text-on-surface combinations. Do not invent new pairings.</p>
+
+  <h3>Safe pairings</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Text token</th><th>Surface token</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.text.primary</code></td><td><code>color.surface.base</code></td><td>Default product UI</td></tr>
+        <tr><td><code>color.text.primary</code></td><td><code>color.surface.subtle</code></td><td>Cards, tinted sections</td></tr>
+        <tr><td><code>color.text.secondary</code></td><td><code>color.surface.base</code></td><td>Descriptions, supporting text, helpers, placeholders, metadata</td></tr>
+        <tr><td><code>color.text.inverse</code></td><td><code>color.surface.inverse</code></td><td>Dark sections, dark headers</td></tr>
+        <tr><td><code>color.text.inverse</code></td><td><code>color.brand.primary</code></td><td>Primary button, checked controls</td></tr>
+        <tr><td><code>color.text.inverse</code></td><td><code>color.negative.primary</code></td><td>Destructive button</td></tr>
+        <tr><td><code>color.brand.primary</code></td><td><code>color.surface.base</code></td><td>Brand-colored labels (secondary button)</td></tr>
+        <tr><td><code>color.negative.primary</code></td><td><code>color.surface.base</code></td><td>Error text</td></tr>
+        <tr><td><code>color.warning.strong</code></td><td><code>color.warning.subtle</code></td><td>Warning badge/banner text on warning background</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Pairings to avoid</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Text</th><th>Surface</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><code>color.text.disabled</code></td><td><code>color.surface.muted</code></td><td>Very low contrast — avoid placing disabled text on tinted surfaces</td></tr>
+        <tr><td><code>color.text.inverse</code></td><td><code>color.surface.base</code></td><td>Invisible — white text on near-white background</td></tr>
+        <tr><td><code>color.brand.primary</code></td><td><code>color.brand.primary-tint</code></td><td>May have insufficient contrast — needs validation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>Accessibility note:</strong> Formal WCAG contrast ratio checks have not yet been run on these pairings. This is flagged as a Phase 4 validation task.</p>
+
+  <hr>
+
+  <!-- 14. Do / Don't -->
+  <h2><span class="section-num">14</span>Do / Don't</h2>
+
+  <div class="do-dont">
+    <div class="do-card">
+      <h4>Do</h4>
+      <ul>
+        <li>Always use a token — never pick a hex value directly.</li>
+        <li>Use <code>color.text.primary</code> for content the user must read to complete a task.</li>
+        <li>Use <code>color.text.secondary</code> for hints, supporting text, and metadata, not for important content the user must read to complete a task.</li>
+        <li>Use <code>color.brand.primary</code> only for interactive or brand-emphasis elements.</li>
+        <li>Use semantic colors (positive, negative, warning, info) only for their intended feedback meaning.</li>
+        <li>Keep disabled states consistent: 40% opacity on fills/strokes, <code>color.text.disabled</code> on text.</li>
+        <li>Use <code>color.border.strong</code> for small controls (20px), <code>color.border.default</code> for large containers.</li>
+      </ul>
+    </div>
+    <div class="dont-card">
+      <h4>Don't</h4>
+      <ul>
+        <li>Don't use <code>color.brand.primary</code> (#D9008D) as body text or large surface fills.</li>
+        <li>Don't use <code>color.text.primary</code> on dark/brand fills — use <code>color.text.inverse</code>.</li>
+        <li>Don't use <code>color.negative.primary</code> for non-error purposes (it is not a decorative red).</li>
+        <li>Don't use <code>color.surface.inverse</code> for regular product screens.</li>
+        <li>Don't add new colors without updating this guide and the token proposal.</li>
+        <li>Don't use opacity to create new unnamed color variants (except for disabled states).</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- 15. Gaps identified -->
+  <h2><span class="section-num">15</span>Gaps identified</h2>
+  <p>The following color needs are not yet covered by the V1 token proposal. These should be tracked for future resolution.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Gap</th><th>Context</th><th>Suggested resolution</th></tr></thead>
+      <tbody>
+        <tr><td>Hover token for <code>color.brand.primary</code></td><td>Primary button hover, checked control hover</td><td>Create <code>color.brand.primary-hover</code></td></tr>
+        <tr><td>Pressed token for <code>color.brand.primary</code></td><td>Primary button pressed</td><td>Create <code>color.brand.primary-pressed</code></td></tr>
+        <tr><td>Hover token for <code>color.negative.primary</code></td><td>Destructive button hover</td><td>Create <code>color.negative.primary-hover</code></td></tr>
+        <tr><td>Pressed token for <code>color.negative.primary</code></td><td>Destructive button pressed</td><td>Create <code>color.negative.primary-pressed</code></td></tr>
+        <tr><td>Link color</td><td>Text links (not yet spec'd)</td><td>Likely <code>color.brand.primary</code> but needs confirmation</td></tr>
+        <tr><td>Overlay / scrim color</td><td>Modal/sheet background overlay</td><td>Likely <code>color.surface.inverse</code> at 50% opacity</td></tr>
+        <tr><td>Skeleton / loading color</td><td>Skeleton screen placeholder fills</td><td>Likely <code>color.surface.muted</code> with shimmer</td></tr>
+        <tr><td>Icon primary color</td><td>Standalone decorative/navigation icons</td><td>Likely <code>color.text.secondary</code></td></tr>
+        <tr><td>Active/selected row background</td><td>Selected list item, active tab indicator</td><td>Likely <code>color.brand.primary-tint</code></td></tr>
+        <tr><td>Divider color</td><td>Horizontal/vertical dividers in lists</td><td>Likely <code>color.border.subtle</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- 16. Quick reference -->
+  <h2><span class="section-num">16</span>Token quick reference</h2>
+  <p>All 34 color tokens + 1 gradient in one table.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Token</th><th>Hex</th><th>Primary role</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>color.brand.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D9008D"></span><span class="hex-val">#D9008D</span></span></td><td>Interactive fills, strokes, brand accent</td></tr>
+        <tr><td>2</td><td><code>color.brand.primary-soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></span></td><td>Focus rings, brand borders</td></tr>
+        <tr><td>3</td><td><code>color.brand.primary-subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFCCED"></span><span class="hex-val">#FFCCED</span></span></td><td>Pressed states, tinted backgrounds</td></tr>
+        <tr><td>4</td><td><code>color.brand.primary-tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE5F6"></span><span class="hex-val">#FFE5F6</span></span></td><td>Hover states, lightest brand background</td></tr>
+        <tr><td>5</td><td><code>color.brand.secondary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#4A1535"></span><span class="hex-val">#4A1535</span></span></td><td>Deep brand accent, premium tone</td></tr>
+        <tr><td>6</td><td><code>color.text.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></span></td><td>Headings, labels, body text, input text</td></tr>
+        <tr><td>7</td><td><code>color.text.secondary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#5C5570"></span><span class="hex-val">#5C5570</span></span></td><td>Descriptions, supporting text, placeholders, helpers, metadata, default icons</td></tr>
+        <tr><td>8</td><td><code>color.text.disabled</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A7A1B2"></span><span class="hex-val">#A7A1B2</span></span></td><td>All disabled text and icons</td></tr>
+        <tr><td>9</td><td><code>color.text.inverse</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></span></td><td>Text on dark/brand fills</td></tr>
+        <tr><td>10</td><td><code>color.surface.base</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span><span class="hex-val">#FAF9FC</span></span></td><td>Page, card, input, modal backgrounds</td></tr>
+        <tr><td>11</td><td><code>color.surface.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#F1EDF7"></span><span class="hex-val">#F1EDF7</span></span></td><td>Hover tints, disabled fills, info cards</td></tr>
+        <tr><td>12</td><td><code>color.surface.muted</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></span></td><td>Grouped sections, alternating rows</td></tr>
+        <tr><td>13</td><td><code>color.surface.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D7D3E0"></span><span class="hex-val">#D7D3E0</span></span></td><td>Reserved — stronger differentiation</td></tr>
+        <tr><td>14</td><td><code>color.surface.inverse</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#161021"></span><span class="hex-val">#161021</span></span></td><td>Dark sections, previews, inverse hero</td></tr>
+        <tr><td>15</td><td><code>color.border.default</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D7D3E0"></span><span class="hex-val">#D7D3E0</span></span></td><td>Input borders, card borders, dividers</td></tr>
+        <tr><td>16</td><td><code>color.border.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E8E4F0"></span><span class="hex-val">#E8E4F0</span></span></td><td>Light separators, specimen borders</td></tr>
+        <tr><td>17</td><td><code>color.border.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#665E75"></span><span class="hex-val">#665E75</span></span></td><td>Small control borders (checkbox, radio)</td></tr>
+        <tr><td>18</td><td><code>color.border.brand</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB2E4"></span><span class="hex-val">#FFB2E4</span></span></td><td>Brand-accent borders</td></tr>
+        <tr><td>19</td><td><code>color.positive.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#008043"></span><span class="hex-val">#008043</span></span></td><td>Success text/icon</td></tr>
+        <tr><td>20</td><td><code>color.positive.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#A5E5C6"></span><span class="hex-val">#A5E5C6</span></span></td><td>Success outline</td></tr>
+        <tr><td>21</td><td><code>color.positive.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#C9F0DD"></span><span class="hex-val">#C9F0DD</span></span></td><td>Success card background</td></tr>
+        <tr><td>22</td><td><code>color.positive.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E1FAED"></span><span class="hex-val">#E1FAED</span></span></td><td>Success banner fill</td></tr>
+        <tr><td>23</td><td><code>color.negative.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D92130"></span><span class="hex-val">#D92130</span></span></td><td>Error text/border, destructive fill</td></tr>
+        <tr><td>24</td><td><code>color.negative.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFB3B9"></span><span class="hex-val">#FFB3B9</span></span></td><td>Destructive focus ring</td></tr>
+        <tr><td>25</td><td><code>color.negative.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFCCD0"></span><span class="hex-val">#FFCCD0</span></span></td><td>Error card background</td></tr>
+        <tr><td>26</td><td><code>color.negative.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE5E7"></span><span class="hex-val">#FFE5E7</span></span></td><td>Error banner fill</td></tr>
+        <tr><td>27</td><td><code>color.warning.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#B85C00"></span><span class="hex-val">#B85C00</span></span></td><td>Warning icon/badge</td></tr>
+        <tr><td>28</td><td><code>color.warning.strong</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#B85C00"></span><span class="hex-val">#B85C00</span></span></td><td>Warning text</td></tr>
+        <tr><td>29</td><td><code>color.warning.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#FFE6CC"></span><span class="hex-val">#FFE6CC</span></span></td><td>Warning banner fill</td></tr>
+        <tr><td>30</td><td><code>color.info.primary</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#6D17CE"></span><span class="hex-val">#6D17CE</span></span></td><td>Info icon/badge</td></tr>
+        <tr><td>31</td><td><code>color.info.soft</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#D6B2FF"></span><span class="hex-val">#D6B2FF</span></span></td><td>Info outline</td></tr>
+        <tr><td>32</td><td><code>color.info.subtle</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#E4CCFF"></span><span class="hex-val">#E4CCFF</span></span></td><td>Info card background</td></tr>
+        <tr><td>33</td><td><code>color.info.tint</code></td><td><span class="swatch-cell"><span class="swatch" style="background:#F1E5FF"></span><span class="hex-val">#F1E5FF</span></span></td><td>Info banner fill</td></tr>
+        <tr><td>34</td><td><code>effect.gold.gradient</code></td><td><span class="hex-val">#D5AF4A → #F2E983 → #D5B14B</span></td><td>Special premium/celebratory effect</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- TAB 4: DECISION LOG                                        -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="decision-log">
+
+  <h2>Decision Log</h2>
+  <p>This document records every design decision made during the V1 color system build, with rationale and references.</p>
+
+  <hr>
+
+  <!-- Decision 001 -->
+  <h3>Decision 001: Remove effects tokens from the design system</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Remove <code>effect.gold.gradient</code> and <code>effect.shadow.color</code> from the V1 color token system.</p>
+  <p><strong>Rationale:</strong> Effects are not standard color tokens. Gold gradient and shadow color do not fit the <code>color.{family}.{role}</code> naming convention and are special-purpose values that should be handled separately if needed in future.</p>
+  <p><strong>Impact:</strong> Token count reduced from 62 (58 semantic + 4 effects) to 58 semantic tokens. Primitive count reduced from 35 to 33.</p>
+
+  <hr>
+
+  <!-- Decision 002 -->
+  <h3>Decision 002: Simplify on-surface text tokens from 7 to 3</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Collapse 7 on-surface text tokens into 3 consolidated tokens:</p>
+  <ul>
+    <li><code>color.text.inverse</code> (#FAF9FC) — text on dark surfaces</li>
+    <li><code>color.text.on-color</code> (#FFFFFF) — text on any colored fill (brand, positive, negative, info)</li>
+    <li><code>color.text.on-color-dark</code> (#161021) — text on light colored fills (warning subtle, caution subtle)</li>
+  </ul>
+  <p><strong>Removed tokens:</strong></p>
+  <ul>
+    <li><code>color.text.on-brand</code> (#FFFFFF) → replaced by <code>color.text.on-color</code></li>
+    <li><code>color.text.on-positive</code> (#FAF9FC) → replaced by <code>color.text.on-color</code></li>
+    <li><code>color.text.on-negative</code> (#FFFFFF) → replaced by <code>color.text.on-color</code></li>
+    <li><code>color.text.on-info</code> (#FAF9FC) → replaced by <code>color.text.on-color</code></li>
+    <li><code>color.text.on-warning</code> (#161021) → replaced by <code>color.text.on-color-dark</code></li>
+    <li><code>color.text.on-caution</code> (#161021) → replaced by <code>color.text.on-color-dark</code></li>
+  </ul>
+  <p><strong>Rationale:</strong> The 7 per-family on-* tokens resolved to only 3 unique values (#FAF9FC, #FFFFFF, #161021). This pattern was borrowed from Material Design 3, which needs per-family tokens because its dynamic theming system can make each on-* value diverge independently. Wiom V1 does not have dynamic theming, so per-family tokens add complexity without value.</p>
+  <p>The simplified approach matches what the majority of top-10 design systems do:</p>
+  <ul>
+    <li><strong>Polaris (Shopify):</strong> Single <code>text-on-color</code> token for text on any colored surface</li>
+    <li><strong>Carbon (IBM):</strong> Single <code>$text-on-color</code> token</li>
+    <li><strong>Atlassian:</strong> <code>color.text.inverse</code> as the primary token for text on colored surfaces</li>
+    <li><strong>Primer (GitHub):</strong> <code>fgColor-onEmphasis</code> — one token for all emphasis surfaces</li>
+    <li><strong>Fluent 2 (Microsoft):</strong> <code>colorNeutralForegroundOnBrand</code> — minimal on-color tokens</li>
+  </ul>
+  <p><strong>Why #FFFFFF for on-color instead of #FAF9FC:</strong> On colored fills (brand.primary, negative.primary, etc.), maximum contrast matters more than warmth. Pure white (#FFFFFF) provides the strongest possible contrast. The off-white (#FAF9FC) is reserved for <code>text.inverse</code> on dark neutral surfaces where the warmer tone matches the brand palette.</p>
+  <p><strong>Impact:</strong> Text token count reduced from 13 to 9. Total semantic token count reduced from 58 to 54.</p>
+
+  <hr>
+
+  <!-- Decision 003 -->
+  <h3>Decision 003: Remove color.text.on-color-dark — use text.primary instead</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Remove <code>color.text.on-color-dark</code> (#161021) because it is the exact same hex value as <code>color.text.primary</code> (#161021). Dark text on light colored fills (warning.subtle, caution.subtle) should use <code>color.text.primary</code> — the token already exists and serves this purpose.</p>
+  <p><strong>Rationale:</strong> Two tokens with identical values (#161021) create confusion. A developer would need to decide between <code>text.primary</code> and <code>text.on-color-dark</code> when the answer is always the same color. <code>text.primary</code> already means "primary readable text on any light background" — light colored fills like warning.subtle and caution.subtle are light backgrounds.</p>
+  <p><strong>Impact:</strong> Text token count reduced from 9 to 8. Total semantic token count reduced from 54 to 53.</p>
+
+  <hr>
+
+  <!-- Decision 004 -->
+  <h3>Decision 004: Simplify text hierarchy from 4 levels to 3</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Remove <code>color.text.tertiary</code> and update <code>color.text.secondary</code> from #352D42 to #5C5570. The text system now has 3 levels: primary (#161021), secondary (#5C5570), disabled (#A7A1B2).</p>
+
+  <h4>Problem</h4>
+  <p>The 4-level text hierarchy had a critical perceptual spacing issue. The lightness gap between text.primary (#161021, L~6%) and text.secondary (#352D42, L~17%) was only 11% — below the 15-20% minimum threshold where humans can reliably perceive a difference. On lower-end mobile screens in outdoor light, primary and secondary were indistinguishable.</p>
+
+  <h4>Industry benchmark</h4>
+  <p>5 of the top 10 design systems use 3 text levels (no tertiary):</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>System</th><th>Primary L</th><th>Secondary L</th><th>Disabled L</th><th>Gap</th></tr></thead>
+      <tbody>
+        <tr><td>Polaris (Shopify)</td><td>~13%</td><td>~42%</td><td>~60%</td><td>29%</td></tr>
+        <tr><td>Material 3 (Google)</td><td>~13%</td><td>~40%</td><td>~62%</td><td>27%</td></tr>
+        <tr><td>Primer (GitHub)</td><td>~14%</td><td>~43%</td><td>~62%</td><td>29%</td></tr>
+        <tr><td>Fluent 2 (Microsoft)</td><td>~14%</td><td>~38%</td><td>~74%</td><td>24%</td></tr>
+        <tr><td>Spectrum (Adobe)</td><td>~11%</td><td>~43%</td><td>~70%</td><td>32%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>New values</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Old value</th><th>New value</th><th>Lightness</th></tr></thead>
+      <tbody>
+        <tr><td>text.primary</td><td>#161021</td><td>#161021 (unchanged)</td><td>~6%</td></tr>
+        <tr><td>text.secondary</td><td>#352D42</td><td><strong>#5C5570</strong></td><td>~35%</td></tr>
+        <tr><td>text.tertiary</td><td>#665E75</td><td><strong>removed</strong></td><td>—</td></tr>
+        <tr><td>text.disabled</td><td>#A7A1B2</td><td>#A7A1B2 (unchanged)</td><td>~65%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Perceptual spacing</h4>
+  <ul>
+    <li>Primary → Secondary: <strong>29% gap</strong> (was 11%) — matches Polaris/Primer exactly</li>
+    <li>Secondary → Disabled: <strong>30% gap</strong> (was 27%) — improved</li>
+    <li>Even distribution across the full lightness range</li>
+  </ul>
+
+  <p><strong>Wiom-specific rationale:</strong> Wiom serves lower/middle-income Indian households using budget Android phones, often outdoors. The 11% gap between the two most important text levels was a readability risk for this audience. The 3-level system with proper spacing is safer and simpler.</p>
+  <p><strong>Impact:</strong> Text tokens reduced from 8 to 7. Total semantic tokens: 52.</p>
+
+  <hr>
+
+  <!-- Decision 005 -->
+  <h3>Decision 005: Merge border.focus into border.brand</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Remove <code>color.border.focus</code> (#FFB2E4). Its use case (focus rings) is absorbed into <code>color.border.brand</code> (#FFB2E4) — same hex value, same purpose. A focus ring is a brand-accent border.</p>
+  <p><strong>Rationale:</strong> Two tokens with identical hex values (#FFB2E4) create confusion. "Focus" is a state, "brand" is an identity — the identity-level name is more correct because it covers both focus rings AND non-focus brand borders (selected cards, promotional outlines). Polaris and Atlassian name this at the identity level, not the state level.</p>
+  <p><strong>Impact:</strong> Border tokens reduced from 5 to 4. Total semantic tokens: 51.</p>
+
+  <hr>
+
+  <!-- Decision 006 -->
+  <h3>Decision 006: Merge Warning + Caution into single Warning family</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Remove the entire Caution family. Merge its best values into Warning. Switch Warning from orange to yellow (industry standard).</p>
+
+  <h4>What changed</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Old token</th><th>Old value</th><th>Action</th><th>New token</th><th>New value</th></tr></thead>
+      <tbody>
+        <tr><td>warning.primary</td><td><span class="swatch" style="background:#FF8000"></span> #FF8000</td><td>Dropped</td><td>—</td><td>Orange too close to red</td></tr>
+        <tr><td>warning.strong</td><td><span class="swatch" style="background:#B85C00"></span> #B85C00</td><td>Promoted</td><td>warning.primary</td><td><span class="swatch" style="background:#B85C00"></span> #B85C00</td></tr>
+        <tr><td>warning.subtle</td><td><span class="swatch" style="background:#FFE6CC"></span> #FFE6CC</td><td>Replaced</td><td>warning.subtle</td><td><span class="swatch" style="background:#FFF2BF"></span> #FFF2BF</td></tr>
+        <tr><td>caution.primary</td><td><span class="swatch" style="background:#806000"></span> #806000</td><td>Dropped</td><td>—</td><td>Redundant with warning.primary</td></tr>
+        <tr><td>caution.soft</td><td><span class="swatch" style="background:#FFDA40"></span> #FFDA40</td><td>Promoted</td><td>warning.soft</td><td><span class="swatch" style="background:#FFDA40"></span> #FFDA40</td></tr>
+        <tr><td>caution.subtle</td><td><span class="swatch" style="background:#FFF2BF"></span> #FFF2BF</td><td>Promoted</td><td>warning.subtle</td><td><span class="swatch" style="background:#FFF2BF"></span> #FFF2BF</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Rationale</h4>
+  <p><strong>0 out of 10</strong> benchmarked design systems have separate Warning and Caution families:</p>
+  <ul>
+    <li>Polaris (Shopify): single <code>warning</code> (yellow #B98900)</li>
+    <li>Carbon (IBM): single <code>$support-warning</code> (yellow #F1C21B)</li>
+    <li>Atlassian: single <code>color.warning</code> (yellow #E2B203)</li>
+    <li>Primer (GitHub): single <code>attention</code> (yellow #9A6700)</li>
+    <li>Material 3 (Google): no warning family at all — only <code>error</code></li>
+    <li>Fluent 2 (Microsoft): single <code>warning</code> (yellow #C4A000)</li>
+    <li>Spectrum (Adobe): single <code>notice</code> (orange #E68619)</li>
+    <li>Lightning (Salesforce): single <code>warning</code> (orange #DD7A01)</li>
+    <li>Base Web (Uber): single <code>warning</code> (yellow #FFC043)</li>
+    <li>Apple HIG: single system yellow</li>
+  </ul>
+  <p>The Warning/Caution split created 3 problems: (1) decision paralysis, (2) colors too close on budget phones, (3) no industry validation. Urgency levels should be communicated through content and context (copy, icons, placement), not through separate color families.</p>
+  <p>Orange (#FF8000) was dropped because it sits too close to red (#D92130) on the spectrum, causing potential confusion between warnings and errors.</p>
+  <p><strong>Impact:</strong> Warning tokens restructured (3 tokens, new values). Caution family removed (3 tokens). Net reduction: 6 → 3. Total semantic tokens: 48.</p>
+
+  <hr>
+
+  <!-- Decision 007 -->
+  <h3>Decision 007: Reduce overlay to 1 token, remove skeleton tokens</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Keep only <code>color.overlay.default</code> (rgba(22,16,33,0.50)). Remove overlay.subtle and overlay.heavy. Remove skeleton.base and skeleton.shimmer entirely.</p>
+
+  <h4>Overlay rationale</h4>
+  <p>10 out of 10 benchmarked systems use exactly 1 overlay token. No top system defines multiple overlay opacities as foundation tokens. A modal scrim is a fixed design decision — not a variable.</p>
+
+  <h4>Skeleton rationale</h4>
+  <p>skeleton.base (#E8E4F0) is identical to surface.muted (#E8E4F0). skeleton.shimmer (#F1EDF7) is identical to surface.subtle (#F1EDF7). Two tokens with zero unique value. Skeleton loading pattern documented in component specs: "Use surface.muted for placeholder fills, surface.subtle for shimmer highlights."</p>
+
+  <p><strong>Impact:</strong> Overlay reduced from 3 to 1 token (-2). Skeleton removed entirely (-2). Total reduction: -4 tokens. Semantic tokens: 44.</p>
+
+  <hr>
+
+  <!-- Decision 008 -->
+  <h3>Decision 008: Derive brand.secondary from primary instead of arbitrary purple</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Change <code>color.brand.secondary</code> from #443152 (hue 280°, purple) to <strong>#4A1535</strong> (hue 328°, dark plum derived from primary pink).</p>
+
+  <h4>Problem</h4>
+  <p>The current secondary (#443152) is at hue 280° — a 48° gap from the primary (#D9008D at hue 328°). It reads as a completely different color, not a darker variant of the brand.</p>
+
+  <h4>Comparison</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th>Current #443152</th><th>Proposed #4A1535</th></tr></thead>
+      <tbody>
+        <tr><td>Hue</td><td>280° (48° off primary)</td><td>328° (0° off primary)</td></tr>
+        <tr><td>Saturation</td><td>24% (very muted)</td><td>55% (rich, warm)</td></tr>
+        <tr><td>Lightness</td><td>25%</td><td>19% (darker, more premium)</td></tr>
+        <tr><td>Contrast vs white</td><td>11.64:1 AAA</td><td>12.8:1 AAA</td></tr>
+        <tr><td>Brand coherence</td><td>Feels like a different brand</td><td>Feels like the dark version of the same brand</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Result:</strong> The brand family becomes one unified hue (328°) at different lightness levels — secondary (#4A1535) → primary (#D9008D) → soft (#FFB2E4) → subtle (#FFCCED) → tint (#FFE5F6). A smooth gradient from dark to light, all sharing the same pink DNA.</p>
+
+  <p><strong>Impact:</strong> No token count change. Total system remains: 33 primitives + 44 semantic = 77 tokens.</p>
+
+  <hr>
+
+  <!-- Decision 009 -->
+  <h3>Decision 009: Remove the Interactive token group entirely</h3>
+  <p><strong>Date:</strong> 2026-04-01</p>
+  <p><strong>Decision:</strong> Remove all 5 Interactive tokens. The entire group is redundant — every token is an exact hex duplicate of a token that already exists in another group.</p>
+
+  <h4>The duplicates</h4>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Removed token</th><th>Hex</th><th>Already exists as</th></tr></thead>
+      <tbody>
+        <tr><td>interactive.default</td><td><span class="swatch" style="background:#D9008D"></span> #D9008D</td><td>brand.primary</td></tr>
+        <tr><td>interactive.hover</td><td><span class="swatch" style="background:#C00080"></span> #C00080</td><td>brand.primary-hover</td></tr>
+        <tr><td>interactive.pressed</td><td><span class="swatch" style="background:#A30070"></span> #A30070</td><td>brand.primary-pressed</td></tr>
+        <tr><td>interactive.disabled-surface</td><td><span class="swatch" style="background:#E8E4F0"></span> #E8E4F0</td><td>surface.muted</td></tr>
+        <tr><td>interactive.disabled-content</td><td><span class="swatch" style="background:#A7A1B2"></span> #A7A1B2</td><td>text.disabled</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>How interaction states are covered without the Interactive group</h4>
+  <ul>
+    <li>Brand CTA hover → brand.primary-hover</li>
+    <li>Brand CTA pressed → brand.primary-pressed</li>
+    <li>Destructive hover → negative.primary-hover</li>
+    <li>Destructive pressed → negative.primary-pressed</li>
+    <li>Secondary btn hover → brand.primary-tint</li>
+    <li>Secondary btn pressed → brand.primary-subtle</li>
+    <li>Focus ring → border.brand</li>
+    <li>Destructive focus → negative.soft</li>
+    <li>Disabled surface → surface.muted</li>
+    <li>Disabled content → text.disabled</li>
+  </ul>
+  <p>All 12 legacy audit interaction states remain fully covered. Zero functional loss.</p>
+  <p><strong>Impact:</strong> 5 tokens removed. Semantic tokens: 39. Total system: 33 primitives + 39 semantic = 72 tokens. Groups reduced from 9 to 8.</p>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- TAB 5: LEGACY AUDIT                                        -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="tab-content active" id="legacy-audit">
+
+  <h2>Legacy Color System — Comprehensive Audit</h2>
+  <p>This audit evaluates the legacy Wiom color system as it exists in Figma against best practices from the world's top 10 design systems: Material Design 3, Apple HIG, Fluent 2, Lightning, Carbon, Polaris, Primer, Spectrum, Atlassian, and Base Web.</p>
+
+  <hr>
+
+  <h2>Legacy system inventory</h2>
+
+  <h3>Primitives (32 tokens + 1 gradient)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Family</th><th>Tokens</th><th>Hex values</th></tr></thead>
+      <tbody>
+        <tr><td>Brand</td><td>brand/600, /300, /200, /100</td><td><span class="swatch" style="background:#D9008D"></span> #D9008D, <span class="swatch" style="background:#FFB2E4"></span> #FFB2E4, <span class="swatch" style="background:#FFCCED"></span> #FFCCED, <span class="swatch" style="background:#FFE5F6"></span> #FFE5F6</td></tr>
+        <tr><td>Secondary</td><td>brand/secondary</td><td><span class="swatch" style="background:#443152"></span> #443152</td></tr>
+        <tr><td>Gold</td><td>gold_gradient</td><td>#D5AF4A → #F2E983 → #D5B14B</td></tr>
+        <tr><td>Neutral</td><td>/900, /800, /700, /500, /300, /200, /100, /black, /white</td><td>9 stops from <span class="swatch" style="background:#161021"></span> #161021 to <span class="swatch" style="background:#FAF9FC;border-color:rgba(0,0,0,0.15)"></span> #FAF9FC</td></tr>
+        <tr><td>Positive</td><td>/600, /300, /200, /100</td><td><span class="swatch" style="background:#008043"></span> #008043 → <span class="swatch" style="background:#E1FAED"></span> #E1FAED</td></tr>
+        <tr><td>Negative</td><td>/600, /300, /200, /100</td><td><span class="swatch" style="background:#D92130"></span> #D92130 → <span class="swatch" style="background:#FFE5E7"></span> #FFE5E7</td></tr>
+        <tr><td>Warning</td><td>/700, /600, /500, /200</td><td><span class="swatch" style="background:#B85C00"></span> #B85C00 → <span class="swatch" style="background:#FFE6CC"></span> #FFE6CC</td></tr>
+        <tr><td>Info</td><td>/600, /300, /200, /100</td><td><span class="swatch" style="background:#6D17CE"></span> #6D17CE → <span class="swatch" style="background:#F1E5FF"></span> #F1E5FF</td></tr>
+        <tr><td>Caution</td><td>/800, /500, /200</td><td><span class="swatch" style="background:#806000"></span> #806000, <span class="swatch" style="background:#FFDA40"></span> #FFDA40, <span class="swatch" style="background:#FFF2BF"></span> #FFF2BF</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Semantic mappings (63 tokens across 5 tables)</h3>
+  <ul>
+    <li>Text color: 14 tokens</li>
+    <li>Background color: 22 tokens</li>
+    <li>Actions color: 6 tokens</li>
+    <li>Icon color: 8 tokens</li>
+    <li>Stroke color: 13 tokens</li>
+  </ul>
+
+  <hr>
+
+  <h2>Gap analysis: 12 critical findings</h2>
+
+  <!-- GAP 1 -->
+  <h3><span class="badge badge-p0">P0</span> GAP 1: No interaction state tokens</h3>
+  <p>The legacy system has zero tokens for hover, pressed, active, or focus states. Every top design system includes these.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>System</th><th>Approach</th></tr></thead>
+      <tbody>
+        <tr><td>Material Design 3</td><td>State layers — semi-transparent overlays at 8% (hover), 12% (focus), 12% (pressed)</td></tr>
+        <tr><td>Polaris (Shopify)</td><td>Explicit tokens: <code>interactive-hovered</code>, <code>interactive-pressed</code>, <code>interactive-active</code></td></tr>
+        <tr><td>Carbon (IBM)</td><td>Hover tokens per family: <code>$button-primary-hover</code>, <code>$button-danger-hover</code></td></tr>
+        <tr><td>Lightning (Salesforce)</td><td>State-specific design tokens: <code>color-background-button-brand-hover</code></td></tr>
+        <tr><td>Primer (GitHub)</td><td><code>bgColor-accent-emphasis</code> + hover/active variants</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Wiom's CTA button is brand/600 (#D9008D). When a user taps it on mobile, there's no defined pressed state. In a trust-heavy transactional flow (payments, plan selection), unresponsive-looking buttons erode user confidence.</p>
+
+  <!-- GAP 2 -->
+  <h3><span class="badge badge-p1">P1</span> GAP 2: Numeric naming is ambiguous and unscalable</h3>
+  <p>Token names like <code>brand/600</code>, <code>neutral/300</code>, <code>positive/200</code> don't communicate purpose. A developer looking at <code>neutral/300</code> (#D7D3E0) cannot know if it's meant for borders, disabled backgrounds, or surface fills — the same hex is used for all three roles in the semantic table.</p>
+  <p><strong>Recommendation:</strong> Maintain numeric primitives as the raw palette (useful for theming) but expose only role-based tokens to consumers. This is the two-tier model used by Material 3, Polaris, and Atlassian.</p>
+
+  <!-- GAP 3 -->
+  <h3><span class="badge badge-p2">P2</span> GAP 3: Neutral/900 and Neutral/black are duplicates</h3>
+  <p>Both <code>neutral/900</code> and <code>neutral/black</code> resolve to #161021. Same hex value, two tokens.</p>
+  <p><strong>Recommendation:</strong> Collapse into one primitive. Let <code>color.text.primary</code> and <code>color.surface.inverse</code> both reference it — duplication should live at the semantic layer, not the primitive layer.</p>
+
+  <!-- GAP 4 -->
+  <h3><span class="badge badge-p0">P0</span> GAP 4: Inconsistent semantic hex values across tables</h3>
+  <p>Critical finding — hex mismatch between primitives and semantic usage:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Token</th><th>Primitive palette hex</th><th>Semantic table hex</th></tr></thead>
+      <tbody>
+        <tr><td>negative/600</td><td><span class="swatch" style="background:#D92130"></span> #D92130</td><td><span class="swatch" style="background:#E01E00"></span> #E01E00</td></tr>
+        <tr><td>warning/600</td><td><span class="swatch" style="background:#FF8000"></span> #FF8000</td><td><span class="swatch" style="background:#FF7F00"></span> #FF7F00</td></tr>
+        <tr><td>negative/300</td><td><span class="swatch" style="background:#FFB3B9"></span> #FFB3B9</td><td><span class="swatch" style="background:#FFBDB3"></span> #FFBDB3</td></tr>
+        <tr><td>negative/100</td><td><span class="swatch" style="background:#FFE5E7"></span> #FFE5E7</td><td><span class="swatch" style="background:#FFE9E5"></span> #FFE9E5</td></tr>
+        <tr><td>negative/200</td><td><span class="swatch" style="background:#FFCCD0"></span> #FFCCD0</td><td><span class="swatch" style="background:#FFD3CC"></span> #FFD3CC</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">This means the semantic tables are NOT faithfully mapping to the primitive palette — 5+ semantic tokens use different hex values than their claimed primitive source. A developer building from the primitive palette will use #D92130 for error states while a designer using the semantic table will spec #E01E00.</p>
+
+  <!-- GAP 5 -->
+  <h3><span class="badge badge-p2">P2</span> GAP 5: No overlay / scrim / elevation color</h3>
+  <p>No tokens for modal overlays, bottom sheet scrims, or elevation shadows. Every Wiom transactional flow likely uses modals or bottom sheets.</p>
+
+  <!-- GAP 6 -->
+  <h3><span class="badge badge-p2">P2</span> GAP 6: No link / interactive text color</h3>
+  <p><code>link_label_fg</code> maps to brand/600 (#D9008D). But there is no visited, hover, or active state for links.</p>
+
+  <!-- GAP 7 -->
+  <h3><span class="badge badge-p1">P1</span> GAP 7: Warning has 4 stops including an unused token</h3>
+  <p>Warning has 4 stops: /700, /600, /500, /200. The /500 (#FFA400) appears in the primitive palette but is NOT mapped in any semantic table. Meanwhile, other families have inconsistent scale patterns.</p>
+  <p><strong>Recommendation:</strong> Adopt a consistent inner structure across ALL semantic families: <code>primary / soft / subtle / tint</code>.</p>
+
+  <!-- GAP 8 -->
+  <h3><span class="badge badge-p3">P3</span> GAP 8: No dark mode readiness</h3>
+  <p>The legacy system is light-mode only. While dark mode may not be a V1 priority, structuring tokens as aliases (semantic → primitive) now makes dark mode a token-swap later vs. a full redesign.</p>
+
+  <!-- GAP 9 -->
+  <h3><span class="badge badge-p2">P2</span> GAP 9: No skeleton / loading state color</h3>
+  <p>No token for skeleton screens or shimmer loading states. This is a critical mobile pattern, especially for Wiom's audience on variable-speed connections.</p>
+
+  <!-- GAP 10 -->
+  <h3><span class="badge badge-p1">P1</span> GAP 10: Hardcoded component-specific tokens in the semantic layer</h3>
+  <p>The semantic tables include tokens that are component-specific, not system-level: <code>bg_partner_header</code>, <code>bg_selection</code>, <code>stroke_selection</code>. Foundation tokens should describe roles, not screens.</p>
+
+  <!-- GAP 11 -->
+  <h3><span class="badge badge-p2">P2</span> GAP 11: Missing contrast documentation and pairing rules</h3>
+  <p>Some ratios are borderline: brand/600 (#D9008D) at 4.84:1 barely passes AA for normal text. For the Indian market with outdoor usage and lower-brightness devices, aim higher.</p>
+
+  <!-- GAP 12 -->
+  <h3><span class="badge badge-p1">P1</span> GAP 12: Semantic table inconsistencies in the "on_*" pattern</h3>
+  <p>The "on_*" text tokens are inconsistent. <code>on_brand_text</code> is missing entirely. <code>on_info_text</code> is mislabeled as "negative/white".</p>
+
+  <hr>
+
+  <!-- Summary -->
+  <h2>Summary: Priority matrix</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Priority</th><th>Gap</th><th>Impact</th><th>Effort</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-p0">P0</span></td><td>GAP 4: Hex mismatches between primitives and semantics</td><td>Causes visual inconsistency in production</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p0">P0</span></td><td>GAP 1: No interaction states</td><td>Blocks component design</td><td>Medium</td></tr>
+        <tr><td><span class="badge badge-p1">P1</span></td><td>GAP 2: Numeric naming</td><td>Slows adoption by new team members</td><td>Medium</td></tr>
+        <tr><td><span class="badge badge-p1">P1</span></td><td>GAP 7: Inconsistent family scales</td><td>Breaks mental model</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p1">P1</span></td><td>GAP 10: Component-specific tokens in foundation</td><td>Prevents clean scaling</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p1">P1</span></td><td>GAP 12: Missing/mislabeled on_* tokens</td><td>Causes incorrect contrast pairings</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p2">P2</span></td><td>GAP 3: Duplicate neutral/900 and neutral/black</td><td>Token confusion</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p2">P2</span></td><td>GAP 5: No overlay/scrim</td><td>Blocks modal/sheet design</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p2">P2</span></td><td>GAP 6: No link state tokens</td><td>Blocks interactive text design</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p2">P2</span></td><td>GAP 9: No skeleton/loading color</td><td>Blocks loading state design</td><td>Low</td></tr>
+        <tr><td><span class="badge badge-p2">P2</span></td><td>GAP 11: Contrast documentation gaps</td><td>Accessibility risk</td><td>Medium</td></tr>
+        <tr><td><span class="badge badge-p3">P3</span></td><td>GAP 8: No dark mode readiness</td><td>Future scaling limitation</td><td>Architecture decision</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <h2>How the V1 proposal addresses these gaps</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Gap</th><th>V1 status</th></tr></thead>
+      <tbody>
+        <tr><td>GAP 1: Interaction states</td><td><strong>Not addressed</strong> — still missing in V1 proposal</td></tr>
+        <tr><td>GAP 2: Naming</td><td><span class="badge badge-fixed">Fully addressed</span> — role-based naming adopted</td></tr>
+        <tr><td>GAP 3: Duplicates</td><td><span class="badge badge-fixed">Addressed</span> — collapsed into text.primary + surface.inverse</td></tr>
+        <tr><td>GAP 4: Hex mismatches</td><td><span class="badge badge-fixed">Addressed</span> — V1 uses single-source hex values</td></tr>
+        <tr><td>GAP 5: Overlay/scrim</td><td><strong>Not addressed</strong> — noted as a gap</td></tr>
+        <tr><td>GAP 6: Link states</td><td><strong>Not addressed</strong> — noted as a gap</td></tr>
+        <tr><td>GAP 7: Inconsistent scales</td><td><span class="badge badge-fixed">Addressed</span> — consistent primary/soft/subtle/tint pattern</td></tr>
+        <tr><td>GAP 8: Dark mode</td><td>Partially addressed — architecture supports it</td></tr>
+        <tr><td>GAP 9: Skeleton/loading</td><td><strong>Not addressed</strong> — noted as a gap</td></tr>
+        <tr><td>GAP 10: Component tokens</td><td><span class="badge badge-fixed">Addressed</span> — foundation is role-only</td></tr>
+        <tr><td>GAP 11: Contrast docs</td><td>Partially addressed — Color Usage page has approved pairings</td></tr>
+        <tr><td>GAP 12: on_* tokens</td><td>Partially addressed — V1 has text.inverse but not per-family on_*</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <h2>Recommended immediate actions</h2>
+
+  <div class="callout callout-negative">
+    <strong>Action 1: Fix hex mismatches NOW</strong> (before any further design work). Decide the correct hex for negative and warning families. The primitives and semantics must match.
+  </div>
+
+  <div class="callout callout-warning">
+    <strong>Action 2: Add interaction state tokens to V1.</strong> Minimum viable set: brand-hover, brand-pressed, negative-hover, focus-ring, disabled-surface, disabled-content.
+  </div>
+
+  <div class="callout callout-info">
+    <strong>Action 3: Add overlay tokens to V1.</strong> <code>color.overlay.default</code>, <code>color.overlay.subtle</code>.
+  </div>
+
+  <div class="callout callout-info">
+    <strong>Action 4: Add skeleton tokens to V1.</strong> <code>color.skeleton.base</code>, <code>color.skeleton.shimmer</code>.
+  </div>
+
+  <div class="callout callout-brand">
+    <strong>Action 5: Validate brand/600 contrast.</strong> At 4.84:1, brand/600 on white barely passes AA. Test on actual mobile devices. Consider a slightly darker variant for small text.
+  </div>
+
+  <p class="note"><em>Audit conducted against Figma file "Wiom DS - Next", legacy frames. Compared to published documentation of Material Design 3, Apple HIG, Fluent 2, Lightning, Carbon, Polaris, Primer, Spectrum, Atlassian DS, and Base Web.</em></p>
+
+</div>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer class="site-footer">
+  V1 — April 2026
+</footer>
+
+<!-- ════════════════ TAB SCRIPT ════════════════ -->
+<script>
+(function() {
+  const btns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-content');
+
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = btn.getAttribute('data-tab');
+
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+
+      btn.classList.add('active');
+      document.getElementById(target).classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+
+
+</body></html>
