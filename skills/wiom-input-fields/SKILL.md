@@ -1,11 +1,11 @@
 ---
 name: wiom-input-fields
-description: Input, Textarea, and Search bar for Wiom DS. Use when writing forms, entry flows, search UIs, or any field that captures user text. Tells you which component to pick, which State variant + boolean/text/swap properties to set, and which Wiom tokens back each part. Pairs with the wiom-design-foundations skill for token values.
+description: Input, Textarea, and OTP for Wiom DS. Use when writing forms, entry flows, OTP verification, search UIs, or any field that captures user text. Tells you which component to pick, which State variant + boolean/text/swap properties to set, and which Wiom tokens back each part. Pairs with the wiom-design-foundations skill for token values.
 ---
 
 # Wiom Input Fields
 
-Two components cover every form entry in Wiom: **Input** (single-line) and **Textarea** (multi-line). **Search bar** is a configuration of Input, not a separate component.
+Three components cover every form entry in Wiom: **Input** (single-line), **Textarea** (multi-line), and **OTP** (boxed code entry). **Search bar** is a configuration of Input, not a separate component.
 
 Always use these components for text entry. Do not draw custom fields — they will not be token-bound and will drift from the system.
 
@@ -15,8 +15,9 @@ Always use these components for text entry. Do not draw custom fields — they w
 
 | Need | Use | Key signal |
 |---|---|---|
-| Single-line text, number, email, password, phone, OTP, amount, code | **Input** | One row of text |
+| Single-line text, number, email, password, phone, amount, code | **Input** | One row of text |
 | Address, comment, description, reason, feedback | **Textarea** | Multiple lines, grows with content |
+| OTP / verification code entry (4 or 6 digits) | **OTP** | Boxed digits with auto-advance focus and timer |
 | Search across a list or screen | **Input** with leading `search` icon, trailing `cancel` | Filters/queries something |
 
 ---
@@ -36,7 +37,10 @@ Every instance carries a `State` variant. Pick based on the field's current UX m
 | `Disabled` | Field is truly inactive — user cannot edit AND cannot copy. Everything dims. |
 | `Read-only` | Display value user can read/copy but not edit (Customer ID, policy number, account number). Text stays text/primary. **Not the same as Disabled.** |
 
-`Read-only` is Input-only. Textarea has no `Read-only` or `Warning`.
+State coverage per component:
+- **Input** — all 8 states.
+- **Textarea** — 6 states. No `Warning`, no `Read-only`.
+- **OTP** — 6 states. No `Warning`, no `Read-only`.
 
 ---
 
@@ -79,6 +83,25 @@ Status icons (Error/Success/Warning) are **hardcoded per variant** — you do no
 
 No icon slots. No prefix/suffix.
 
+## OTP — properties
+
+Boxed code entry with auto-advance focus, hardcoded timer, and a digit-count toggle. Use for verification codes — don't fake it with a single Input.
+
+| Property | Type | Default | Purpose |
+|---|---|---|---|
+| `Title` | TEXT | "Enter OTP" | Label above the boxes |
+| `Show Title` | BOOL | true | Same rule as Input |
+| `6-digit` | BOOL | true | `true` = 6 boxes (48dp each). `false` = 4 boxes (76dp each). Container stays 328dp wide. |
+| `Show Helper` | BOOL | true | Reveal helper row |
+| `Helper` | TEXT | "Didn't get the code? Resend in 00:24" | Helper / resend prompt |
+| `State` | VARIANT | Default (6 values) | Default, Focused, Filled, Error, Success, Disabled |
+
+Hardcoded per-state:
+- **Focused** variant ships with a visible **timer `00:24`** inside the field — you don't toggle or theme it. The timer lives inside the component; treat it as part of the Focused appearance.
+- **Error / Success** status icons are hardcoded, same rule as Input.
+
+No prefix/suffix, no icon swap slots. No `Warning`, no `Read-only`.
+
 ---
 
 ## Configuration patterns
@@ -89,7 +112,7 @@ Quick configs for the most common fields. All values are property overrides on a
 `Title=Mobile number` · `Show Prefix=true` · `Prefix=+91` · `Helper="We'll send an OTP"`
 
 ### OTP entry
-`State=Focused` · `Title=Enter 6-digit OTP` · `Body=4 3 8` (space-separated digits) · `Show Trailing Icon=true` · `Trailing Icon=refresh` · `Show Counter=true` · `Counter=00:24` (timer)
+Use the dedicated **OTP** component, not Input. `Title=Enter OTP` · `6-digit=true` (or `false` for 4-digit) · `State=Focused` while awaiting input · `Helper="Didn't get the code? Resend in 00:24"`. The timer inside the boxes is part of the Focused variant — don't recreate it.
 
 ### Search bar
 `Show Leading Icon=true` · `Leading Icon=search` · `Show Trailing Icon=true` (only while there's a query) · `Trailing Icon=cancel` · `Helper="Try Wiom Pro"`
@@ -148,7 +171,8 @@ No shadow. No hardcoded hex. No fixed height anywhere — height hugs from paddi
 7. **Heights hug.** Wrap height = V padding + line-height. Textarea grows with content. Never set a fixed height on the wrap.
 8. **Width on mobile = fill container** (usually 16px side margins). 328 is the reference width on a 360-wide screen.
 9. **Icons swap, they don't stack.** Use `Leading Icon` / `Trailing Icon` INSTANCE_SWAP to pick the right glyph from Material Symbols Rounded. Do not draw a second icon on top.
-10. **Counter only where it aids the user.** OTP timers, character limits on textareas, chat drafts. Don't show it on short free-text fields.
+10. **Counter only where it aids the user.** Character limits on textareas, chat drafts. Don't show it on short free-text fields. OTP has its own built-in timer — don't stack a counter on top.
+11. **OTP is its own component.** Use `Field / OTP` for verification codes. Don't fake a 4/6-digit flow with a single Input + spaces in Body.
 
 ---
 
@@ -162,6 +186,8 @@ No shadow. No hardcoded hex. No fixed height anywhere — height hugs from paddi
 - Hiding Title with `Show Title=false` just to save vertical space — accessibility suffers.
 - Setting a fixed height on a wrap override — defeats the hug layout.
 - Recoloring the label per instance — the state-driven color ramp exists for a reason.
+- Building OTP as an Input with "4 3 8" spaced digits in `Body` — there's a dedicated OTP component with correct per-digit focus, box sizing, and timer.
+- Redrawing the OTP timer on top of the Focused variant — it's already baked in.
 
 ---
 
