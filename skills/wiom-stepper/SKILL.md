@@ -204,10 +204,11 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 | Title typography | `type/label/md` (14sp SemiBold) |
 | Title color (Active / Completed / Error) | `color/text/primary` |
 | Title color (Upcoming) | `color/text/secondary` |
+| Title → Description gap | `space/8` (matches card recipe: title → subtitle = 8px) |
 | Description typography | `type/body/sm` (12sp Regular, 16 LH) |
 | Description color | `color/text/secondary` |
-| Action top padding | `space/8` |
-| Content bottom padding | `space/24` (gap to next step) |
+| Description → Action gap (ActionWrap paddingTop) | `space/16` (matches card recipe: Content → CTA = 16px) |
+| Content bottom padding (gap to next step) | `space/24` (comfortable section gap) |
 
 No shadows. No hardcoded hex. No fixed inner widths inside StepItem — content `FILL`s the row width minus rail; action `FILL`s content width.
 
