@@ -82,13 +82,16 @@ Exception: Acknowledge CTA body text uses 14sp Regular 400 (`type.body.m` / `Wio
 | Focused | `color.negative.primary` #D92130 | `color.text.on-color` #FFF | Ring: `color.negative.soft` #FFB3B9 |
 | Loading | `color.negative.primary` #D92130 | hidden | Spinner: white |
 
-**Acknowledge**
+**Acknowledge (Compound — checkbox row + Primary CTA paired together)**
 
-| State | Checkbox | Text Color | Behavior |
-|-------|----------|------------|----------|
-| Unchecked | `color.border.strong` #665E75 border, no fill | `color.text.primary` #161021 | Primary CTA = disabled |
-| Checked | `color.brand.primary` #D9008D fill, white checkmark | `color.text.primary` #161021 | Primary CTA = enabled |
-| Disabled | 40% opacity | `color.text.disabled` #A7A1B2 | — |
+| State | Checkbox | Text Color | Paired Primary CTA |
+|-------|----------|------------|-------------------|
+| Unchecked | `color.border.strong` #665E75 border, no fill | `color.text.primary` #161021 | Disabled (`surface.muted` fill, `text.disabled`) |
+| Checked | `color.brand.primary` #D9008D fill, white checkmark | `color.text.primary` #161021 | Enabled (`brand.primary` fill, `text.on-color`) |
+| Disabled | 40% opacity | `color.text.disabled` #A7A1B2 | Disabled (`surface.muted` fill, `text.disabled`) |
+
+**Figma structure:** Acknowledge is a compound component — it includes both the checkbox row AND the paired Primary CTA in one component. No need to manually place two components. Checkbox row + space/8 gap + Primary CTA (48px) = 80px total height.
+**Code structure:** In code, Acknowledge is still two separate composables (WiomAcknowledgeRow + WiomButton) wired by shared state. The Figma compound is for visual design convenience only.
 
 ---
 
@@ -100,7 +103,7 @@ Exception: Acknowledge CTA body text uses 14sp Regular 400 (`type.body.m` / `Wio
 | **Secondary** | Alternate action alongside Primary | "Cancel", "वापस जाएं" |
 | **Tertiary** | Low-emphasis dismiss or soft action | "ठीक है", "Maybe Later" |
 | **Destructive** | Irreversible/danger action | "Delete", "Remove Plan" |
-| **Acknowledge** | Checkbox + 1st person confirmation before critical action | "मैंने सभी जानकारी सही दी है" |
+| **Acknowledge** | Compound: checkbox + 1st person text + paired Primary CTA (disabled until checked) | "मैंने सभी जानकारी सही दी है" + "रिचार्ज करें" |
 
 ### Icon Variants (Primary, Secondary, Tertiary, Destructive only)
 
