@@ -1,5 +1,5 @@
 ---
-name: wiom-list-item
+name: list-item
 description: Wiom List Item component spec, usage patterns, and Figma↔Kotlin code mapping. Use this skill EVERY TIME you work with list rows, settings lists, selection lists, toggle lists, or any Figma design containing list-row patterns from the Wiom DS - Next file. Trigger when user mentions "list item", "list row", "settings list", "selection list", "toggle list", "list cell", or shares a Figma design with stacked rows. Also trigger when implementing list UI in Kotlin/Compose for Wiom Android app.
 ---
 
@@ -51,8 +51,10 @@ The previous version had **288 variants** across 3 sets (Content / Selection / T
 |---|---|---|---|
 | `Type` | **Variant** | `Default` | Dropdown — Default (icon + chevron) · Checkbox · Radio · Switch (icon + toggle) |
 | `Pressed` | Boolean | `false` | Toggles `surface/subtle` background overlay (tap feedback) |
+| `Selected` | Boolean | `false` | **(v3.1+)** Toggles `surface/selected` background overlay. In v3.2 the brand dot was removed — the bg overlay is the sole selection signal. Skipped for Switch type. |
 | `Disabled` | Boolean | `false` | Toggles `surface/base @ 62%` overlay on top — fades content to ~38% |
 | `Has Leading` | Boolean | `true` | Show/hide the leading slot (default-type only — for Checkbox/Radio the leading IS the control) |
+| `Has Trailing Icon` | Boolean | `true` | **(v3.1)** Show/hide the trailing chevron (Default type only — Switch's trailing must stay visible). Set `false` for menu rows and status rows. |
 | `Has Secondary` | Boolean | `false` | Show/hide the secondary text line |
 | `Has Trailing Meta` | Boolean | `false` | Show/hide trailing meta text |
 | `Primary Text` | Text | `"Primary text"` | Per-instance primary text |
@@ -100,6 +102,9 @@ Default-type leading icon and chevron trailing are right-click swappable to any 
 | Selection row (multi) | Checkbox | (Checkbox is the leading) | n/a |
 | Selection row (single) | Radio | (Radio is the leading) | n/a |
 | Settings toggle | Switch | category icon (right-click swap) | (Switch is the trailing) |
+| Dropdown menu row (single-select) | Default | (icon optional) | `Has Trailing Icon = false` + `Selected = true` for the chosen row |
+| Dropdown menu row (multi-select) | Checkbox | (Checkbox is the leading) | n/a |
+| Dropdown menu row (action) | Default | (no leading) | `Has Trailing Icon = false` |
 
 ## Common usage patterns
 
@@ -278,6 +283,8 @@ This skill works alongside:
 
 ## Change history
 
+- **v3.2 (2026-04-15):** Removed the brand dot from Default+Selected — selection is signalled by the `surface/selected` bg overlay alone. Simpler, avoids competing with trailing chevron when a row has both.
+- **v3.1 (2026-04-15):** Added `Selected` boolean (full-frame `surface/selected` overlay on Default/Checkbox/Radio + brand dot 8×8 in trailing slot of Default type; skipped on Switch). Added `Has Trailing Icon` boolean (default true) to hide the chevron — wired on Default variant only because Switch's trailing slot contains the toggle and must stay visible. Both additions enable List Item to be reused as the bottom-sheet menu row (no separate Menu Item component needed).
 - **v3 (2026-04-14):** Added `Type` variant (Default/Checkbox/Radio/Switch). Each non-Default Type uses real component instances (Checkbox, Radio, Switch from their respective pages) with their `Selection` and `State` properties bubbled up to the List Item instance. Radio uses `Show Label = false` (added to source Radio component). Component set ID: `1655:487`.
 - **v2:** Single COMPONENT (not a SET) with 0 variants — Pressed/Disabled as boolean overlays. Replaced by v3.
 - **v1:** 6-variant set (State × Compact). Replaced by v2.

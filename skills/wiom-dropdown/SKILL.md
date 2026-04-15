@@ -5,16 +5,17 @@ description: Wiom Dropdown component spec, usage patterns, and Figma↔Kotlin co
 
 # Wiom Dropdown — Component Skill
 
-One unified component covering both the closed trigger and the open menu. The `State` variant toggles between Collapsed (Default / Filled / Error / Disabled) and Expanded (menu visible beneath the field). Menu rows are List Item instances — no separate Menu Item component.
+Select trigger for choosing from a list. Tapping the trigger opens a **bottom sheet** (see `wiom-bottomsheet`) that contains the options — this component covers **only the closed trigger** (Default / Filled / Error / Disabled). There is no Expanded state inside the Dropdown itself.
 
 ## Where it lives
 
 - **Figma file:** Wiom DS - Next (fileKey `ZPErh7YU7omdbyy2o268Qo`)
 - **Dropdown page:** `Saurav / Dropdown` (`1803:476`) ← **ALL Dropdown changes happen on this page**
-  - `Dropdown` set ID `1821:137` (15 variants — Type × State, with Expanded variants containing a built-in menu)
+  - `Dropdown` set ID `1821:137` (12 variants — 3 Types × 4 States)
   - Documentation frame: `1969:157`
 - **List Item page:** `Saurav / List items` (`1554:1867`) ← **ALL List Item changes happen on this page**
-  - List Item set ID `1655:487` (4 Type variants, v3.1 with Selected and Has Trailing Icon booleans)
+  - List Item set ID `1655:487` (4 Type variants, v3.2 — Selected boolean uses bg overlay only, no dot)
+- **Bottom sheet:** for the open menu, use the `wiom-bottomsheet` skill — options live inside a bottom sheet built from List Item rows.
 
 > **Rules (hard):**
 > - Field changes → `await figma.setCurrentPageAsync(<Saurav / Dropdown>)`
@@ -25,15 +26,13 @@ One unified component covering both the closed trigger and the open menu. The `S
 
 | Decision | Rationale |
 |---|---|
-| One unified component (not Field + Menu separately) | The Expanded state IS just Collapsed + menu beneath. A single component lets designers preview both states from one library entry and avoids "which Menu pairs with which Field" confusion. |
-| Type×State variants (15 = 3×5) | State changes need color + structure changes — booleans only drive visibility. Mirrors existing `Field / Input` pattern. |
+| **Trigger-only component — no Expanded state** | Options are rendered in a bottom sheet (mobile-first pattern). Removing Expanded variants keeps the component small and avoids duplicating List Item rendering logic inside the Dropdown. |
+| Type×State variants (12 = 3×4) | State changes need color + structure changes — booleans only drive visibility. Mirrors existing `Field / Input` pattern. |
 | Booleans for slot visibility (Has Label / Has Helper Text / Has Leading Icon) | Slots are pure visibility toggles → booleans avoid variant explosion. Same hybrid as List Item. |
-| **Reuse List Item for menu rows inside Expanded** | List Item already has Type=Default/Checkbox/Radio with the same nested-control bubbling. Adding `Selected` (bg + dot) and `Has Trailing Icon` booleans was cheaper than building a parallel component. |
-| Built-in menu in Expanded variants (4 rows per Type) | Designers get a working preview with one variant pick. To customise (more rows, different items), detach or override per-instance. |
+| **Bottom sheet for options (not a popover menu)** | Matches the mobile context. Bottom sheets are easier to hit with a thumb, scroll naturally, and already exist in the system as `wiom-bottomsheet`. |
 
 ## Anatomy
 
-### Collapsed (Default / Filled / Error / Disabled)
 ```
 [Label]                              ← optional, type/label/md
 ┌─────────────────────────────────┐
@@ -42,22 +41,9 @@ One unified component covering both the closed trigger and the open menu. The `S
 [Helper text]                        ← optional, type/meta/xs
 ```
 
-### Expanded (= Collapsed + Menu beneath)
-```
-[Label]
-┌─────────────────────────────────┐  brand border, chevron up
-│ [icon] Value                 [▴] │
-└─────────────────────────────────┘
-[Helper text]
-┌─────────────────────────────────┐  surface/base, shadow/lg
-│ [leading]  Item text  [meta]  ●  │  ← List Item (Selected=true)
-│ ───────────────────────────────  │
-│ [leading]  Item text             │  ← List Item (Selected=false)
-│ ...                              │
-└─────────────────────────────────┘
-```
+Tap → opens a **bottom sheet** containing List Item rows. The trigger itself stays in its Collapsed state.
 
-**Width:** 328 default · **Field height:** 48 · **Border radius:** `radius/medium` (12) · **Field→menu gap:** 8dp
+**Width:** 328 default · **Field height:** 48 · **Border radius:** `radius/medium` (12)
 
 | Slot | Default | Token |
 |---|---|---|
@@ -71,8 +57,8 @@ One unified component covering both the closed trigger and the open menu. The `S
 
 | Property | Type | Default | What it does |
 |---|---|---|---|
-| `Type` | **Variant** | `Single Select` | Single Select · Multi Select · Action Menu (changes default placeholder + value text + the rows shown when Expanded) |
-| `State` | **Variant** | `Default` | Default · Filled · Error · Disabled · Expanded (drives bg, border, chevron color, helper color, menu visibility) |
+| `Type` | **Variant** | `Single Select` | Single Select · Multi Select · Action Menu (changes default placeholder + value text) |
+| `State` | **Variant** | `Default` | Default · Filled · Error · Disabled (drives bg, border, chevron color, helper color) |
 | `Has Label` | Boolean | `true` | Show/hide label above |
 | `Has Helper Text` | Boolean | `true` | Show/hide helper below |
 | `Has Leading Icon` | Boolean | `false` | Show/hide leading icon (right-click swap to any icon) |
@@ -83,18 +69,16 @@ One unified component covering both the closed trigger and the open menu. The `S
 
 ### State variant — visual rules
 
-| State | Bg | Border | Chevron | Helper | Menu |
-|---|---|---|---|---|---|
-| Default | `color/surface/subtle` | `color/border/default` `stroke/small` (1px) | secondary | secondary | hidden |
-| Filled | `color/surface/base` | `color/border/strong` `stroke/small` (1px) | secondary | secondary | hidden |
-| Error | `color/surface/base` | `color/negative/primary` `stroke/medium` (2px) | negative | negative | hidden |
-| Disabled | `color/surface/subtle` | `color/border/default` `stroke/small` (1px) | disabled | disabled | hidden |
-| **Expanded** | `color/surface/base` | `color/brand/primary` `stroke/medium` (2px) | brand, rotated 180° | secondary | **visible (4 rows by default)** |
+| State | Bg | Border | Chevron | Helper |
+|---|---|---|---|---|
+| Default | `color/surface/subtle` | `color/border/default` `stroke/small` (1px) | secondary | secondary |
+| Filled | `color/surface/base` | `color/border/strong` `stroke/small` (1px) | secondary | secondary |
+| Error | `color/surface/base` | `color/negative/primary` `stroke/medium` (2px) | negative | negative |
+| Disabled | `color/surface/subtle` | `color/border/default` `stroke/small` (1px) | disabled | disabled |
 
 **Foundation alignment notes:**
 - Disabled bg uses `surface/subtle` (per cross-foundation rule #10) — disabled-ness is signalled by text/icon colors, not by a separate disabled bg.
-- Active border (Expanded) and Error border are `stroke/medium` (2px) — matches the `Field / Input` convention.
-- Menu uses `shadow/md` (foundations default for dropdowns) with **no border** (rule #1: never both shadow and border).
+- Error border is `stroke/medium` (2px) — matches the `Field / Input` convention.
 
 ## Menu rows — use the List Item component
 
@@ -116,42 +100,36 @@ For dropdown menu rows, instance the existing List Item (`1655:487`) and overrid
 > nested?.setProperties({ Selection: 'Checked' /* or 'Selected' */ });
 > ```
 
-## Menu container (built into Expanded variants)
+## Open state → Bottom sheet
 
-The menu sits inside the 3 Expanded variants (one per Type). It's a card with `surface/base` bg, `radius/medium`, `stroke/small` border, `shadow/lg` effect, 4dp top/bottom padding. Inside: 4 List Item instances with 1px inset dividers (16dp inset).
+Tapping a Dropdown opens a bottom sheet (see `wiom-bottomsheet`) containing the options. The bottom sheet's rows are List Item instances:
 
-Default contents per Type:
-| Type | Row component | Sample items |
-|---|---|---|
-| Single Select Expanded | List Item Type=Default, `Has Leading=false`, `Has Trailing Icon=false` | English, Hindi (Selected=true), Telugu, Tamil |
-| Multi Select Expanded | List Item Type=Checkbox | Push notifications (✓), Email updates, SMS alerts (✓), Weekly digest |
-| Action Menu Expanded | List Item Type=Default, `Has Leading=false`, `Has Trailing Icon=false`, no Selected | Edit, Duplicate, Share, Delete |
+| Dropdown Type | Bottom sheet row settings |
+|---|---|
+| Single Select | List Item `Type=Default`, `Has Leading=false`, `Has Trailing Icon=false`, `Selected=true` on the chosen row (bg overlay; no dot in v3.2) |
+| Multi Select | List Item `Type=Checkbox`, bubble nested Selection Checked/Unchecked |
+| Action Menu | List Item `Type=Default`, `Has Leading=false`, `Has Trailing Icon=false`, `Selected=false` for all |
 
-To customise:
-- Change item text per-instance via the List Item's `Primary Text` override
-- Toggle Selected per-instance for picker rows
-- Add/remove rows: detach the menu and edit; or detach the whole Dropdown instance
+Close the bottom sheet on selection (single-select / action) or via an explicit "Done" CTA (multi-select).
 
 ## Common usage patterns
 
-### Single Select picker (closed)
+### Single Select picker
 ```
 Dropdown [Type=Single Select, State=Filled] "Language: English"
+  → tap → Bottom sheet with List Item rows (Type=Default)
 ```
 
-### Single Select picker (open)
-```
-Dropdown [Type=Single Select, State=Expanded] — auto-includes 4 menu rows
-```
-
-### Multi Select filter (closed)
+### Multi Select filter
 ```
 Dropdown [Type=Multi Select, State=Filled] "Filters: Push, SMS (+1)"
+  → tap → Bottom sheet with List Item rows (Type=Checkbox) + "Done" CTA
 ```
 
-### Action Menu (closed)
+### Action Menu
 ```
 Dropdown [Type=Action Menu, State=Default] "Choose action"
+  → tap → Bottom sheet with List Item rows (Type=Default, no Selected)
 ```
 
 ### Inline filter row (sort)
@@ -253,25 +231,20 @@ fun <T> WiomDropdown(
 | Field vertical padding | `space/12` | 12dp |
 | Label→field gap | `space/4` | 4dp |
 | Field→helper gap | `space/4` | 4dp |
-| Field→menu gap (Expanded) | `space/8` | 8dp |
 | Leading icon→value gap | `space/8` | 8dp |
-| Field & menu radius | `radius/medium` | 12dp |
+| Field radius | `radius/medium` | 12dp |
 | Default / Filled / Disabled border | `stroke/small` | 1dp |
-| Expanded / Error border | `stroke/medium` | 2dp |
+| Error border | `stroke/medium` | 2dp |
 | Field height | — | 48dp |
-| Menu row height (List Item inside menu) | — | 48dp (denser than List Item's default 64dp — appropriate for popovers) |
 | Default / Disabled bg | `color/surface/subtle` | #F1EDF7 |
-| Filled / Error / Expanded bg | `color/surface/base` | #FAF9FC |
+| Filled / Error bg | `color/surface/base` | #FAF9FC |
 | Selected row bg (List Item Selected boolean) | `color/surface/selected` | #FFE5F6 |
-| Selected dot (List Item Default + Selected) | `color/brand/primary` 8×8dp ellipse | #D9008D — design constant, not a token (foundations don't cover dot indicators) |
 | Default border | `color/border/default` | #D7D3E0 |
-| Expanded border | `color/brand/primary` | #D9008D |
 | Error border / helper | `color/negative/primary` | #D92130 |
 | Filled border | `color/border/strong` | #665E75 |
 | Label text | `type/label/md` + `color/text/primary` | 14sp SemiBold, LH 20 |
 | Value text | `type/body/md` + `color/text/primary` | 14sp Regular, LH 20 (matches `Field / Input` convention) |
 | Helper / placeholder | `type/body/sm` + `color/text/secondary` | 12sp Regular, LH 16 (`meta/xs` is reserved for timestamps/badges only) |
-| Menu shadow | `shadow/md` (effect style) | foundations default for dropdowns |
 
 ## Composition rules (when to use, when not to)
 
@@ -344,7 +317,8 @@ These are intentional choices made during the foundations audit on 2026-04-15:
 
 ## Change history
 
-- **v2.1 (2026-04-15):** Cross-foundation audit. Value text → `body.md` (was `body.lg`). Helper text → `body.sm` (was `meta.xs`, which is reserved for timestamps/badges). Expanded + Error borders → `stroke/medium` (2px) to match `Field / Input` active/error convention. Menu — dropped border (rule #1: never shadow + border) and downgraded `shadow/lg` → `shadow/md` (foundations default for dropdowns). Disabled field bg → `surface/subtle` (rule #10). Logged 5 design decisions for foundations gaps (Action Menu shape, list item type size, menu row height, dot indicator size, disabled bg signal).
+- **v3 (2026-04-15):** Removed all 3 Expanded variants — the open state now lives in a bottom sheet (see `wiom-bottomsheet`), not inside the Dropdown component. State variant becomes 4 values (Default / Filled / Error / Disabled). Dropdown set drops from 15 to 12 variants. Documentation frame updated; skill stripped of all Expanded-specific sections.
+- **v2.1 (2026-04-15):** Cross-foundation audit. Value text → `body.md` (was `body.lg`). Helper text → `body.sm` (was `meta.xs`, which is reserved for timestamps/badges). Expanded + Error borders → `stroke/medium` (2px) to match `Field / Input` active/error convention. Menu — dropped border (rule #1: never shadow + border) and downgraded `shadow/lg` → `shadow/md` (foundations default for dropdowns). Disabled field bg → `surface/subtle` (rule #10). Logged 5 design decisions for foundations gaps.
 - **v2 (2026-04-15):** Unified Field + Menu into a single `Dropdown` component (renamed from `Dropdown / Field`). State variant `Open` renamed to `Expanded`; Expanded variants now include a built-in menu of 4 List Item rows below the field. Standalone sample menus deleted (the Expanded variants are the samples). Documentation frame replaced.
 - **v1.1 (2026-04-15):** Removed the duplicate `Dropdown / Menu Item` component. Menu rows now reuse List Item with the new `Selected` and `Has Trailing Icon` booleans (List Item v3.1). 4 sample menus rebuilt. Documentation frame replaced.
 - **v1 (2026-04-14):** Initial build. `Dropdown / Field` (15 variants — Type=Single/Multi/Action × State=Default/Open/Filled/Error/Disabled) + `Dropdown / Menu Item` + 4 sample menus + documentation frame. All on `Saurav / Dropdown` page.
