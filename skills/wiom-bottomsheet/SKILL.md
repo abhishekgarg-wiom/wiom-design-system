@@ -52,8 +52,7 @@ NOTE:     Hover and Focused states are excluded from V1 — mobile-first product
 | **Drag Handle** | Yes | 32×4px pill, `radius/full`, `color/border/strong`. Primary dismiss affordance. |
 | **Header** | Yes | Title text left-aligned, `type/heading/md` (20sp Bold 28sp LH). |
 | **Divider** | Yes | 1px `color/border/subtle`, full width below header. |
-| **List Items** | Yes (list layout) | 40px icon circle + label + description + chevron_right. |
-| **Inset Dividers** | Yes | 1px `color/border/subtle`, inset 76px from left (aligned to text start). |
+| **List Items** | Yes (list layout) | Instances of `List Item` component (Type=Default) from design system. Has Leading icon, Primary text, Secondary text, trailing chevron. |
 | **Action Bar** | Conditional | CTA component instances. Present in Expanded, Full, and Illustration CTA variants. |
 
 ---
@@ -97,8 +96,11 @@ NOTE:     Hover and Focused states are excluded from V1 — mobile-first product
 | Heading | (editable) | Text | "Heading" |
 | Subtext | (editable) | Text | "Description text goes here..." |
 | Show Secondary CTA | true, false | Boolean | true |
+| Vertical CTA | true, false | Boolean | false |
 
 **Total variants:** 2 types × 6 sizes = 12
+
+**Note on Vertical CTA:** When enabled, an "Action Bar – Vertical" frame appears with CTAs stacked vertically (Primary on top, Secondary below). The horizontal Action Bar should be manually hidden by the designer when using vertical stacking. Applies to variants with action bars: Expanded, Full, and Illustration CTA.
 
 ---
 
@@ -159,21 +161,19 @@ NOTE:     Hover and Focused states are excluded from V1 — mobile-first product
 
 ### List item tokens
 
-| Property | Token | Value |
-|----------|-------|-------|
-| Icon container | 40×40px (`space/40`), `radius/full`, `color/brand/primary-tint` fill |
-| Icon instance | From icon library, `color/brand/primary` fill override |
-| Icon glyph size | `icon/sm` | 20dp (placeholder) |
-| Label style | `type/label/md` | 14sp / SemiBold 600 / 20sp LH |
-| Label color | `color/text/primary` | #161021 |
-| Description style | `type/body/sm` | 12sp / Regular 400 / 16sp LH |
-| Description color | `color/text/secondary` | #5C5570 |
-| Chevron icon | `chevron_right` from icon library, `icon/md` (24dp), `color/text/disabled` fill |
-| Row padding | `space/12` vertical, `space/24` horizontal |
-| Row item spacing | `space/12` | 12px |
-| Inset divider | 1px `color/border/subtle`, left inset 76px (24px padding + 40px icon + 12px gap) |
+List items use instances of the `List Item` component (Type=Default) from the "Saurav / List items" page (Component Set ID: 1655:487).
 
-### Action bar tokens
+| Property | Configuration |
+|----------|--------------|
+| Component | List Item (Type=Default) |
+| Has Leading | true — icon in leading slot |
+| Has Secondary | true — description text below primary |
+| Has Trailing Icon | true — chevron_right |
+| Has Trailing Meta | false |
+| Primary Text | Item label (e.g., "View Policy Details") |
+| Secondary Text | Item description (e.g., "Check your coverage and benefits") |
+
+### Action bar tokens (horizontal — default)
 
 | Property | Token | Value |
 |----------|-------|-------|
@@ -181,6 +181,16 @@ NOTE:     Hover and Focused states are excluded from V1 — mobile-first product
 | Padding | `space/24` horizontal, `space/16` vertical |
 | CTA gap | `space/12` | 12px |
 | Buttons | CTA component instances (Primary + Secondary from design system) |
+
+### Action bar tokens (vertical — Vertical CTA = true)
+
+| Property | Token | Value |
+|----------|-------|-------|
+| Fill | `color/surface/primary` | #FAF9FC |
+| Top border | None |
+| Padding | `space/24` horizontal, `space/16` bottom, `0` top |
+| CTA gap | `space/12` | 12px |
+| Buttons | Primary CTA on top, Secondary CTA below — both FILL width |
 
 ### Illustration tokens
 
@@ -202,9 +212,18 @@ NOTE:     Hover and Focused states are excluded from V1 — mobile-first product
 
 ## CTA Configuration
 
+### Layout direction
+
+| Config | Vertical CTA | Result |
+|--------|-------------|--------|
+| **Horizontal** (default) | false | Secondary + Primary side by side in Action Bar |
+| **Vertical** | true | Primary on top, Secondary below in "Action Bar – Vertical" frame. Designer must hide the horizontal Action Bar manually. |
+
+### Secondary toggle
+
 | Config | Show Secondary CTA | Result |
 |--------|-------------------|--------|
-| **Dual CTA** | true (default) | Secondary (outlined) + Primary (filled) side by side, each FILL width |
+| **Dual CTA** | true (default) | Secondary (outlined) + Primary (filled), each FILL width |
 | **Single CTA** | false | Primary CTA fills full width. Use for simple confirmations. |
 
 **Rule:** CTAs are instances of the existing CTA component from the design system (Component Set on "Components / CTA, Tabs, Filters, Chips" page). Never recreate buttons — always use CTA instances.
@@ -360,18 +379,15 @@ Bottom Sheet (Standard)            ← root component, auto-layout vertical
 ├── Header                         ← frame, horizontal, space/24 left padding
 │   └── Title                      ← text, type/heading/md, color/text/primary
 ├── Divider                        ← 1px rectangle, color/border/subtle, full width
-├── Content                        ← frame, vertical, FILL sizing, clipsContent
-│   ├── Item / Label               ← frame, horizontal, space/12 gap
-│   │   ├── Icon Container         ← 40×40, radius/full, color/brand/primary-tint
-│   │   │   └── [icon instance]    ← from icon library, color/brand/primary
-│   │   ├── Text                   ← frame, vertical
-│   │   │   ├── Label              ← type/label/md, color/text/primary
-│   │   │   └── Description        ← type/body/sm, color/text/secondary
-│   │   └── chevron_right          ← icon instance, icon/md, color/text/disabled
-│   └── Divider                    ← inset 76px, 1px, color/border/subtle
-└── Action Bar (conditional)       ← frame, horizontal, space/12 gap
-    ├── CTA / Secondary            ← instance of CTA component (boolean toggle)
-    └── CTA / Primary              ← instance of CTA component
+├── Content                        ← frame, vertical, HUG height (minHeight preserves size)
+│   └── List Item (×N)             ← instances of List Item component (Type=Default)
+│       Properties: Has Leading=true, Has Secondary=true, Has Trailing Icon=true
+├── Action Bar (conditional)       ← frame, horizontal, space/12 gap
+│   ├── CTA / Secondary            ← instance of CTA component (boolean toggle)
+│   └── CTA / Primary              ← instance of CTA component
+└── Action Bar – Vertical (conditional) ← frame, vertical, space/12 gap, Vertical CTA boolean
+    ├── CTA / Primary              ← instance of CTA component
+    └── CTA / Secondary            ← instance of CTA component (boolean toggle)
 ```
 
 ```
@@ -382,7 +398,8 @@ Bottom Sheet (Modal)               ← root component, auto-layout vertical, pri
     ├── Header
     ├── Divider
     ├── Content
-    └── Action Bar (conditional)
+    ├── Action Bar (conditional)
+    └── Action Bar – Vertical (conditional)
 ```
 
 ---
@@ -493,7 +510,9 @@ ICON GLYPH:  icon library instance, color/brand/primary fill
 LABEL:       type/label/md (14sp SemiBold 20sp LH), color/text/primary
 DESCRIPTION: type/body/sm (12sp Regular 16sp LH), color/text/secondary
 CHEVRON:     chevron_right instance, icon/md (24dp), color/text/disabled
-ACTION BAR:  1px top border color/border/subtle, space/24 h-pad, space/16 v-pad, space/12 gap
+LIST ITEM:   Instances of List Item component (Type=Default, Has Leading, Has Secondary, Has Trailing Icon)
+ACTION BAR:  1px top border color/border/subtle, space/24 h-pad, space/16 v-pad, space/12 gap (horizontal)
+ACTION BAR V:color/surface/primary fill, no top border, space/24 h-pad, 0 top / space/16 bottom pad, space/12 gap
 CTA:         Instances from CTA component set. Secondary toggle via boolean property.
 ILLUSTRATION:120px circle, color/brand/primary-tint, icon/lg (48dp), color/brand/primary
 HEADING:     type/heading/md, color/text/primary, center
@@ -502,4 +521,4 @@ SUBTEXT:     type/body/md, color/text/secondary, center
 
 ---
 
-Apply this bottom sheet specification to the user's design request. Use token names in your output (not just values) so the design is traceable back to the Wiom Design System. Reference variant properties (Type, Size, Show Secondary CTA) when describing bottom sheet instances.
+Apply this bottom sheet specification to the user's design request. Use token names in your output (not just values) so the design is traceable back to the Wiom Design System. Reference variant properties (Type, Size, Show Secondary CTA, Vertical CTA) when describing bottom sheet instances.
