@@ -114,6 +114,9 @@ Loading state = NO icon, only spinner.
 Icon color follows text color for all states.
 Icon selection rules in separate skill (Action Icons vs Non-Action Icons).
 
+**Figma structure:** Icons are boolean properties (Show Leading Icon / Show Trailing Icon), not separate variants. Default = hidden. Toggle on in properties panel.
+**Code note:** When building UI in code, do NOT read icon visibility from Figma — icons are hidden by default in the component. Instead, use this skill to decide if a button needs an icon, then pass the icon parameter directly in code (e.g., `icon = WiomButtonIcon.Leading(Icons.Delete)`). The Figma component is for designer use; the code is generated from this skill.
+
 ---
 
 ## 3. Decision Logic — Which CTA to Use
