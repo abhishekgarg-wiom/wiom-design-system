@@ -60,8 +60,8 @@ These alias the primitives and are **identical in Light and Dark modes**.
 
 | Spacing | When to Use |
 |---------|-------------|
-| **4px** | Between icon and label, between checkbox and text, tight inline elements |
-| **8px** | Between related items in a group, input field internal padding, chip padding |
+| **4px** | Chip icon → label, hairline adjustments, very tight inline elements |
+| **8px** | Inline label pairings (icon + label, checkbox + text, status icon + label), related items in a group, input field internal padding, chip padding |
 | **12px** | Between list items, component internal padding, between label and input |
 | **16px** | Card padding, screen horizontal margins, between heading and body text |
 | **24px** | Between sections within a card, dialog padding, comfortable list gaps |
@@ -96,7 +96,7 @@ If you're unsure which token to use, ask: **"If I removed everything else on scr
 ### How It Looks in Practice
 
 ```
-[Icon 4px Label]              ← TIGHT: one unit
+[Icon 8px Label]              ← TIGHT: one unit
        8px
 [Subtitle text]               ← TIGHT: still same header group
            16px
