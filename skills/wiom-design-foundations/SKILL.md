@@ -90,7 +90,7 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 
 ### Iconography — 4 Size Tokens
 
-Library: **Material Symbols Rounded** only. Filled is default. Outlined only for toggle-off/nav-unselected.
+Library: **Material 3 Icons Rounded** (`Icons.Rounded.*`) only. Filled is default. `*Border`/`*Outlined` variant only for toggle-off/nav-unselected.
 
 | Token | Glyph | Container | Touch Target | Use |
 |-------|-------|-----------|-------------|-----|
@@ -99,7 +99,7 @@ Library: **Material Symbols Rounded** only. Filled is default. Outlined only for
 | `icon.md` | 24dp | 40dp | 48dp | **Default.** Toolbar, nav, list, chips, cards |
 | `icon.lg` | 48dp | 56dp | 56dp | Empty states, onboarding, hero |
 
-**Never:** `Icons.Default/Filled/Outlined/Sharp/TwoTone`. Never create custom SVGs — ask for drawables.
+**Never:** `Icons.Default/Filled/Outlined/Sharp/TwoTone`. Never `painterResource(R.drawable.rounded_*)` for Material icons. Never create custom SVGs — ask for drawables. `painterResource()` only for `ic_wiom_*` / `ic_partner_*`.
 
 → Full details: `references/iconography.md`
 
@@ -264,7 +264,8 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] Full-bleed divider inside a padded card (inset to match padding)
 - [ ] `warning.soft` (#FFDA40) as icon color on white (invisible — use `warning.primary`)
 - [ ] `text.on-color` on neutral surfaces (only for colored fills)
-- [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` (use Material Symbols Rounded drawables)
+- [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` / `Icons.Sharp` / `Icons.TwoTone` (use `Icons.Rounded.*`)
+- [ ] `painterResource(R.drawable.rounded_*)` for standard Material icons (use `Icons.Rounded.*`; `painterResource` only for `ic_wiom_*` / `ic_partner_*`)
 - [ ] Icon sizes not in {16, 20, 24, 48}dp
 - [ ] Spacing values not on the 4px grid
 - [ ] Font sizes not in the 13-token type scale

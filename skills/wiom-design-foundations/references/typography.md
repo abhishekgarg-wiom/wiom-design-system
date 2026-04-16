@@ -98,10 +98,10 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 val NotoSans = FontFamily(
-    Font(R.font.noto_sans_regular, FontWeight.Normal),
-    Font(R.font.noto_sans_medium, FontWeight.Medium),
-    Font(R.font.noto_sans_semibold, FontWeight.SemiBold),
-    Font(R.font.noto_sans_bold, FontWeight.Bold),
+    Font(R.font.notosans_regular, FontWeight.Normal),
+    Font(R.font.notosans_medium, FontWeight.Medium),
+    Font(R.font.notosans_semibold, FontWeight.SemiBold),
+    Font(R.font.notosans_bold, FontWeight.Bold),
 )
 
 object WiomType {
