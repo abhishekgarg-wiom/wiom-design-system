@@ -45,12 +45,13 @@ Every spacing, sizing, padding, and margin value must be a **multiple of 4px**.
 | `space/64` | 64px | Yes | Large layout spacing |
 | `space/72` | 72px | Yes | Hero/section padding |
 | `space/84` | 84px | Yes | Extra-large layout areas |
+| `space/96` | 96px | Yes | X-Extra-large layout areas |
 
 ### Semantic Tokens (11 values)
 
 These alias the primitives and are **identical in Light and Dark modes**.
 
-`space-4` `space-8` `space-12` `space-16` `space-24` `space-32` `space-40` `space-48` `space-64` `space-72` `space-84`
+`space-4` `space-8` `space-12` `space-16` `space-24` `space-32` `space-40` `space-48` `space-64` `space-72` `space-84` `space-96`
 
 > `space/1` and `space/2` intentionally have no semantic aliases — they're utility-only, not for general layout.
 
@@ -70,6 +71,7 @@ These alias the primitives and are **identical in Light and Dark modes**.
 | **48px** | Touch target minimum height, page-level vertical margins |
 | **64px** | Large layout gaps, hero section padding |
 | **72–84px** | Hero content areas, full-width section padding |
+| **96px** | Hero content areas, full-width section padding |
 
 ---
 
@@ -81,16 +83,17 @@ These alias the primitives and are **identical in Light and Dark modes**.
 
 | Level | Spacing Range | What it groups | Examples |
 |-------|--------------|----------------|----------|
-| **Tight** | 4–8px | Elements that belong together as one unit | Icon + label, title + subtitle, checkbox + text |
-| **Medium** | 12–16px | Elements within the same section | List items, card internals, input + label |
-| **Loose** | 24–32px+ | Separate sections or content blocks | Card to card, section to section, content → CTA |
+| **Tight** | 8px | Elements that belong together as one unit | Icon + label, title + subtitle, checkbox + text |
+| **Medium** | 16px | Elements within the same section | List items, card internals, input + label |
+| **Large** | 32px | Separate sections or content blocks | Card to card, section to section, content → CTA |
+| **Loose** | 48px | buttons and cards | 
 
 ### The Decision Test
 
 If you're unsure which token to use, ask: **"If I removed everything else on screen, would these two elements still make sense together?"**
 
-- **Yes** → Tight (4–8px) — they're a unit
-- **Kind of** → Medium (12–16px) — same context, different roles
+- **Yes** → Tight (8px) — they're a unit
+- **Kind of** → Medium (16px - 20px) — same context, different roles
 - **No** → Loose (24–32px) — separate concerns
 
 ### How It Looks in Practice
@@ -105,7 +108,7 @@ If you're unsure which token to use, ask: **"If I removed everything else on scr
 [Info row 2]                   ← MEDIUM: same section
       12px
 [Info row 3]                   ← MEDIUM: same section
-           24px
+           32px
 [CTA Button]                   ← LOOSE: separate action zone
 ```
 
@@ -250,8 +253,8 @@ All screens are designed at **360 × 720px** — fixed, no exceptions.
 
 | Property | Token | Value |
 |----------|-------|-------|
-| Horizontal padding | `space-16` | 16px |
-| Vertical padding | `space-12` | 12px |
+| Horizontal padding | `space-0` | 0px |
+| Vertical padding | `space-16` | 16px |
 | Between list items | `space-8` | 8px |
 | Icon/avatar → text | `space-12` | 12px |
 | Primary text → secondary text | `space-4` | 4px |
@@ -271,9 +274,9 @@ All screens are designed at **360 × 720px** — fixed, no exceptions.
 
 | Property | Token | Value |
 |----------|-------|-------|
-| Padding (all sides) | `space-24` | 24px |
+| Padding (all sides) | `space-16` | 16px |
 | Title → content | `space-16` | 16px |
-| Content → action buttons | `space-24` | 24px |
+| Content → action buttons | `space-32` | 32px |
 | Between action buttons | `space-12` | 12px |
 
 ### Snackbar / Toast
@@ -353,7 +356,7 @@ The scale exists for a reason — hierarchy requires varied spacing. Dense eleme
 
 ```
 SPACING SCALE
-4  8  12  16  24  32  40  48  64  72  84
+4  8  12  16  24  32  40  48  64  72  84 96
 
 HIERARCHY
 Tight (4–8)  Medium (12–16)  Loose (24–32+)
