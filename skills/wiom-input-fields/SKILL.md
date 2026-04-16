@@ -169,10 +169,11 @@ No shadow. No hardcoded hex. No fixed height anywhere — height hugs from paddi
 5. **One trailing icon at a time.** Status icons (Error/Success/Warning) take over the trailing slot. Don't stack multiple icons side-by-side — the field becomes noisy and touch targets crowd.
 6. **Keep Title visible by default.** Don't rely on placeholder-only — once the user starts typing, the context disappears. Hide Title only when a parent section header already labels the field.
 7. **Heights hug.** Wrap height = V padding + line-height. Textarea grows with content. Never set a fixed height on the wrap.
-8. **Width on mobile = fill container** (usually 16px side margins). 328 is the reference width on a 360-wide screen.
-9. **Icons swap, they don't stack.** Use `Leading Icon` / `Trailing Icon` INSTANCE_SWAP to pick the right glyph from Material Symbols Rounded. Do not draw a second icon on top.
-10. **Counter only where it aids the user.** Character limits on textareas, chat drafts. Don't show it on short free-text fields. OTP has its own built-in timer — don't stack a counter on top.
-11. **OTP is its own component.** Use `Field / OTP` for verification codes. Don't fake a 4/6-digit flow with a single Input + spaces in Body.
+8. **Textarea alignment is top, not center.** When `singleLine = false` (Textarea), the placeholder/value Box must use `Alignment.TopStart` — not `CenterStart` — so the hint sits at the top of the multi-line area instead of floating to the vertical center. Likewise, the inner Row's `verticalAlignment` must switch to `Alignment.Top` so leading/trailing icons align to the first line, not the vertical middle of a tall field.
+9. **Width on mobile = fill container** (usually 16px side margins). 328 is the reference width on a 360-wide screen.
+10. **Icons swap, they don't stack.** Use `Leading Icon` / `Trailing Icon` INSTANCE_SWAP to pick the right glyph from Material Symbols Rounded. Do not draw a second icon on top.
+11. **Counter only where it aids the user.** Character limits on textareas, chat drafts. Don't show it on short free-text fields. OTP has its own built-in timer — don't stack a counter on top.
+12. **OTP is its own component.** Use `Field / OTP` for verification codes. Don't fake a 4/6-digit flow with a single Input + spaces in Body.
 
 ---
 
@@ -185,6 +186,7 @@ No shadow. No hardcoded hex. No fixed height anywhere — height hugs from paddi
 - Piling icons: leading + prefix + trailing action + status = visual clutter. Pick the minimum set.
 - Hiding Title with `Show Title=false` just to save vertical space — accessibility suffers.
 - Setting a fixed height on a wrap override — defeats the hug layout.
+- Using `CenterStart` / `CenterVertically` alignment on Textarea — placeholder drifts to the middle of the multi-line box. Use `TopStart` and `Alignment.Top`.
 - Recoloring the label per instance — the state-driven color ramp exists for a reason.
 - Building OTP as an Input with "4 3 8" spaced digits in `Body` — there's a dedicated OTP component with correct per-digit focus, box sizing, and timer.
 - Redrawing the OTP timer on top of the Focused variant — it's already baked in.
