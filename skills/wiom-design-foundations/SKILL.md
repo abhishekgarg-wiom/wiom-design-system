@@ -90,7 +90,7 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 
 ### Iconography — 4 Size Tokens
 
-Library: **Material 3 Icons Rounded** (`Icons.Rounded.*`) only. Filled is default. `*Border`/`*Outlined` variant only for toggle-off/nav-unselected.
+Library: **Material Symbols Rounded** only. Filled is default. Outlined only for toggle-off/nav-unselected.
 
 | Token | Glyph | Container | Touch Target | Use |
 |-------|-------|-----------|-------------|-----|
@@ -99,7 +99,7 @@ Library: **Material 3 Icons Rounded** (`Icons.Rounded.*`) only. Filled is defaul
 | `icon.md` | 24dp | 40dp | 48dp | **Default.** Toolbar, nav, list, chips, cards |
 | `icon.lg` | 48dp | 56dp | 56dp | Empty states, onboarding, hero |
 
-**Never:** `Icons.Default/Filled/Outlined/Sharp/TwoTone`. Never `painterResource(R.drawable.rounded_*)` for Material icons. Never create custom SVGs — ask for drawables. `painterResource()` only for `ic_wiom_*` / `ic_partner_*`.
+**Never:** `Icons.Default/Filled/Outlined/Sharp/TwoTone`. Never create custom SVGs — ask for drawables.
 
 → Full details: `references/iconography.md`
 
@@ -110,7 +110,7 @@ Every spacing/sizing/padding/margin value must be a **multiple of 4px**.
 | Token | 4px | 8px | 12px | 16px | 24px | 32px | 40px | 48px | 64px | 72px | 84px |
 |-------|-----|-----|------|------|------|------|------|------|------|------|------|
 
-**Hierarchy:** Tight (4–8px) = one unit. Medium (12–16px) = same section. Loose (24–32px+) = separate sections.
+**Hierarchy:** Tight (8–12px) = one unit. Medium (16–24px) = same section. Loose (32–40px+) = separate sections.
 **Margins:** Never. Parents own gap between children (Arrangement.spacedBy). Children own internal padding.
 **Screen margins:** 16px default, 12px chat screens. Between cards: 16px. Card padding: 16px.
 **Touch targets:** Action 48px, Navigation 32px, Info 24px.
@@ -214,7 +214,7 @@ When building a common component, here's which tokens from each foundation apply
 | Padding | `space-16` all sides |
 | Title | `type.title.sm` + `color.text.primary` |
 | Body | `type.body.md` + `color.text.secondary` |
-| Internal gap | `space-16` between sections, `space-8` title→subtitle |
+| Internal gap | `space-16` between sections, `space-8` title→subtitle, `space-32` content→CTA |
 
 ### Primary Button
 | Foundation | Token |
@@ -246,7 +246,7 @@ When building a common component, here's which tokens from each foundation apply
 | Surface | `color.surface.base` |
 | Radius | `radius-xlarge` (24px) top corners only |
 | Shadow | `shadow.md` (standard) or `shadow.xl` (full-screen, with overlay) |
-| Padding | `space-24` all sides |
+| Padding | `space-16` all sides |
 | Header | `type.heading.md` + `color.text.primary` |
 | Stroke | None (shadow provides depth) |
 
@@ -264,8 +264,7 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] Full-bleed divider inside a padded card (inset to match padding)
 - [ ] `warning.soft` (#FFDA40) as icon color on white (invisible — use `warning.primary`)
 - [ ] `text.on-color` on neutral surfaces (only for colored fills)
-- [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` / `Icons.Sharp` / `Icons.TwoTone` (use `Icons.Rounded.*`)
-- [ ] `painterResource(R.drawable.rounded_*)` for standard Material icons (use `Icons.Rounded.*`; `painterResource` only for `ic_wiom_*` / `ic_partner_*`)
+- [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` (use Material Symbols Rounded drawables)
 - [ ] Icon sizes not in {16, 20, 24, 48}dp
 - [ ] Spacing values not on the 4px grid
 - [ ] Font sizes not in the 13-token type scale

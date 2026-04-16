@@ -45,13 +45,12 @@ Every spacing, sizing, padding, and margin value must be a **multiple of 4px**.
 | `space/64` | 64px | Yes | Large layout spacing |
 | `space/72` | 72px | Yes | Hero/section padding |
 | `space/84` | 84px | Yes | Extra-large layout areas |
-| `space/96` | 96px | Yes | X-Extra-large layout areas |
 
 ### Semantic Tokens (11 values)
 
 These alias the primitives and are **identical in Light and Dark modes**.
 
-`space-4` `space-8` `space-12` `space-16` `space-24` `space-32` `space-40` `space-48` `space-64` `space-72` `space-84` `space-96`
+`space-4` `space-8` `space-12` `space-16` `space-24` `space-32` `space-40` `space-48` `space-64` `space-72` `space-84`
 
 > `space/1` and `space/2` intentionally have no semantic aliases — they're utility-only, not for general layout.
 
@@ -71,7 +70,6 @@ These alias the primitives and are **identical in Light and Dark modes**.
 | **48px** | Touch target minimum height, page-level vertical margins |
 | **64px** | Large layout gaps, hero section padding |
 | **72–84px** | Hero content areas, full-width section padding |
-| **96px** | Hero content areas, full-width section padding |
 
 ---
 
@@ -83,30 +81,29 @@ These alias the primitives and are **identical in Light and Dark modes**.
 
 | Level | Spacing Range | What it groups | Examples |
 |-------|--------------|----------------|----------|
-| **Tight** | 8px | Elements that belong together as one unit | Icon + label, title + subtitle, checkbox + text |
-| **Medium** | 16px | Elements within the same section | List items, card internals, input + label |
-| **Large** | 32px | Separate sections or content blocks | Card to card, section to section, content → CTA |
-| **Loose** | 48px | buttons and cards | 
+| **Tight** | 8–12px | Elements that belong together as one unit | Icon + label, title + subtitle, checkbox + text |
+| **Medium** | 16–24px | Elements within the same section | List items, card internals, input + label |
+| **Loose** | 32–40px+ | Separate sections or content blocks | Card to card, section to section, content → CTA |
 
 ### The Decision Test
 
 If you're unsure which token to use, ask: **"If I removed everything else on screen, would these two elements still make sense together?"**
 
-- **Yes** → Tight (8px) — they're a unit
-- **Kind of** → Medium (16px - 20px) — same context, different roles
-- **No** → Loose (24–32px) — separate concerns
+- **Yes** → Tight (8–12px) — they're a unit
+- **Kind of** → Medium (16–24px) — same context, different roles
+- **No** → Loose (32–40px) — separate concerns
 
 ### How It Looks in Practice
 
 ```
 [Icon 8px Label]              ← TIGHT: one unit
-       8px
+       12px
 [Subtitle text]               ← TIGHT: still same header group
-           16px
+           24px
 [Info row 1]                   ← MEDIUM: same section
-      12px
+      16px
 [Info row 2]                   ← MEDIUM: same section
-      12px
+      16px
 [Info row 3]                   ← MEDIUM: same section
            32px
 [CTA Button]                   ← LOOSE: separate action zone
@@ -118,7 +115,7 @@ If you're unsure which token to use, ask: **"If I removed everything else on scr
 Title→subtitle 16px, info rows 16px, info→CTA 4px. Everything feels flat, no visual grouping. Eye can't distinguish sections.
 
 **Right — hierarchy-driven:**
-Title→subtitle 4px (tight unit), info rows 12px (same section), info→CTA 24px (different concern). Eye reads the grouping instantly.
+Title→subtitle 8px (tight unit), info rows 16px (same section), info→CTA 32px (different concern). Eye reads the grouping instantly.
 
 ---
 
@@ -245,16 +242,16 @@ All screens are designed at **360 × 720px** — fixed, no exceptions.
 | Nested card padding (left/right) | `space-0` | 0px — parent card already provides horizontal margin |
 | Between sections inside card | `space-16` | 16px |
 | Title → subtitle | `space-8` | 8px |
-| Title → body text | `space-8` | 8px |
+| Title → body text | `space-12` | 12px |
 | Icon → text (inline) | `space-12` | 12px |
-| Content → CTA | `space-16` | 16px |
+| Content → CTA | `space-32` | 32px |
 
 ### List Items
 
 | Property | Token | Value |
 |----------|-------|-------|
-| Horizontal padding | `space-0` | 0px |
-| Vertical padding | `space-16` | 16px |
+| Horizontal padding | `space-16` | 16px |
+| Vertical padding | `space-12` | 12px |
 | Between list items | `space-8` | 8px |
 | Icon/avatar → text | `space-12` | 12px |
 | Primary text → secondary text | `space-4` | 4px |
@@ -276,7 +273,7 @@ All screens are designed at **360 × 720px** — fixed, no exceptions.
 |----------|-------|-------|
 | Padding (all sides) | `space-16` | 16px |
 | Title → content | `space-16` | 16px |
-| Content → action buttons | `space-32` | 32px |
+| Content → action buttons | `space-24` | 24px |
 | Between action buttons | `space-12` | 12px |
 
 ### Snackbar / Toast
@@ -356,10 +353,10 @@ The scale exists for a reason — hierarchy requires varied spacing. Dense eleme
 
 ```
 SPACING SCALE
-4  8  12  16  24  32  40  48  64  72  84 96
+4  8  12  16  24  32  40  48  64  72  84
 
 HIERARCHY
-Tight (4–8)  Medium (12–16)  Loose (24–32+)
+Tight (8–12)  Medium (16–24)  Loose (32–40+)
 
 TOUCH TARGETS
 Action: 48px  Navigation: 32px  Info: 24px
