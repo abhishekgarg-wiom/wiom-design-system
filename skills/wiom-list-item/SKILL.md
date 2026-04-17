@@ -37,13 +37,13 @@ The previous version had **288 variants** across 3 sets (Content / Selection / T
 
 | Slot | Default content | Size |
 |---|---|---|
-| Leading | `settings` icon (24×24 inside 40×40 container) | 40×40 |
+| Leading | `settings` icon (24×24, no bounding box — placed directly in row) | 24×24 |
 | Primary | "Primary text" — `type/body/lg` (16/24 Regular) | fills width |
 | Secondary | "Supporting text" — `type/body/sm` (12/16 Regular) | fills width |
 | Trailing Meta | "Meta" — `type/body/sm` (12/16 Regular) | hugs |
 | Trailing Icon | `chevron_right` (20×20) | 20×20 |
 
-**Padding:** 16h × 12v · **Min height:** 48 (Action touch target) · **Background:** transparent (adopts parent surface)
+**Padding:** 16h × 16v · **Min height:** 48 (Action touch target) · **Background:** transparent (adopts parent surface)
 
 ## All component properties
 
@@ -187,15 +187,13 @@ fun WiomListItem(
             .heightIn(min = 48.dp)
             .background(bg)
             .then(if (onClick != null && !disabled) Modifier.clickable { onClick() } else Modifier)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
             .alpha(contentAlpha),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         leadingIcon?.let {
-            Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
-                Icon(it, null, modifier = Modifier.size(WiomIcon.MD), tint = WiomColor.textSecondary)
-            }
+            Icon(it, null, modifier = Modifier.size(WiomIcon.MD), tint = WiomColor.textSecondary)
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(primary, style = WiomType.bodyL, color = WiomColor.textPrimary)
@@ -216,7 +214,7 @@ fun WiomListItem(
 | What | Token | Value |
 |---|---|---|
 | Horizontal padding | `space/16` | 16dp |
-| Vertical padding | `space/12` | 12dp |
+| Vertical padding | `space/16` | 16dp (all types — Switch row is 64px due to 32px toggle, others are 56px) |
 | Leading→content gap | `space/12` | 12dp |
 | Primary→secondary gap | `space/4` | 4dp |
 | Trailing meta→icon gap | `space/8` | 8dp |
@@ -243,17 +241,18 @@ fun WiomListItem(
 - Dense data tables → use Table component (when built)
 
 ### Layout rules when stacking
-- Stack inside a card with `radius/large` (16dp) corners and `surface/subtle` background
-- Use **inset 1px dividers** between rows (16dp inset on both sides — match card padding)
-- Don't full-bleed dividers inside a card
-- Card padding: 4dp top/bottom, 0 left/right (rows have their own 16dp horizontal padding)
+- Stack list items directly with **0 gap** — no dividers between rows. The 16v padding on each row creates natural visual separation.
+- Place inside a card with `radius/large` (16dp) corners and white or `surface/subtle` background.
+- Card padding: 0 all sides (rows have their own 16dp padding on all sides).
+- **Never add dividers** between list items — the component's built-in 16px padding handles spacing.
 
 ## Don'ts (component-specific)
 
 | Don't | Why |
 |---|---|
 | Enable Pressed AND Disabled together | Visual conflict, semantic nonsense |
-| Override the bound padding per instance | Breaks tokenization — change `space/16`/`space/12` instead |
+| Override the bound padding per instance | Breaks tokenization — change `space/16` instead |
+| Add dividers between stacked list items | Not needed — 16px vertical padding on each row creates natural separation. Stack with 0 gap. |
 | Reduce min height below 48 | WCAG action touch target violation |
 | Hardcode font properties | Text styles `type/body/lg` and `type/body/sm` are bound — edit the style |
 | Hardcode colors | Color variables are bound — edit the variable, all instances update |
