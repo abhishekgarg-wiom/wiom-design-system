@@ -1,440 +1,217 @@
-# Wiom Design System — Color Token Skill
+# Wiom Color System
 
-You are generating a design or UI for the Wiom product ecosystem. You MUST use ONLY the approved Wiom color tokens listed below. Do NOT invent colors, use raw hex values outside this list, or approximate "close enough" shades. Every color in your output must map to exactly one token from this system.
+Element-first color tokens for Wiom's Android app (Jetpack Compose) and web. This file replaces the old role-first color reference. Legacy tokens like `color.brand.primary` or `color.warning.primary` (#B85C00 brown) are deprecated — do not use them.
 
-## Context
-
-Wiom serves lower- and middle-income Indian households. Designs must account for:
-- **Mobile-first** — budget Android devices, small screens
-- **Outdoor use** — variable brightness, direct sunlight
-- **Bilingual** — Hindi and English content
-- **Trust-heavy** — transactional flows (recharges, payments, plans)
-- **Low cognitive load** — clear, scannable, fast to understand
+**One system across all Wiom apps.** Customer app, CSP/partner app, and internal tools all use identical tokens. There are no partner-namespaced variants. If a screen in the CSP app needs a color, it comes from the same `bg.*`, `text.*`, `stroke.*`, `icon.*` tokens as the customer app.
 
 ---
 
-## Architecture: Two-Tier Token System
+## The single rule that prevents 90% of color mistakes
 
-```
-TIER 1: PRIMITIVES — Raw palette. For theming only. NEVER use in UI.
-TIER 2: SEMANTIC  — Role-based. The ONLY tokens you may use.
-```
+**Match the Compose slot to the token namespace. Same prefix on both sides.**
 
-**Rule:** Every color in your design must be a Tier 2 semantic token. If you cannot find a token that fits, flag it as a gap — do not invent a color.
+| Compose property you're filling | Token namespace to use |
+|---|---|
+| `Box(background=…)`, `Surface(color=…)`, `Modifier.background(…)` | `bg.*` |
+| `Text(color=…)` | `text.*` |
+| `BorderStroke(color=…)`, `Divider(color=…)`, `Modifier.border(…)` | `stroke.*` |
+| `Icon(tint=…)`, `painterResource + tint` | `icon.*` |
 
----
-
-## Complete Token Reference — 43 Semantic Tokens
-
-### Brand (7 tokens)
-
-| Token | Hex | Use for | Do NOT use for |
-|-------|-----|---------|----------------|
-| `color.brand.primary` | `#D9008D` | Primary CTA button fill, checked checkbox/radio fill, selected state indicators, focused input stroke | Body text, large surface fills, decorative use |
-| `color.brand.primary-hover` | `#C00080` | Primary CTA hover state, brand interactive hover | Static elements, text |
-| `color.brand.primary-pressed` | `#A30070` | Primary CTA pressed/active state, tap feedback on mobile | Static elements, text |
-| `color.brand.primary-soft` | `#FFB2E4` | Focus ring (all non-destructive components), brand-accent borders | Text, primary fills |
-| `color.brand.primary-subtle` | `#FFCCED` | Secondary button pressed fill, brand-tinted card backgrounds | Primary fills, text |
-| `color.brand.primary-tint` | `#FFE5F6` | Secondary/tertiary button hover fill, lightest brand background | Text, borders, strong emphasis |
-| `color.brand.secondary` | `#4A1535` | Premium surfaces, deep brand accent, partner headers | Primary interactive fills |
-
-**Hierarchy (strongest to lightest):**
-`primary` → `primary-soft` → `primary-subtle` → `primary-tint`
-
-### Text (7 tokens)
-
-| Token | Hex | Use for | Do NOT use for |
-|-------|-----|---------|----------------|
-| `color.text.primary` | `#161021` | Headings, body text, labels, input values, text on light colored fills (warning.subtle, positive.subtle) | De-emphasized content, disabled text |
-| `color.text.secondary` | `#5C5570` | Descriptions, supporting text, placeholders, helpers, metadata, timestamps, default navigation/UI icons | Primary headings, interactive labels |
-| `color.text.disabled` | `#A7A1B2` | All disabled text, disabled labels, disabled icons | Active or interactive text |
-| `color.text.inverse` | `#FAF9FC` | Text on dark neutral surfaces (surface.inverse, brand.secondary) | Text on light backgrounds |
-| `color.text.link` | `#D9008D` | Inline text links (default state) | Non-interactive text, headings |
-| `color.text.link-hover` | `#C00080` | Text links on hover/focus | Default link state |
-| `color.text.on-color` | `#FFFFFF` | Text on ANY colored fill (brand.primary, positive.primary, negative.primary, info.primary) | Text on light or dark neutral surfaces |
-
-### Surface (6 tokens)
-
-| Token | Hex | Use for | Do NOT use for |
-|-------|-----|---------|----------------|
-| `color.surface.base` | `#FAF9FC` | Page bg, card bg, input fill, modal bg, menu bg | Emphasis backgrounds, tinted states |
-| `color.surface.subtle` | `#F1EDF7` | Hover tint, disabled fill, section cards, option hover row | Full-page backgrounds |
-| `color.surface.muted` | `#E8E4F0` | Grouped sections, alternating rows, secondary cards, neutral pressed state | Borders, text, interactive fills |
-| `color.surface.strong` | `#D7D3E0` | Stronger background differentiation (reserved) | Primary backgrounds, large surfaces |
-| `color.surface.inverse` | `#161021` | Dark sections, inverse hero, preview blocks, footers | Regular product screens |
-| `color.surface.selected` | `#FFE5F6` | Selected tab fill, active chip fill, current nav item bg, selected list row | Hover states (use subtle), pressed states |
-
-### Border (5 tokens)
-
-| Token | Hex | Use for | Do NOT use for |
-|-------|-----|---------|----------------|
-| `color.border.default` | `#D7D3E0` | Input borders, card borders, list dividers, section separators | Small controls (20px) where it's too faint |
-| `color.border.subtle` | `#E8E4F0` | Inner-card dividers, light separators | Primary form borders |
-| `color.border.strong` | `#665E75` | Checkbox border (unchecked), radio border (unchecked), small controls | Large surface borders |
-| `color.border.brand` | `#FFB2E4` | Focus rings, brand-accent borders | Default form borders |
-| `color.border.selected` | `#D9008D` | Selected tab indicator, active chip border, selected card outline | Default form borders, hover states |
-
-**Size rule:** Large containers (100px+) → `default`. Small controls (20px) → `strong`.
-**Selection rule:** Selected state = `surface.selected` fill + `border.selected` stroke.
-
-### Positive — Success (4 tokens)
-
-| Token | Hex | Use for |
-|-------|-----|---------|
-| `color.positive.primary` | `#008043` | Success text, icons, status indicators |
-| `color.positive.soft` | `#A5E5C6` | Success outline, light positive border |
-| `color.positive.subtle` | `#C9F0DD` | Success card background |
-| `color.positive.tint` | `#E1FAED` | Success banner fill, lightest positive |
-
-**When:** Payment successful, plan activated, recharge complete, connection active, validation passed.
-
-### Negative — Error / Destructive (6 tokens)
-
-| Token | Hex | Use for |
-|-------|-----|---------|
-| `color.negative.primary` | `#D92130` | Error text/border, destructive button fill, required asterisk |
-| `color.negative.primary-hover` | `#BF1D2A` | Destructive button hover |
-| `color.negative.primary-pressed` | `#A31824` | Destructive button pressed |
-| `color.negative.soft` | `#FFB3B9` | Destructive focus ring, negative outline |
-| `color.negative.subtle` | `#FFCCD0` | Error card background |
-| `color.negative.tint` | `#FFE5E7` | Error banner fill, lightest negative |
-
-**When:** Validation error, payment failed, connection lost, required field.
-
-**Destructive button rules:** Red button is ONLY for irreversible, high-consequence actions — account deletion, active plan cancellation, payment method removal. Do NOT use red for "No thanks", "Cancel" (closing a form), "Skip", or routine declines. Those use secondary (brand) button. Wiom presents choices neutrally — red signals danger, not preference.
-
-### Warning (3 tokens)
-
-| Token | Hex | Use for |
-|-------|-----|---------|
-| `color.warning.primary` | `#B85C00` | Warning text on light backgrounds, warning icons |
-| `color.warning.soft` | `#FFDA40` | Warning indicator fills (NOT for icons on white — invisible at 1.30:1) |
-| `color.warning.subtle` | `#FFF2BF` | Warning banner fill |
-
-**When:** Low balance, plan expiring, action required before deadline, system maintenance, auto-pay not enabled, any non-error alert.
-
-**Warning icon rule:** Always use `warning.primary` (#B85C00) for warning icons on light backgrounds. NEVER use `warning.soft` (#FFDA40) as an icon color on white — yellow on white is 1.30:1 contrast, completely invisible.
-
-### Info (4 tokens)
-
-| Token | Hex | Use for |
-|-------|-----|---------|
-| `color.info.primary` | `#6D17CE` | Info icon, badge, status indicator |
-| `color.info.soft` | `#D6B2FF` | Info outline, light info border |
-| `color.info.subtle` | `#E4CCFF` | Info card background |
-| `color.info.tint` | `#F1E5FF` | Info banner fill, lightest info |
-
-**When:** Helpful tips, system information, feature announcements, neutral status.
-
-### Overlay (1 token)
-
-| Token | Hex | Use for |
-|-------|-----|---------|
-| `color.overlay.default` | `rgba(22,16,33, 0.50)` | Modal backdrop, bottom sheet scrim, blocking overlays |
-
-**Skeleton/loading states:** Use `surface.muted` (#E8E4F0) for placeholder fills + `surface.subtle` (#F1EDF7) for shimmer highlights. No separate skeleton tokens.
+If you're writing `Text(color = X)`, `X` must come from `text.*`. Never from `bg.*`. This is enforceable by lint and it's the first thing to check when reviewing PRs.
 
 ---
 
-## Icon Color Rules
+## When to read sub-reference files
 
-Icons map to existing tokens — no separate icon tokens. Default icons use `text.secondary` (not `text.primary`) because filled icons have more visual mass than text at the same color.
+Read the sub-reference **before** writing code for that area. Each file is a full token table with Compose code examples.
 
-| Context | Token | Hex |
-|---------|-------|-----|
-| Navigation, UI chrome, decorative | `color.text.secondary` | `#5C5570` |
-| Actionable / tappable (back, close, menu) | `color.text.secondary` | `#5C5570` |
-| Disabled | `color.text.disabled` | `#A7A1B2` |
-| Inverse (on dark surface) | `color.text.inverse` | `#FAF9FC` |
-| On colored fill | `color.text.on-color` | `#FFFFFF` |
-| Success status | `color.positive.primary` | `#008043` |
-| Error status | `color.negative.primary` | `#D92130` |
-| Warning status | `color.warning.primary` | `#B85C00` |
-| Info status | `color.info.primary` | `#6D17CE` |
-| Brand emphasis (selected check, focused chevron) | `color.brand.primary` | `#D9008D` |
-
-```
-Icon on a colored fill or dark surface?
-  → color.text.on-color / color.text.inverse
-
-Disabled icon?
-  → color.text.disabled
-
-Status indicator (success, error, warning, info)?
-  → Use {family}.primary
-  → Warning: use warning.primary (#B85C00), NOT warning.soft (#FFDA40)
-
-Brand emphasis (selected, focused)?
-  → color.brand.primary
-
-Default navigation / UI / decorative icon?
-  → color.text.secondary (#5C5570)
-```
+| You're working on… | Read |
+|---|---|
+| Any core UI chrome (text, backgrounds, borders, icons, banners) | `color/core-tokens.md` |
+| Any button or CTA (primary, secondary, tertiary, pre-booking, destructive) | `color/actions.md` |
+| Status bar, badges, empty states, tooltips, ratings, avatars, overlays | `color/patterns.md` |
+| Chat screens (bubbles, reply, system messages) | `color/chat.md` |
+| Primitive palette | `color/primitives.md` |
+| Contrast verification, WCAG pairs | `color/contrast.md` |
 
 ---
 
-## Decision Trees
+## The seven primitive families
 
-### Which text color?
+Primitives are `internal` in Kotlin. **Never import a primitive directly in feature code.** Always use a semantic token.
 
-```
-Text on a colored fill (brand.primary, positive.primary, negative.primary, info.primary)?
-  → color.text.on-color (#FFFFFF)
+| Family | Range | Purpose |
+|---|---|---|
+| **Neutral** | 50–950 (11 steps) | Product UI chrome, warm mauve undertone carries brand warmth into grays |
+| **Gray** | 50–950 (11 steps) | Pure grayscale for chat domain + source of pure white (Gray_50 = #FFFFFF) |
+| **Brand** | 100–900 (9 steps) | Brand_600 = #D9008D (non-negotiable anchor) |
+| **Positive** | 100–900 (9 steps) | Success green |
+| **Critical** | 100–900 (9 steps) | Error red / destructive |
+| **Warning** | 100–900 (9 steps) | Yellow throughout — never orange. Warning_300 (#E2B203) is the gold accent |
+| **Info** | 100–900 (9 steps) | Purple. Info_600 = #6D17CE (anchor) |
 
-Text on a dark neutral surface (surface.inverse, brand.secondary)?
-  → color.text.inverse (#FAF9FC)
+Step numbers match the Tailwind/Radix convention so AI pattern-matching works. Neutral and Gray have steps 50 and 950 because they cover the full light-to-dark UI range; colored families skip those extremes (step 50 would be indistinguishable from Neutral_50, step 950 would be near-black).
 
-Text on a light colored surface (warning.subtle, positive.subtle, negative.subtle)?
-  → color.text.primary (#161021)
-
-Component is disabled?
-  → color.text.disabled (#A7A1B2)
-
-It's a text link?
-  → color.text.link (#D9008D) / hover: color.text.link-hover (#C00080)
-
-Heading, label, input value, or primary content?
-  → color.text.primary (#161021)
-
-Description, helper, placeholder, metadata, or timestamp?
-  → color.text.secondary (#5C5570)
-```
-
-### Which surface color?
-
-```
-Standard page, card, input, or modal background?
-  → color.surface.base (#FAF9FC)
-
-Hover tint, disabled fill, or section card?
-  → color.surface.subtle (#F1EDF7)
-
-Grouped section or alternating row?
-  → color.surface.muted (#E8E4F0)
-
-Currently selected/active item (tab, chip, nav, list row)?
-  → color.surface.selected (#FFE5F6)
-
-Dark or inverse context?
-  → color.surface.inverse (#161021)
-```
-
-### Which border color?
-
-```
-Large container (input, card, menu: 100px+ wide)?
-  → color.border.default (#D7D3E0)
-
-Small control (checkbox, radio: ~20px)?
-  → color.border.strong (#665E75)
-
-Light inner separator?
-  → color.border.subtle (#E8E4F0)
-
-Brand-accented boundary or focus ring?
-  → color.border.brand (#FFB2E4)
-
-Selected/active element indicator?
-  → color.border.selected (#D9008D)
-```
-
-### Which interaction state?
-
-```
-Hovered?
-  → Brand CTA: color.brand.primary-hover (#C00080)
-  → Destructive: color.negative.primary-hover (#BF1D2A)
-  → Secondary/tertiary button: color.brand.primary-tint (#FFE5F6) fill
-  → Option row / neutral surface: color.surface.subtle (#F1EDF7)
-
-Pressed/active?
-  → Brand CTA: color.brand.primary-pressed (#A30070)
-  → Destructive: color.negative.primary-pressed (#A31824)
-  → Secondary/tertiary button: color.brand.primary-subtle (#FFCCED) fill
-  → Neutral surface (list row, nav item): color.surface.muted (#E8E4F0)
-
-Currently selected (tab, chip, nav)?
-  → Surface: color.surface.selected (#FFE5F6)
-  → Border/indicator: color.border.selected (#D9008D)
-
-Focused?
-  → All non-destructive: color.border.brand / color.brand.primary-soft (#FFB2E4) focus ring
-  → Destructive: color.negative.soft (#FFB3B9) focus ring
-
-Disabled?
-  → Surface: color.surface.muted (#E8E4F0)
-  → Text/icons: color.text.disabled (#A7A1B2)
-  → Fills/strokes: base color at 40% opacity
-
-Action inside a status banner (e.g., "Undo" on success toast, "Learn more" on info banner)?
-  → Use brand interaction states (brand.primary-hover / brand.primary-pressed)
-  → Exception: destructive action inside any context → negative hover/pressed
-```
-
-### Which feedback color family?
-
-```
-Success, completion, positive outcome?
-  → Positive (green): primary/soft/subtle/tint
-
-Error, failure, destructive action, required field?
-  → Negative (red): primary/soft/subtle/tint + hover/pressed for buttons
-
-Non-error alert, expiry, low balance, attention needed?
-  → Warning (yellow): primary/soft/subtle
-
-Helpful info, tips, announcements, neutral status?
-  → Info (purple): primary/soft/subtle/tint
-```
-
-### Which shade within a feedback family?
-
-```
-Text or icon conveying the status?
-  → {family}.primary (darkest, strongest)
-
-Outline or light border around feedback element?
-  → {family}.soft
-
-Card or container background for feedback content?
-  → {family}.subtle
-
-Full-width banner or lightest background wash?
-  → {family}.tint
-```
-
-**Status text on status banners:** Use `text.primary` (#161021) for body text on status banners — NOT `{family}.primary`. Several family primaries fail AA contrast on their own tint/subtle backgrounds (warning 4.09:1, positive 4.08:1, negative 3.51–4.18:1). Reserve `{family}.primary` for icons only on these surfaces. Exception: `info.primary` passes on its own backgrounds and can be used for text.
+**Total: 67 primitives.**
 
 ---
 
-## Approved Contrast Pairings
+## What's intentionally missing
 
-All ratios calculated against final shipped hex values (April 2026).
+These gaps are by design. Do not invent tokens to fill them.
 
-### Text on neutral surfaces (all pass WCAG AA 4.5:1)
+**No `text.warning` token.** Warning text is always `text.default`. Rationale: amber text dark enough for AA contrast reads as brown and loses its yellow character. The warning signal is carried by `icon.warning` + `bg.warning.subtle`, not by text color.
 
-| Text | Surface | Ratio | Use case |
-|------|---------|-------|----------|
-| text.primary `#161021` | surface.base `#FAF9FC` | 17.71:1 | Default UI |
-| text.primary `#161021` | surface.subtle `#F1EDF7` | 16.10:1 | Cards, sections |
-| text.primary `#161021` | surface.muted `#E8E4F0` | 14.85:1 | Grouped areas |
-| text.secondary `#5C5570` | surface.base `#FAF9FC` | 6.70:1 | Descriptions, metadata |
-| text.inverse `#FAF9FC` | surface.inverse `#161021` | 17.71:1 | Dark sections |
+**No hover/pressed states on Positive, Info, Warning, or Neutral.** These are feedback families (banners, toasts, badges) — not interactive surfaces. Actions inside a feedback surface (e.g., "Undo" on a success toast) use brand or critical tokens, which have interaction states.
 
-### Text on colored fills (all pass WCAG AA 4.5:1)
+**No green CTA.** Confirmation buttons use `bg.brand`. Wiom presents choices neutrally — no green "yes" / red "no" pressure.
 
-| Text | Surface | Ratio | Use case |
-|------|---------|-------|----------|
-| text.on-color `#FFFFFF` | brand.primary `#D9008D` | 4.84:1 | Primary CTA label |
-| text.on-color `#FFFFFF` | negative.primary `#D92130` | 4.99:1 | Destructive CTA label |
-| text.on-color `#FFFFFF` | positive.primary `#008043` | 5.04:1 | Success icon label |
-| text.on-color `#FFFFFF` | info.primary `#6D17CE` | 7.88:1 | Info badge label |
-
-### Status banners — use text.primary for body text
-
-| Foreground | Background | Ratio | Status |
-|------------|------------|-------|--------|
-| text.primary `#161021` | warning.subtle `#FFF2BF` | 16.55:1 | PASS |
-| text.primary `#161021` | positive.tint `#E1FAED` | 16.90:1 | PASS |
-| text.primary `#161021` | negative.tint `#FFE5E7` | 15.58:1 | PASS |
-| text.primary `#161021` | info.tint `#F1E5FF` | 15.39:1 | PASS |
-| info.primary `#6D17CE` | info.tint `#F1E5FF` | 6.53:1 | PASS — info can use family color for text |
-| warning.primary `#B85C00` | warning.subtle `#FFF2BF` | 4.09:1 | **FAIL** — use text.primary for text |
-| positive.primary `#008043` | positive.subtle `#C9F0DD` | 4.08:1 | **FAIL** — use text.primary for text |
-| negative.primary `#D92130` | negative.tint `#FFE5E7` | 4.18:1 | **FAIL** — use text.primary for text |
-| negative.primary `#D92130` | negative.subtle `#FFCCD0` | 3.51:1 | **FAIL** — use text.primary for text |
-
-### Pairings to AVOID
-
-| Text | Surface | Ratio | Why |
-|------|---------|-------|-----|
-| text.disabled | surface.muted | 2.00:1 | Disabled text on tinted surface — unreadable |
-| text.inverse | surface.base | 1.00:1 | Invisible — same lightness |
-| warning.soft `#FFDA40` | surface.base | 1.30:1 | Yellow on white — use warning.primary for icons |
-| brand.primary | brand.primary-tint | 4.10:1 | Fails AA for text — use text.primary on brand surfaces |
-
-### Mobile-specific note
-
-Brand primary (#D9008D) on white is 4.62:1 — passes for non-text and large text but marginal for normal text. For small brand-colored text, use `brand.primary-hover` (#C00080, 5.63:1). Test critical pairings on actual budget devices.
+**`bg.critical` as a CTA fill is scoped to destructive actions only.** Delete, cancel-plan, remove-payment-method. Never "Dismiss", "Skip", "Cancel" (closing a form), "Close", "Go back". Those are Secondary or Tertiary. Non-CTA uses of `bg.critical` (badges, avatar fills, form errors) are exempt — see `color/patterns.md`.
 
 ---
 
-## Component State Rules
+## Six most common decisions (memorize these)
 
-### Error states
-- Border/stroke → `color.negative.primary` (#D92130)
-- Error helper text → `color.negative.primary` (#D92130)
-- Error icon → `color.negative.primary` (#D92130)
-- Labels + input text → NO change (stay `color.text.primary`)
-- Checked checkbox/radio in error → fill becomes `color.negative.primary`
+### 1. "What color is body text?"
+`text.default` (#161021 ← Neutral_950). Used on every light surface including status banners. Warning banners use `text.default`, not a warning-tinted text.
 
-### Disabled states
-- Text and icons → `color.text.disabled` (#A7A1B2)
-- Container fill → `color.surface.subtle` (#F1EDF7)
-- Filled/stroked elements → base color at 40% opacity
-- No pointer events
+### 2. "What's the fill for the main CTA on this screen?"
+`bg.brand` (#D9008D ← Brand_600). Max one primary CTA per screen — this is a rate limit, not a suggestion. If you have two actions and both feel primary, one of them is actually Secondary (use Secondary CTA tokens).
 
-### Focus ring
-- Non-destructive components → `color.brand.primary-soft` (#FFB2E4)
-- Destructive components → `color.negative.soft` (#FFB3B9)
+### 3. "How do I build a Secondary CTA?"
+No rest-state fill. `text.brand` label + `stroke.brand.focus` border (saturated #D9008D). Pressed state adds `bg.brand.subtle` fill. No hover state token — hover uses text color change only.
 
-### Selected states
-- Surface fill → `color.surface.selected` (#FFE5F6)
-- Border/indicator → `color.border.selected` (#D9008D)
-- Distinct from hover (surface.subtle) and pressed (brand.primary-subtle)
+### 4. "How do I color an error banner?"
+`bg.critical.subtle` (#FFE5E7) background, `text.default` body text, `text.critical` (#D92130) for headings/emphasis, `icon.critical` for the alert icon. **Not** white text on red — that's the destructive CTA pattern, used only on buttons.
 
----
+### 5. "How do I color a warning badge?"
+Solid yellow fill `bg.warning` (#E2B203 ← Warning_300) with `text.onWarning` (#372902 ← Warning_900) label. Dark olive text on gold badge — cohesive warning identity. Note: white text on this fill fails AA (1.98:1); `text.onWarning` is required.
 
-## Strict Rules
+### 6. "My CTA has an icon next to the label — what tint?"
+Use the `icon.*` family, with one token per CTA type:
+- Primary & Destructive → `icon.inverse` (near-white)
+- Secondary & Tertiary → `icon.brand` (pink)
+- Pre-booking → `icon.action` (dark neutral)
+- Any disabled CTA → `icon.disabled`
 
-### DO
-- Use ONLY tokens from this list — never raw hex values
-- Use `text.on-color` (#FFFFFF) for text on any colored fill
-- Use `text.inverse` (#FAF9FC) for text on dark neutral surfaces
-- Use `text.primary` (#161021) for text on light semantic surfaces (warning.subtle, positive.tint, etc.)
-- Use `text.primary` (#161021) for body text on status banners — NOT family.primary colors
-- Use `text.secondary` (#5C5570) for default navigation/UI icons — NOT text.primary
-- Use `warning.primary` (#B85C00) for warning icons — NOT warning.soft (#FFDA40)
-- Use the correct border weight by element size (default for large, strong for small)
-- Use semantic feedback colors ONLY for their intended meaning
-- Use `surface.selected` + `border.selected` for currently active/selected elements
-- Use brand interaction states for actions inside status banners
-- Follow the interaction state decision tree exactly
-- Keep the consistent pattern: primary → soft → subtle → tint (dark to light)
-
-### DO NOT
-- Do NOT use `brand.primary` (#D9008D) as body text or large surface fill
-- Do NOT use `text.primary` on dark/brand fills — use `text.inverse` or `text.on-color`
-- Do NOT use `negative.primary` for decorative red — it means error/destructive only
-- Do NOT use red (destructive) buttons for "No thanks", "Skip", "Cancel" (closing a form), or routine declines — use secondary (brand) button. Red is ONLY for irreversible actions (account deletion, plan cancellation, payment method removal)
-- Do NOT use `surface.inverse` for regular screens — it's for rare high-contrast moments
-- Do NOT use `text.on-color` on light or dark neutral surfaces — it's ONLY for colored fills
-- Do NOT use `text.inverse` on light backgrounds — it will be invisible
-- Do NOT use `warning.soft` (#FFDA40) as icon color on white backgrounds — invisible (1.30:1)
-- Do NOT use `{family}.primary` as text color on status banners (except info) — use text.primary instead
-- Do NOT invent new colors, opacities (except 40% for disabled), or gradients
-- Do NOT mix feedback families (e.g., warning icon on a negative card)
-- Do NOT use primitive tokens in UI — primitives are for theming infrastructure only
-
-### WHEN IN DOUBT
-If no token fits your use case, flag it as a gap. Do not approximate. Use the decision trees above to resolve ambiguity.
+Icons and labels use slightly different hexes on filled CTAs (e.g., icon `#FAF9FC` vs label `#FFFFFF` on Primary) — this is intentional to rebalance the visual weight of filled icons against text glyphs. Set `tint` explicitly on the `Icon` composable; don't rely on `Button(contentColor)` inheritance for CTA icons. Full mapping: `color/actions.md`.
 
 ---
 
-## Quick Hex Lookup
+## CTA types and when to use each
 
-```
-BRAND:     #D9008D  #C00080  #A30070  #FFB2E4  #FFCCED  #FFE5F6  #4A1535
-TEXT:      #161021  #5C5570  #A7A1B2  #FAF9FC  #D9008D  #C00080  #FFFFFF
-SURFACE:   #FAF9FC  #F1EDF7  #E8E4F0  #D7D3E0  #161021  #FFE5F6
-BORDER:    #D7D3E0  #E8E4F0  #665E75  #FFB2E4  #D9008D
-POSITIVE:  #008043  #A5E5C6  #C9F0DD  #E1FAED
-NEGATIVE:  #D92130  #BF1D2A  #A31824  #FFB3B9  #FFCCD0  #FFE5E7
-WARNING:   #B85C00  #FFDA40  #FFF2BF
-INFO:      #6D17CE  #D6B2FF  #E4CCFF  #F1E5FF
-OVERLAY:   rgba(22,16,33,0.50)
-```
+| CTA | Use for | Visual |
+|---|---|---|
+| **Primary** | One main action per screen ("Recharge", "Book", "Continue") | Filled pink |
+| **Secondary** | Alternate actions, ~40% weight ("Learn more", "See details") | Outlined pink |
+| **Tertiary** | Lightest-weight actions, often inline ("Edit", "Clear", "Skip") | Text only |
+| **Pre-booking** | Customer-app booking flows specifically | Filled bright pink (Brand_400) |
+| **Destructive** | Delete, cancel-plan, remove — irreversible only | Filled red |
+
+Secondary and Tertiary share the same `bg.brand.subtle` pressed-state fill.
+
+Pre-booking is a customer-app-specific accent, not a generic variant. Do not use Pre-booking colors for non-booking flows.
+
+Full CTA token specs: `color/actions.md`.
 
 ---
 
-Apply this color system to the user's design request. Use token names in your output (not just hex values) so the design is traceable back to this system. If generating code, use the CSS custom property format: `var(--color-brand-primary)`, `var(--color-text-secondary)`, etc.
+## Patterns beyond core tokens
+
+Rules for recurring UI patterns (status bar, notification badges, empty states, tooltips, star ratings, trust indicators, avatar fallbacks, image overlays) live in `color/patterns.md`. Each pattern is an application of existing tokens — no new tokens needed.
+
+---
+
+## Dark mode
+
+Not yet defined. Flag to the design system team if a dark-mode screen is requested — do not implement ad-hoc.
+
+---
+
+## Chat domain
+
+Chat uses its own Gray family (pure grayscale, no brand warmth) with namespaced `chat.*` tokens. The tokens are scoped — `chat.bg.canvas` is only valid inside a chat screen. Full token list: `color/chat.md`.
+
+---
+
+## Contrast guarantees (pre-verified AA)
+
+Every common token pairing has been verified against WCAG AA and documented in `color/contrast.md`. When you pair tokens per the rules in this skill, contrast is guaranteed. When you invent pairings or use tokens against their documented `PAIRS` annotation, verify manually.
+
+The one pairing with tight margins: `text.critical` on `bg.critical.subtle` is 4.18:1 (AA-Large only, not AA for small text). Use `text.default` for body copy on error banners and reserve `text.critical` for headings/icons.
+
+---
+
+## Enforcement (lint rules that work)
+
+These rules are mechanically enforceable because the element is in the token namespace:
+
+1. `bg.*` tokens only valid on background properties — Detekt rule can flag `Text(color = WiomColors.bgCriticalSubtle)` as a type-mismatch error
+2. `text.*` tokens only valid on Text/label properties
+3. `bg.brand` (primary CTA) requires `text.onBrand` child
+4. `bg.critical` **used as a CTA button fill** is rate-limited to 1 per screen — the check applies to `Button(containerColor = bgCritical)`, not to badges, avatar fills, or form error states
+5. `icon.warning` only valid inside `bg.warning.subtle` **or** inside a rating component (e.g., `RatingBar`, `StarIcon`) — flag everywhere else
+6. No raw hex outside the design-system module — primitives are `internal`
+
+If you're writing a lint rule, reference these invariants.
+
+---
+
+## Anti-patterns (mistakes we've seen)
+
+- **Using `bg.brand.subtle` as a text color**: It's a background. Use `text.brand` for brand-tinted text.
+- **Using `text.warning`**: Doesn't exist. Use `text.default` on warning surfaces.
+- **Adding hover to a success toast button**: The button uses brand tokens (`text.brand` with `text.brand.hover`), not positive tokens.
+- **Red button for "Cancel subscription flow"**: If the user is dismissing a form, that's Secondary, not Destructive. Red is only for actual destruction.
+- **`#FFFFFF` hardcoded**: Use `Gray_50` — but even then, only inside a semantic token definition. In feature code, use `text.onBrand` / `text.onCritical` / `chat.bg.userBubble` etc.
+- **Inventing Brand_550, Brand_575**: These don't exist. Pre-booking hover uses Brand_300 (placeholder). Pre-booking pressed uses Brand_500.
+- **Info_600 confusion**: `#6D17CE` is Info_600 (re-anchored). Older docs called this Info_700 — those docs are stale.
+- **Using `text.brand.hover` (#C00080) as a rest-state text color**: Hover tokens are only for hover states. If small brand text feels low-contrast on white, the fix is bigger type, not a darker token (see "Small brand text" below).
+- **Using `icon.brand` for a Primary CTA's icon**: Brand pink on brand pink is invisible. Primary and Destructive CTAs use `icon.inverse` (near-white) for icons; see "Six most common decisions" #6.
+- **Using `text.onBrand` as an `Icon(tint=)` value**: The namespace rule holds — `Icon(tint=)` always uses `icon.*` tokens, even inside CTAs. See the mapping table in actions.md.
+
+---
+
+## Flag a gap, don't invent
+
+If you need a color that isn't in the system:
+
+1. Check the decision trees in `color/core-tokens.md` and `color/actions.md` first
+2. If nothing fits, flag it as a gap (PR comment: `// GAP: needed X for Y, no token exists`)
+3. Don't approximate with the "closest" token — silent drift is worse than a flagged gap
+4. Don't eyedrop from Figma — raw hex outside the design-system module is a build-time failure
+
+Only `overlay.scrim` and the 40% disabled-opacity fallback are system-provided exceptions.
+
+---
+
+## Small brand text on white
+
+`text.brand` (#D9008D) on `bg.default` is 4.62:1 — passes AA but marginal on budget Android at low brightness.
+
+Safe sizes: **14sp+ regular, 12sp+ bold.** Below that, use `text.default` for body and put brand emphasis elsewhere (icon, underline). Do not substitute a darker token — brand pink is fixed at #D9008D.
+
+---
+
+## Disabled states
+
+| Element | Disabled token |
+|---|---|
+| Container fill | `bg.disabled` (#D7D3E0 ← Neutral_300) |
+| Text/label | `text.disabled` (#A7A1B2 ← Neutral_400) |
+| Icon | `icon.disabled` (#D7D3E0 ← Neutral_300) |
+
+**Fallback when no dedicated token exists** (e.g., disabled Pre-booking CTA, disabled colored badge):
+
+- Base color from Neutral family → use the dedicated disabled token above
+- Base color from non-Neutral family (Brand, Positive, Critical, Warning, Info) → apply **40% opacity** to the base color
+
+Example: disabled Pre-booking CTA = `bg.brand.accent` at 40% opacity. Never apply opacity to Neutral-family tokens — use the dedicated tokens.
+
+---
+
+## Output format
+
+- Compose: `WiomColors.bgBrand` (not `Color(0xFFD9008D)`)
+- CSS: `var(--color-bg-brand)` (not `#D9008D`)
+- Figma: use the named style (`bg/brand`), never a loose color fill

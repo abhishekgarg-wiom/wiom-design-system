@@ -4,11 +4,12 @@ description: >
   Unified Wiom (CA) Design System foundation tokens and rules for Android (Jetpack Compose).
   Covers ALL visual foundations: color, typography, iconography, spacing, radius, stroke/border, and shadow.
   Use EVERY TIME you write, edit, review, or generate any UI for the Wiom app — Kotlin, Compose, XML, Figma.
-  Trigger on: hex values, color tokens, TextStyle, Typography, font sizes, weights, sp/dp values, Icon(),
-  painterResource, padding, margin, gap, border, stroke, radius, shadow, elevation, RoundedCornerShape,
-  Modifier.border/shadow/padding, Arrangement.spacedBy, touch targets, dividers, or legacy tokens like
-  T1_32_Bold, B2_14_Regular, radius-main-card, stroke-small. Also trigger when creating new screens,
-  components, layouts, or reviewing PRs. If writing ANY visual UI for Wiom, consult this skill first.
+  Trigger on: hex values, element-first color tokens (bg.*, text.*, stroke.*, icon.*), brand pink #D9008D,
+  TextStyle, Typography, font sizes, weights, sp/dp values, Icon(), painterResource, padding, margin, gap,
+  border, stroke, radius, shadow, elevation, RoundedCornerShape, Modifier.border/shadow/padding,
+  Arrangement.spacedBy, touch targets, dividers, or legacy tokens like T1_32_Bold, B2_14_Regular,
+  radius-main-card, stroke-small, color.brand.primary, color.warning.primary. Also trigger when creating
+  new screens, components, layouts, or reviewing PRs. If writing ANY visual UI for Wiom, consult this skill first.
 ---
 
 # Wiom Design System — Unified Foundations
@@ -44,25 +45,38 @@ Read the relevant reference file(s) BEFORE writing any code or making design dec
 
 ## Quick Token Reference
 
-### Color — 43 Semantic Tokens
+### Color — Element-First Semantic Tokens
 
-Use ONLY Tier 2 semantic tokens. Never raw hex in UI code.
+**Four namespaces matched to Compose slots.** Never use raw hex in UI code. Legacy role-first tokens (`color.brand.primary`, `color.warning.primary`, etc.) are DEPRECATED.
 
-| Category | Key Tokens | Hex Examples |
-|----------|-----------|-------------|
-| **Brand** | `color.brand.primary` / `primary-hover` / `primary-pressed` / `primary-soft` / `primary-subtle` / `primary-tint` / `secondary` | `#D9008D` `#C00080` `#A30070` `#FFB2E4` `#FFCCED` `#FFE5F6` `#4A1535` |
-| **Text** | `color.text.primary` / `secondary` / `disabled` / `inverse` / `link` / `link-hover` / `on-color` | `#161021` `#5C5570` `#A7A1B2` `#FAF9FC` `#D9008D` `#C00080` `#FFFFFF` |
-| **Surface** | `color.surface.base` / `subtle` / `muted` / `strong` / `inverse` / `selected` | `#FAF9FC` `#F1EDF7` `#E8E4F0` `#D7D3E0` `#161021` `#FFE5F6` |
-| **Border** | `color.border.default` / `subtle` / `strong` / `brand` / `selected` | `#D7D3E0` `#E8E4F0` `#665E75` `#FFB2E4` `#D9008D` |
-| **Positive** | `color.positive.primary` / `soft` / `subtle` / `tint` | `#008043` `#A5E5C6` `#C9F0DD` `#E1FAED` |
-| **Negative** | `color.negative.primary` / `primary-hover` / `primary-pressed` / `soft` / `subtle` / `tint` | `#D92130` `#BF1D2A` `#A31824` `#FFB3B9` `#FFCCD0` `#FFE5E7` |
-| **Warning** | `color.warning.primary` / `soft` / `subtle` | `#B85C00` `#FFDA40` `#FFF2BF` |
-| **Info** | `color.info.primary` / `soft` / `subtle` / `tint` | `#6D17CE` `#D6B2FF` `#E4CCFF` `#F1E5FF` |
-| **Overlay** | `color.overlay.default` | `rgba(22,16,33,0.50)` |
+| Compose slot | Token namespace |
+|---|---|
+| `Box(background=…)`, `Surface(color=…)`, `Modifier.background(…)` | `bg.*` |
+| `Text(color=…)` | `text.*` |
+| `BorderStroke(color=…)`, `Divider(color=…)`, `Modifier.border(…)` | `stroke.*` |
+| `Icon(tint=…)`, `painterResource + tint` | `icon.*` |
 
-**Critical rules:** `text.on-color` (#FFFFFF) on colored fills. `text.inverse` (#FAF9FC) on dark neutrals. `text.primary` (#161021) on light status surfaces. Default icons use `text.secondary` (#5C5570). Warning icons use `warning.primary` (#B85C00), NEVER `warning.soft`. Red buttons ONLY for irreversible destructive actions.
+**Primitive families (67 total, `internal` only — never import directly in feature code):**
 
-→ Full details: `references/color.md`
+| Family | Range | Purpose / Anchor |
+|---|---|---|
+| **Neutral** | 50–950 | Warm mauve undertone UI chrome |
+| **Gray** | 50–950 | Pure grayscale for chat domain; Gray_50 = #FFFFFF |
+| **Brand** | 100–900 | Brand_600 = **#D9008D** (non-negotiable) |
+| **Positive** | 100–900 | Success green |
+| **Critical** | 100–900 | Error red / destructive |
+| **Warning** | 100–900 | Yellow ONLY (never orange); Warning_300 = #E2B203 gold |
+| **Info** | 100–900 | Purple; Info_600 = #6D17CE |
+
+**Critical rules:**
+- Body text on ALL light surfaces (including status banners): `text.default` (#161021). No `text.warning` token exists.
+- Error banner: `bg.critical.subtle` + `text.default` body + `text.critical` for heading/icon. Never white-on-red (that's destructive CTA only).
+- Warning badge: `bg.warning` (#E2B203) + `text.onWarning` (#372902). White text on warning fill fails AA.
+- Primary CTA: `bg.brand` (#D9008D). Max **one** per screen.
+- `bg.critical` as CTA fill: destructive actions ONLY (Delete, Cancel-plan, Remove). Never for "Dismiss"/"Skip"/"Close".
+- CTA icons use `icon.*` tokens, not `text.on*`. Primary/Destructive → `icon.inverse`; Secondary/Tertiary → `icon.brand`; Pre-booking → `icon.action`.
+
+→ Full details: `references/color.md` + sub-references in `references/color/` (core-tokens, actions, patterns, chat, primitives, contrast)
 
 ### Typography — 13 Semantic Tokens
 
@@ -190,13 +204,13 @@ Every color, size, spacing, radius, stroke, and shadow value must come from the 
 A success icon never appears on a warning surface. A negative border never wraps a positive card. Each status family (positive/negative/warning/info) is self-contained.
 
 ### 8. Text on Status Banners
-Use `text.primary` (#161021) for body text on status banners — NOT `{family}.primary`. Exception: `info.primary` passes contrast on its own backgrounds.
+Use `text.default` (#161021) for body text on ALL status banners (including warning). Reserve `text.critical` / `text.positive` / `text.info` for headings and emphasis. No `text.warning` token exists.
 
 ### 9. Dividers Inside Cards Respect Padding
 Dividers inside a card are inset to match the card's content padding (typically 16px from both edges). Never full-bleed inside a card.
 
 ### 10. Disabled State Pattern
-Text/icons → `color.text.disabled`. Fill → `color.surface.subtle`. Stroked elements → base color at 40% opacity. Stroke width stays the same (1px). No pointer events.
+Text → `text.disabled` (#A7A1B2). Icon → `icon.disabled` (#D7D3E0). Fill → `bg.disabled` (#D7D3E0). For non-Neutral base colors (Brand/Positive/Critical/Warning/Info) with no dedicated disabled token, apply 40% opacity to the base color. Never apply opacity to Neutral-family tokens. No pointer events.
 
 ---
 
@@ -207,47 +221,47 @@ When building a common component, here's which tokens from each foundation apply
 ### Card (interactive, flat)
 | Foundation | Token |
 |-----------|-------|
-| Surface | `color.surface.base` |
-| Border | `stroke-small` (1px) + `color.border.default` |
+| Surface | `bg.default` |
+| Border | `stroke-small` (1px) + `stroke.default` |
 | Radius | `radius-large` (16px) |
 | Shadow | `shadow.none` (flat) OR `shadow.md` (elevated — then no border) |
 | Padding | `space-16` all sides |
-| Title | `type.title.sm` + `color.text.primary` |
-| Body | `type.body.md` + `color.text.secondary` |
+| Title | `type.title.sm` + `text.default` |
+| Body | `type.body.md` + `text.subtle` |
 | Internal gap | `space-16` between sections, `space-8` title→subtitle, `space-32` content→CTA |
 
 ### Primary Button
 | Foundation | Token |
 |-----------|-------|
-| Fill | `color.brand.primary` → hover: `primary-hover` → pressed: `primary-pressed` |
-| Text | `type.label.lg` + `color.text.on-color` |
+| Fill | `bg.brand` → hover: `bg.brand.hover` → pressed: `bg.brand.pressed` |
+| Text | `type.label.lg` + `text.onBrand` |
 | Radius | `radius-large` (16px) |
 | Shadow | `shadow.none` |
 | Stroke | None (filled = no border) |
-| Icon (if any) | `icon.sm` (20dp), filled |
+| Icon (if any) | `icon.sm` (20dp), filled + `icon.inverse` |
 | Min height | 48px (via `space-12` vertical padding + 24sp line-height) |
 
 ### Input Field
 | Foundation | Token |
 |-----------|-------|
-| Border (rest) | `stroke-small` (1px) + `color.border.default` |
-| Border (active) | `stroke-medium` (2px) + `color.brand.primary` |
-| Border (error) | `stroke-medium` (2px) + `color.negative.primary` |
+| Border (rest) | `stroke-small` (1px) + `stroke.default` |
+| Border (active) | `stroke-medium` (2px) + `stroke.brand.focus` |
+| Border (error) | `stroke-medium` (2px) + `stroke.critical` |
 | Radius | `radius-medium` (12px) |
-| Label | `type.label.md` + `color.text.primary` |
-| Value | `type.body.md` + `color.text.primary` |
-| Helper | `type.body.sm` + `color.text.secondary` |
+| Label | `type.label.md` + `text.default` |
+| Value | `type.body.md` + `text.default` |
+| Helper | `type.body.sm` + `text.subtle` |
 | Padding | `space-16` horizontal, `space-12` vertical |
 | Shadow | `shadow.none` |
 
 ### Bottom Sheet
 | Foundation | Token |
 |-----------|-------|
-| Surface | `color.surface.base` |
+| Surface | `bg.default` |
 | Radius | `radius-xlarge` (24px) top corners only |
-| Shadow | `shadow.md` (standard) or `shadow.xl` (full-screen, with overlay) |
+| Shadow | `shadow.md` (standard) or `shadow.xl` (full-screen, with overlay.scrim) |
 | Padding | `space-16` all sides |
-| Header | `type.heading.md` + `color.text.primary` |
+| Header | `type.heading.md` + `text.default` |
 | Stroke | None (shadow provides depth) |
 
 ---
@@ -262,8 +276,10 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] Border on a filled/checked/toggled component (filled = no border)
 - [ ] Same radius on nested containers (use inner = outer − padding)
 - [ ] Full-bleed divider inside a padded card (inset to match padding)
-- [ ] `warning.soft` (#FFDA40) as icon color on white (invisible — use `warning.primary`)
-- [ ] `text.on-color` on neutral surfaces (only for colored fills)
+- [ ] Legacy role-first tokens (`color.brand.primary`, `color.warning.primary` #B85C00 brown, `warning.soft` #FFDA40 — all deprecated; use element-first `bg.*`/`text.*`/`stroke.*`/`icon.*`)
+- [ ] `text.warning` used anywhere (doesn't exist — warning text is always `text.default`)
+- [ ] `text.onBrand` / `text.onCritical` used as an `Icon(tint=)` value (icons use `icon.*` tokens, even inside CTAs)
+- [ ] Namespace/slot mismatch (e.g., `Text(color = bgCriticalSubtle)` — `bg.*` never valid on text)
 - [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` (use Material Symbols Rounded drawables)
 - [ ] Icon sizes not in {16, 20, 24, 48}dp
 - [ ] Spacing values not on the 4px grid
