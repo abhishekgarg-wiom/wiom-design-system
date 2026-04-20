@@ -90,15 +90,17 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 | `type.heading.md` | 20sp | Bold 700 | 28sp | Card group / sub-section |
 | `type.title.lg` | 20sp | Medium 500 | 28sp | Nav / toolbar title |
 | `type.title.sm` | 16sp | Bold 700 | 24sp | Card title / list header |
-| `type.body.lg` | 16sp | Regular 400 | 24sp | Long-form / description |
-| `type.body.md` | 14sp | Regular 400 | 20sp | Default paragraph / chat |
-| `type.body.sm` | 12sp | Regular 400 | 16sp | Caption / helper / footnote |
-| `type.label.lg` | 16sp | SemiBold 600 | 24sp | Default button / CTA |
-| `type.label.md` | 14sp | SemiBold 600 | 20sp | Input label / nav / small btn |
-| `type.label.sm` | 12sp | SemiBold 600 | 16sp | Chip / badge / tag |
-| `type.meta.xs` | 10sp | Regular 400 | 16sp | ⚠ Timestamp / badge ONLY |
+| `type.body.lg` | 16sp | Regular 400 | 24sp | ★ **Default reading text** — paragraph, description, toast body, input value, list primary, empty-state |
+| `type.body.md` | 14sp | Regular 400 | 20sp | Card description, chat bubble, helper, banner body, inline error, list secondary |
+| `type.body.sm` | 12sp | Regular 400 | 16sp | Caption, chat reply preview, activity timestamp |
+| `type.label.lg` | 16sp | SemiBold 600 | 24sp | ★ **Default interactive** — CTA (all types), input label, radio/checkbox/switch, toast action |
+| `type.label.md` | 14sp | SemiBold 600 | 20sp | Chip, filter, tab, badge label, inline secondary btn ("Edit", "See all") |
+| `type.label.sm` | 12sp | SemiBold 600 | 16sp | Chat reply sender, bottom nav |
+| `type.meta.xs` | 10sp | Regular 400 | 16sp | ⚠ Chat-bubble timestamp / badge count ONLY |
 
-**Default:** `body.md` for reading text, `label.md` for interactive text, `label.lg` for buttons.
+**Default: 16sp.** `body.lg` for reading text, `label.lg` for interactive text. Page / dialog / bottom-sheet headers default to `heading.lg` (24 Bold). Chat bubble body is an **intentional exception** at `body.md` (14) — density matters in dense-message domain. Floor rule: sub-14sp only for captions/chat-reply/timestamps; `meta.xs` 10sp only for chat-bubble timestamps and badge counts. Never for Hindi body text.
+
+**Pairing rule (title → description):** Title 24/20 → description 16. Title/label 16 → description 14.
 
 → Full details: `references/typography.md`
 
@@ -248,9 +250,10 @@ When building a common component, here's which tokens from each foundation apply
 | Border (active) | `stroke-medium` (2px) + `stroke.brand.focus` |
 | Border (error) | `stroke-medium` (2px) + `stroke.critical` |
 | Radius | `radius-medium` (12px) |
-| Label | `type.label.md` + `text.default` |
-| Value | `type.body.md` + `text.default` |
-| Helper | `type.body.sm` + `text.subtle` |
+| Label | `type.label.lg` (16sp SemiBold) + `text.default` |
+| Value | `type.body.lg` (16sp Regular) + `text.default` |
+| Helper | `type.body.md` (14sp) + `text.subtle` — 12sp `body.sm` acceptable if space-constrained |
+| Error | `type.body.md` (14sp) + `text.critical` |
 | Padding | `space-16` horizontal, `space-12` vertical |
 | Shadow | `shadow.none` |
 
@@ -261,7 +264,7 @@ When building a common component, here's which tokens from each foundation apply
 | Radius | `radius-xlarge` (24px) top corners only |
 | Shadow | `shadow.md` (standard) or `shadow.xl` (full-screen, with overlay.scrim) |
 | Padding | `space-16` all sides |
-| Header | `type.heading.md` + `text.default` |
+| Header | `type.heading.lg` (24sp Bold) + `text.default` — `heading.md` (20) only for compact secondary sheets |
 | Stroke | None (shadow provides depth) |
 
 ---
