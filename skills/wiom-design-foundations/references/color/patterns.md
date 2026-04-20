@@ -29,6 +29,69 @@ Badge(
 
 ---
 
+## Status badges (solid fill + optional leading icon)
+
+A status badge pairs a solid `bg.*` fill with a `text.on*` label and, optionally, a leading icon. The icon tint follows the same dark-fill / light-fill logic as CTA icons: a saturated dark fill gets a light icon; a light/gold fill gets a dark icon. White icons fail AA on gold (1.98:1).
+
+| Badge fill | Label (text.on*) | Icon tint (icon.*) | Example use |
+|---|---|---|---|
+| `bg.brand` (#D9008D) | `text.onBrand` (#FFFFFF) | `icon.inverse` (#FAF9FC) | "Recommended", "Sale" |
+| `bg.critical` (#D92130) | `text.onCritical` (#FFFFFF) | `icon.inverse` | "Overdue", "Failed" |
+| `bg.positive` (#008043) | `text.onPositive` (#FFFFFF) | `icon.inverse` | "Paid", "Verified" |
+| `bg.info` (#6D17CE) | `text.onInfo` (#FFFFFF) | `icon.inverse` | "New", "Beta" |
+| `bg.warning` (#E2B203 gold) | `text.onWarning` (#372902) | `icon.action` (#352D42) | "Pending", "Low balance" |
+
+The warning-badge rule is the one exception: dark icon on gold, because `icon.inverse` (#FAF9FC) on `bg.warning` fails AA. `icon.action` aligns visually with the dark olive `text.onWarning` pairing.
+
+```kotlin
+// Positive status badge with leading icon
+Row(
+    modifier = Modifier
+        .background(WiomColors.bgPositive, shape = RoundedCornerShape(WiomRadius.Full))
+        .padding(horizontal = 8.dp, vertical = 2.dp),
+    horizontalArrangement = Arrangement.spacedBy(4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+) {
+    Icon(
+        imageVector = Icons.Rounded.CheckCircle,
+        contentDescription = null,
+        modifier = Modifier.size(WiomIcon.XS),
+        tint = WiomColors.iconInverse,        // light icon on dark-green fill
+    )
+    Text("Paid", color = WiomColors.textOnPositive, style = WiomType.labelSm)
+}
+
+// Warning badge with leading icon
+Row(
+    modifier = Modifier
+        .background(WiomColors.bgWarning, shape = RoundedCornerShape(WiomRadius.Full))
+        .padding(horizontal = 8.dp, vertical = 2.dp),
+    horizontalArrangement = Arrangement.spacedBy(4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+) {
+    Icon(
+        imageVector = Icons.Rounded.HourglassTop,
+        contentDescription = null,
+        modifier = Modifier.size(WiomIcon.XS),
+        tint = WiomColors.iconAction,         // dark icon on gold fill — not icon.inverse
+    )
+    Text("Pending", color = WiomColors.textOnWarning, style = WiomType.labelSm)
+}
+```
+
+### Subtle badges (on `bg.*.subtle` surface)
+
+Badges can also use the subtle-tier fill (e.g., `bg.positive.subtle` + `text.positive`). In that case the leading icon uses the saturated family token, same as a status banner:
+
+| Badge fill (subtle) | Label | Icon tint |
+|---|---|---|
+| `bg.positive.subtle` | `text.positive` (for headings/short labels) or `text.default` (for body) | `icon.positive` |
+| `bg.critical.subtle` | `text.critical` (AA-large only — large text or bold) or `text.default` | `icon.critical` |
+| `bg.warning.subtle` | `text.default` (no `text.warning` exists) | `icon.warning` |
+| `bg.info.subtle` | `text.info` or `text.default` | `icon.info` |
+
+---
+
 ## Empty states
 
 Compose from existing tokens:
