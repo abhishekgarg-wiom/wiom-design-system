@@ -1,47 +1,47 @@
 ---
 name: wiom-iconography
-description: Wiom Design System icon tokens and rules. Use this skill EVERY TIME you write, edit, or review any UI code for the Wiom Android app that involves icons — Kotlin, Compose, XML layouts, or any file that touches icon sizing, tinting, touch targets, fill state, or icon selection. Trigger when you see Icon(), ImageVector, painterResource, iconSize, drawable, Icons.Rounded, Icons.Filled, Icons.Default, any hardcoded icon dp values like 20.dp, 24.dp, 16.dp, 48.dp, 36.dp, or any custom icon references like ic_wiom or ic_partner. Also trigger when creating new screens, components, or reviewing PRs for icon consistency. If you are writing ANY icon usage for Wiom, consult this skill first — do not guess icon sizes, styles, fill states, or touch targets.
+description: Wiom Design System icon tokens and rules. Use this skill EVERY TIME you write, edit, or review any UI code for the Wiom Android app that involves icons — Kotlin, Compose, XML layouts, or any file that touches icon sizing, tinting, or fill state. Trigger when you see Icon(), ImageVector, painterResource, iconSize, drawable, Icons.Rounded, Icons.Filled, Icons.Default, any hardcoded icon dp values like 20.dp, 24.dp, 16.dp, 48.dp, 36.dp, or any custom icon references like ic_wiom or ic_partner. Also trigger when creating new screens, components, or reviewing PRs for icon consistency. If you are writing ANY icon usage for Wiom, consult this skill first — do not guess icon sizes, styles, fill states, or tints.
 ---
 
 # Wiom Iconography System
 
 The approved icon foundation for the Wiom customer app (Android/Kotlin/Compose).
-**4 size tokens · 6 icon categories · Material 3 Icons Rounded · Fill behavior defined**
+**4 glyph size tokens · 6 icon categories · Material 3 Icons Rounded · Fill behavior defined**
+
+**Scope of this file:** glyph size, icon library, fill behavior, icon color tint, custom-icon rules.
+**Out of scope:** touch targets — see `spacing.md`. Icon color values — see `color/core-tokens.md` (the `icon.*` namespace). Every tint referenced below resolves to a token in that file; no Material 3 theme tokens (`onSurface`, `primary`, `error`, etc.) are ever used in Wiom UI code.
 
 ---
 
-## The 4 Approved Size Tokens
+## The 4 Approved Glyph Size Tokens
 
-These are the ONLY icon size tokens allowed in new code. No exceptions.
+These are the ONLY icon glyph sizes allowed in new code. No exceptions.
 
-| Token | Glyph | Container | Touch Target | Kotlin | Usage |
-|-------|-------|-----------|-------------|--------|-------|
-| `icon.xs` | 16dp | 24dp | 40dp | `WiomIcon.XS` | **Restricted:** inline text indicators, input trailing icons, status dots only |
-| `icon.sm` | 20dp | 32dp | 40dp | `WiomIcon.SM` | Button icons, compact controls, small trailing actions, dense UI elements |
-| `icon.md` | 24dp | 40dp | 48dp | `WiomIcon.MD` | **Default.** Toolbar actions, list icons, nav items, chips, card actions, tabs |
-| `icon.lg` | 48dp | 56dp | 56dp | `WiomIcon.LG` | Empty states, onboarding illustrations, hero feature icons, status pages |
+| Token | Glyph | Container | Kotlin | Usage |
+|-------|-------|-----------|--------|-------|
+| `icon.xs` | 16dp | 24dp | `WiomIcon.XS` | **Restricted:** inline text indicators, input trailing icons, status dots only |
+| `icon.sm` | 20dp | 32dp | `WiomIcon.SM` | Button icons, compact controls, small trailing actions, dense UI elements |
+| `icon.md` | 24dp | 40dp | `WiomIcon.MD` | **Default.** Toolbar actions, list icons, nav items, chips, card actions, tabs |
+| `icon.lg` | 48dp | 56dp | `WiomIcon.LG` | Empty states, onboarding illustrations, hero feature icons, status pages |
 
 ### The Scale
 
 ```
-16(restricted) → 20(compact) → 24(default) → 48(hero)
+16 (restricted) → 20 (compact) → 24 (default) → 48 (hero)
 ```
 
-### Glyph vs Container vs Touch Target
-
-These are three separate things. Never confuse them:
+### Glyph vs Container
 
 - **Glyph** = the visible icon. Set via `WiomIcon.XS / .SM / .MD / .LG`
-- **Container** = the visual frame the icon sits in. Includes padding around glyph.
-- **Touch target** = the minimum tappable area. Always ≥ container. Invisible to user.
+- **Container** = the visual frame the icon sits in, including padding around the glyph
 
-`WiomIconButton` handles container and touch target automatically. You only set the glyph size.
+Touch targets (the minimum tappable area) are a spacing concern — see `spacing.md §Touch targets`.
 
 ---
 
 ## Icon Source: Material 3 Icons Rounded
 
-Wiom uses **Material 3 Icons Rounded** (`Icons.Rounded`) as the only icon library. This applies to every screen, component, and design Claude generates.
+Wiom uses **Material 3 Icons Rounded** (`Icons.Rounded.*`) as the only standard icon library. This applies to every screen, component, and design Claude generates.
 
 ### Dependency
 
@@ -56,30 +56,30 @@ implementation("androidx.compose.material:material-icons-extended:<version>")
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.<IconName>
 
-// Use Icons.Rounded.<IconName> for all standard icons
 Icon(
     imageVector = Icons.Rounded.ArrowBack,
     contentDescription = "Back",
     modifier = Modifier.size(WiomIcon.MD),
+    tint = WiomColors.iconAction,
 )
 ```
 
 ### NEVER use these icon sources
 
-- **NEVER use** `Icons.Default.*` (this is Filled, not Rounded)
-- **NEVER use** `Icons.Filled.*`
-- **NEVER use** `Icons.Outlined.*`
-- **NEVER use** `Icons.Sharp.*`
-- **NEVER use** `Icons.TwoTone.*`
-- **NEVER use** hardcoded drawable resources for standard Material icons (e.g., `painterResource(R.drawable.rounded_*)`)
-- **NEVER create, draw, or generate custom icon SVGs/vectors** for icons available in Material 3
+- `Icons.Default.*` (this is Filled, not Rounded)
+- `Icons.Filled.*`
+- `Icons.Outlined.*`
+- `Icons.Sharp.*`
+- `Icons.TwoTone.*`
+- `painterResource(R.drawable.rounded_*)` for standard Material icons
+- Self-generated SVG/vector drawables for icons available in Material 3
 
 ### When Material 3 Icons Rounded doesn't have the icon you need
 
 If the design or Figma reference shows an icon that does not exist in `Icons.Rounded`:
 
 1. **Do NOT create a custom icon, SVG, or vector drawable yourself.**
-2. **Ask the user** to provide the drawable: *"This icon is not available in Material 3 Icons Rounded. Please provide the drawable file (ic_wiom_* or ic_partner_*) and I'll integrate it."*
+2. **Ask the user** to provide the drawable: *"This icon is not available in Material 3 Icons Rounded. Please provide the drawable file (`ic_wiom_*` or `ic_partner_*`) and I'll integrate it."*
 3. Use a **placeholder** comment in code until the drawable is provided:
 ```kotlin
 // TODO: Custom drawable needed — [describe icon] not in Icons.Rounded
@@ -88,6 +88,7 @@ Icon(
     imageVector = Icons.Rounded.HelpOutline, // placeholder
     contentDescription = "...",
     modifier = Modifier.size(WiomIcon.MD),
+    tint = WiomColors.iconAction,
 )
 ```
 4. Brand icons (`ic_wiom_*`) and partner icons (`ic_partner_*`) are **always** provided by the design team — never generated by Claude. These are the ONLY icons that use `painterResource()`.
@@ -98,14 +99,14 @@ Icon(
 
 Each category has different fill and color rules. Always identify the category before choosing fill state.
 
-| Category | Examples | Default State | Selected / Active State | Color |
-|----------|----------|--------------|------------------------|-------|
-| **Action** | ArrowBack, Search, Share, Close, Edit, MoreVert, Menu | Rounded (filled) | N/A — no selected state | `onSurface` or `onSurfaceVariant` |
-| **Navigation** | Home, AccountBalanceWallet, AccountCircle, Explore | Outlined variant (unselected) | Filled variant (selected) | `onSurfaceVariant` unselected, `primary` selected |
-| **Status** | CheckCircle, Cancel, Warning, Info | Filled always | N/A | Semantic: `success`, `error`, `warning`, `info` |
-| **Toggle** | Bookmark/BookmarkBorder, Favorite/FavoriteBorder | `*Border` variant (off) | Filled variant (on) | `onSurfaceVariant` off, `primary` on |
-| **Brand** | Wiom logo, Wiom SIM icon | Original brand colors | N/A | Brand colors — exempt from tinting |
-| **Partner** | WhatsApp, Instagram, YouTube logos | Original brand colors | N/A | Brand colors — exempt from Rounded style |
+| Category | Examples | Default State | Selected / Active State | Tint (from `icon.*`) |
+|----------|----------|--------------|------------------------|----------------------|
+| **Action** | ArrowBack, Search, Share, Close, Edit, MoreVert, Menu | Rounded (filled) | N/A — no selected state | `icon.action` (#352D42) |
+| **Navigation** | Home, AccountBalanceWallet, AccountCircle, Explore | Outlined variant (unselected) | Filled variant (selected) | `icon.nonAction` unselected (#A7A1B2); `icon.brand` selected (#D9008D) |
+| **Status** | CheckCircle, Cancel, Warning, Info | Filled always | N/A | `icon.positive` / `icon.critical` / `icon.warning` / `icon.info` |
+| **Toggle** | Bookmark/BookmarkBorder, Favorite/FavoriteBorder | `*Border` variant (off) | Filled variant (on) | `icon.nonAction` off; `icon.brand` on |
+| **Brand** | Wiom logo, Wiom SIM icon | Original brand colors | N/A | `Color.Unspecified` — exempt from tinting |
+| **Partner** | WhatsApp, Instagram, YouTube logos | Original brand colors | N/A | `Color.Unspecified` — exempt from tinting and Rounded style |
 
 ---
 
@@ -145,32 +146,30 @@ Is it a brand mark or partner logo?                    → Custom drawable (ic_w
 
 ### Common Scenarios
 
-| UI Element | Token | Fill | Why |
-|-----------|-------|------|-----|
-| Toolbar back arrow | `WiomIcon.MD` | `Icons.Rounded.ArrowBack` | Action icon, single state |
-| Toolbar search icon | `WiomIcon.MD` | `Icons.Rounded.Search` | Action icon |
-| Bottom nav Home (unselected) | `WiomIcon.MD` | `Icons.Rounded.HomeOutlined` or `*Border` | Nav unselected state |
-| Bottom nav Home (selected) | `WiomIcon.MD` | `Icons.Rounded.Home` | Nav selected → filled |
-| List item leading icon | `WiomIcon.MD` | filled | Single state |
-| List item trailing chevron | `WiomIcon.MD` | `Icons.Rounded.ChevronRight` | Single state |
-| Input field trailing clear | `WiomIcon.XS` | `Icons.Rounded.Close` | Inline, restricted size |
-| Input field leading search | `WiomIcon.MD` | `Icons.Rounded.Search` | Single state |
-| Primary button leading icon | `WiomIcon.SM` | filled | Button icon |
-| Small / compact button icon | `WiomIcon.SM` | filled | Button icon |
-| Chip leading icon | `WiomIcon.SM` | filled | Compact control |
-| Dense list trailing action | `WiomIcon.SM` | filled | Compact action |
-| FAB icon | `WiomIcon.MD` | filled | Single state |
-| Bookmark (inactive) | `WiomIcon.MD` | `Icons.Rounded.BookmarkBorder` | Toggle off state |
-| Bookmark (active) | `WiomIcon.MD` | `Icons.Rounded.Bookmark` | Toggle on |
-| Success status icon | `WiomIcon.MD` | `Icons.Rounded.CheckCircle` | Status → always filled |
-| Error status icon | `WiomIcon.MD` | `Icons.Rounded.Cancel` | Status → always filled |
-| Empty state illustration | `WiomIcon.LG` | filled | Hero, filled at 48dp |
-| Onboarding feature icon | `WiomIcon.LG` | filled | Hero |
-| Success/error full page | `WiomIcon.LG` | filled | Status → always filled |
-| Tab bar icon (unselected) | `WiomIcon.MD` | outlined/border variant | Nav unselected state |
-| Tab bar icon (selected) | `WiomIcon.MD` | filled | Nav selected → filled |
-| Snackbar action icon | `WiomIcon.SM` | filled | Single state |
-| WhatsApp share icon | Custom | N/A | Partner — original colors |
+| UI Element | Size | Fill | Tint |
+|-----------|------|------|------|
+| Toolbar back arrow | `WiomIcon.MD` | `Icons.Rounded.ArrowBack` | `icon.action` |
+| Toolbar search icon | `WiomIcon.MD` | `Icons.Rounded.Search` | `icon.action` |
+| Bottom nav Home (unselected) | `WiomIcon.MD` | `Icons.Rounded.HomeOutlined` | `icon.nonAction` |
+| Bottom nav Home (selected) | `WiomIcon.MD` | `Icons.Rounded.Home` | `icon.brand` |
+| List item leading icon (decorative) | `WiomIcon.MD` | filled | `icon.nonAction` |
+| List item trailing chevron | `WiomIcon.MD` | `Icons.Rounded.ChevronRight` | `icon.action` |
+| Input field trailing clear | `WiomIcon.XS` | `Icons.Rounded.Close` | `icon.action` |
+| Input field leading search | `WiomIcon.MD` | `Icons.Rounded.Search` | `icon.nonAction` |
+| Primary button leading icon | `WiomIcon.SM` | filled | `icon.inverse` |
+| Secondary button leading icon | `WiomIcon.SM` | filled | `icon.brand` |
+| Chip leading icon | `WiomIcon.SM` | filled | `icon.action` or `icon.brand` (selected) |
+| Success status icon | `WiomIcon.MD` | `Icons.Rounded.CheckCircle` | `icon.positive` |
+| Error status icon | `WiomIcon.MD` | `Icons.Rounded.Cancel` | `icon.critical` |
+| Warning status icon (inside `bg.warning.subtle`) | `WiomIcon.MD` | `Icons.Rounded.Warning` | `icon.warning` |
+| Info status icon | `WiomIcon.MD` | `Icons.Rounded.Info` | `icon.info` |
+| Empty state illustration | `WiomIcon.LG` | filled | `icon.nonAction` or semantic status token |
+| Success full-page illustration | `WiomIcon.LG` | `Icons.Rounded.CheckCircle` | `icon.positive` |
+| Tab bar icon (unselected) | `WiomIcon.MD` | outlined/border variant | `icon.nonAction` |
+| Tab bar icon (selected) | `WiomIcon.MD` | filled | `icon.brand` |
+| Snackbar action icon | `WiomIcon.SM` | filled | `icon.brand` |
+| WhatsApp / partner share icon | Custom | N/A | `Color.Unspecified` |
+| Wiom logo | Custom | N/A | `Color.Unspecified` |
 
 ---
 
@@ -196,36 +195,39 @@ object WiomIcon {
 
     /** 48dp — Hero / large. Empty states, onboarding, status pages. */
     val LG: Dp = 48.dp
-
-    // ── Touch Targets ─────────────────────────
-    val TouchTargetCompact: Dp = 40.dp   // for XS and SM icons
-    val TouchTargetDefault: Dp = 48.dp   // for MD icons
-    val TouchTargetLarge: Dp = 56.dp     // for LG icons
-
-    fun touchTargetFor(iconSize: Dp): Dp = when {
-        iconSize <= SM -> TouchTargetCompact  // 40dp
-        iconSize <= MD -> TouchTargetDefault  // 48dp
-        else           -> TouchTargetLarge    // 56dp
-    }
 }
 ```
+
+Touch targets are a spacing concern and live in `WiomSpacing` (see `spacing.md`). Keep `WiomIcon` focused on glyph size only.
 
 ### Usage in Compose
 
 ```kotlin
-// ✅ Correct — action icon, filled, default size
+// ✅ Correct — action icon, filled, default size, Wiom tint
 Icon(
     imageVector = Icons.Rounded.ArrowBack,
     contentDescription = "Back",
     modifier = Modifier.size(WiomIcon.MD),
+    tint = WiomColors.iconAction,
 )
 
-// ✅ Correct — button leading icon, compact size
-Icon(
-    imageVector = Icons.Rounded.Add,
-    contentDescription = null,
-    modifier = Modifier.size(WiomIcon.SM),
-)
+// ✅ Correct — button leading icon, compact size, icon.inverse inside Primary CTA
+Button(
+    onClick = onRecharge,
+    colors = ButtonDefaults.buttonColors(
+        containerColor = WiomColors.bgBrand,
+        contentColor = WiomColors.textOnBrand,
+    ),
+) {
+    Icon(
+        imageVector = Icons.Rounded.FlashOn,
+        contentDescription = null,
+        modifier = Modifier.size(WiomIcon.SM),
+        tint = WiomColors.iconInverse,  // explicit — do not rely on contentColor
+    )
+    Spacer(Modifier.width(8.dp))
+    Text("Recharge now")
+}
 
 // ✅ Correct — nav icon, filled when selected
 Icon(
@@ -233,8 +235,7 @@ Icon(
                   else Icons.Rounded.HomeOutlined,
     contentDescription = "Home",
     modifier = Modifier.size(WiomIcon.MD),
-    tint = if (isSelected) MaterialTheme.colorScheme.primary
-           else MaterialTheme.colorScheme.onSurfaceVariant,
+    tint = if (isSelected) WiomColors.iconBrand else WiomColors.iconNonAction,
 )
 
 // ✅ Correct — toggle icon, filled when active
@@ -243,16 +244,23 @@ Icon(
                   else Icons.Rounded.BookmarkBorder,
     contentDescription = if (isBookmarked) "Remove bookmark" else "Bookmark",
     modifier = Modifier.size(WiomIcon.MD),
-    tint = if (isBookmarked) MaterialTheme.colorScheme.primary
-           else MaterialTheme.colorScheme.onSurfaceVariant,
+    tint = if (isBookmarked) WiomColors.iconBrand else WiomColors.iconNonAction,
 )
 
-// ✅ Correct — status icon, always filled
+// ✅ Correct — status icon, always filled, semantic tint
 Icon(
     imageVector = Icons.Rounded.CheckCircle,
     contentDescription = "Success",
     modifier = Modifier.size(WiomIcon.MD),
-    tint = MaterialTheme.colorScheme.success,
+    tint = WiomColors.iconPositive,
+)
+
+// ✅ Correct — warning icon inside bg.warning.subtle only
+Icon(
+    imageVector = Icons.Rounded.Warning,
+    contentDescription = "Warning",
+    modifier = Modifier.size(WiomIcon.MD),
+    tint = WiomColors.iconWarning,  // valid ONLY on bg.warning.subtle
 )
 
 // ✅ Correct — hero icon, filled at 48dp
@@ -260,15 +268,7 @@ Icon(
     imageVector = Icons.Rounded.WifiOff,
     contentDescription = null, // decorative
     modifier = Modifier.size(WiomIcon.LG),
-    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-)
-
-// ✅ Correct — interactive icon with auto touch target
-WiomIconButton(
-    icon = Icons.Rounded.Search,
-    contentDescription = "Search",
-    onClick = { /* ... */ },
-    iconSize = WiomIcon.MD,
+    tint = WiomColors.iconNonAction,
 )
 
 // ✅ Correct — partner icon (ONLY case for painterResource)
@@ -292,6 +292,23 @@ Icon(
     imageVector = Icons.Rounded.Home,
     contentDescription = "Home",
     modifier = Modifier.size(36.dp), // ← NOT in the scale!
+    tint = WiomColors.iconAction,
+)
+
+// ❌ NEVER — Material 3 theme tokens (these don't exist in the Wiom system)
+Icon(
+    imageVector = Icons.Rounded.Search,
+    contentDescription = "Search",
+    modifier = Modifier.size(WiomIcon.MD),
+    tint = MaterialTheme.colorScheme.primary, // ← WRONG! Use WiomColors.iconBrand
+)
+
+// ❌ NEVER — hardcoded hex
+Icon(
+    imageVector = Icons.Rounded.Home,
+    contentDescription = "Home",
+    modifier = Modifier.size(WiomIcon.MD),
+    tint = Color(0xFF352D42), // ← WRONG! Use WiomColors.iconAction
 )
 
 // ❌ NEVER — Icons.Default (= Filled style, not Rounded)
@@ -299,20 +316,15 @@ Icon(
     imageVector = Icons.Default.Settings, // ← WRONG! Use Icons.Rounded.Settings
     contentDescription = "Settings",
     modifier = Modifier.size(WiomIcon.MD),
+    tint = WiomColors.iconAction,
 )
 
-// ❌ NEVER — Icons.Filled
+// ❌ NEVER — Icons.Filled / Icons.Outlined / Icons.Sharp / Icons.TwoTone
 Icon(
     imageVector = Icons.Filled.Favorite, // ← WRONG! Use Icons.Rounded.Favorite
     contentDescription = "Favorite",
     modifier = Modifier.size(WiomIcon.MD),
-)
-
-// ❌ NEVER — Icons.Outlined
-Icon(
-    imageVector = Icons.Outlined.Settings, // ← WRONG! Use Icons.Rounded.Settings
-    contentDescription = "Settings",
-    modifier = Modifier.size(WiomIcon.MD),
+    tint = WiomColors.iconBrand,
 )
 
 // ❌ NEVER — hardcoded drawable for standard Material icon
@@ -320,15 +332,7 @@ Icon(
     painter = painterResource(R.drawable.rounded_arrow_back), // ← WRONG! Use Icons.Rounded.ArrowBack
     contentDescription = "Back",
     modifier = Modifier.size(WiomIcon.MD),
-)
-
-// ❌ NEVER — interactive icon without touch target
-Icon(
-    imageVector = Icons.Rounded.Close,
-    contentDescription = "Close",
-    modifier = Modifier
-        .size(16.dp)
-        .clickable { }, // ← no touch target padding!
+    tint = WiomColors.iconAction,
 )
 ```
 
@@ -336,20 +340,57 @@ Icon(
 
 ## Icon Color Rules
 
-| State | Color Token | When |
-|-------|------------|------|
-| Default | `onSurface` | Primary icons on light backgrounds |
-| Secondary | `onSurfaceVariant` | Muted/supporting icons, unselected nav |
-| Selected / active | `primary` | Selected nav, active toggles |
-| Disabled | `onSurface` at 38% opacity | Disabled interactive icons |
-| Inverse | `onPrimary` or `inverseOnSurface` | Icons on colored backgrounds |
-| Success | `success` semantic token | Success status icons (filled) |
-| Warning | `warning` semantic token | Warning status icons (filled) |
-| Error | `error` | Error status icons (filled) |
-| Brand | `Color.Unspecified` | Wiom brand icons — no tinting |
-| Partner | `Color.Unspecified` | Partner logos — no tinting |
+**Every icon tint comes from the `icon.*` namespace defined in `color/core-tokens.md`.** Material 3 theme tokens (`onSurface`, `primary`, `success`, etc.) are not used in Wiom UI code. Raw hex values are not used in UI code.
 
-**Never hardcode** values like `Color(0xFF333333)` on icons.
+### Base tints (9 tokens)
+
+| Context | Token | Hex | When |
+|---------|-------|-----|------|
+| Tappable chrome | `icon.action` | #352D42 | Back, close, menu, overflow, filter — any icon the user taps directly |
+| Decorative / non-tappable | `icon.nonAction` | #A7A1B2 | Leading list icons without their own tap target, decorative illustrations, unselected nav |
+| Brand accent | `icon.brand` | #D9008D | Selected nav, active toggles, focused chevron, inside Secondary/Tertiary CTAs |
+| Success / positive | `icon.positive` | #008043 | Success check, verified, confirmation (filled) |
+| Critical / error | `icon.critical` | #D92130 | Error alerts, cancel, destructive indicators (filled) |
+| Warning | `icon.warning` | #E2B203 | Warning indicator — **ONLY** on `bg.warning.subtle` or inside a rating component. Fails AA graphics contrast (3:1) on `bg.default` |
+| Info | `icon.info` | #6D17CE | Info indicators (filled) |
+| Inverse | `icon.inverse` | #FAF9FC | Icons on `bg.inverse`, `bg.brand.bold`, and inside Primary/Destructive CTAs |
+| Disabled | `icon.disabled` | #D7D3E0 | Disabled interactive icons |
+
+### Inside a CTA — per `color/actions.md`
+
+| CTA type | Icon token |
+|---|---|
+| Primary (`bg.brand`) | `icon.inverse` |
+| Secondary (outlined) | `icon.brand` |
+| Tertiary (text-only) | `icon.brand` |
+| Pre-booking (`bg.brand.accent`) | `icon.action` |
+| Destructive (`bg.critical`) | `icon.inverse` |
+| Any CTA, disabled | `icon.disabled` |
+
+### Inside a solid filled badge — tint follows the `text.on*` pairing
+
+Badge icons follow the same dark-fill / light-fill logic as CTAs: a solid dark fill gets a light icon; a solid light fill gets a dark icon.
+
+| Badge fill | Icon tint | Rationale |
+|---|---|---|
+| `bg.brand` (#D9008D) | `icon.inverse` | pairs with `text.onBrand` (#FFFFFF) |
+| `bg.critical` (#D92130) | `icon.inverse` | pairs with `text.onCritical` (#FFFFFF) |
+| `bg.positive` (#008043) | `icon.inverse` | pairs with `text.onPositive` (#FFFFFF) |
+| `bg.info` (#6D17CE) | `icon.inverse` | pairs with `text.onInfo` (#FFFFFF) |
+| `bg.warning` (#E2B203 gold) | `icon.action` | pairs with `text.onWarning` (dark). White icons fail AA on gold (1.98:1); use the dark neutral icon that visually aligns with the dark olive text |
+
+### `icon.nonAction` versus `icon.action`
+
+- `icon.nonAction` (#A7A1B2): chrome, navigation bar icons you can't tap, decorative icons, list-item leading icons that don't have their own tap target
+- `icon.action` (#352D42): close (✕), back (←), menu (☰), overflow (⋯), filter, any icon the user taps directly
+
+If the icon is inside a tappable card/row but the icon itself isn't the tap target, use `icon.nonAction` — the whole-row tap is handled by the row.
+
+### `icon.warning` is scoped
+
+`#E2B203` on `bg.default` is 1.89:1 — fails graphics AA (3:1). The token is only valid inside `bg.warning.subtle` (#FFE9A1), where the surrounding yellow surface and context carry the warning meaning, or inside a rating component (gold stars are culturally recognizable regardless of contrast — documented exception).
+
+A lint rule should allow `icon.warning` inside a `RatingBar` or `StarIcon`, and on a `bg.warning.subtle` surface; flag it everywhere else.
 
 ---
 
@@ -358,7 +399,7 @@ Icon(
 | Type | Prefix | Example | Who can add | Style rule |
 |------|--------|---------|-------------|------------|
 | Brand | `ic_wiom_` | `ic_wiom_sim.xml` | Design team only | Brand colors, exempt from tinting |
-| Partner | `ic_partner_` | `ic_partner_whatsapp.xml` | Design team only | Original brand assets, exempt from Rounded |
+| Partner | `ic_partner_` | `ic_partner_whatsapp.xml` | Design team only | Original brand assets, exempt from Rounded style |
 
 - All custom icons must be 4dp multiples
 - Prefer approved sizes (20dp, 24dp, 48dp)
@@ -376,8 +417,8 @@ Icon(
 | Empty string | **NEVER** use `contentDescription = ""` — use `null` instead |
 | Status icons | Must be paired with text or color — icon alone must not carry critical meaning |
 | Disabled icons | Must still meet contrast minimums |
-| Touch targets | Minimum 48dp for standard (icon.md), 40dp for compact (icon.xs, icon.sm) |
-| Contrast | Meaningful icons must meet 3:1 contrast ratio against their background (WCAG). This is enforced by the semantic color tokens — do not override them with custom colors. |
+| Touch targets | See `spacing.md` — owned by the spacing foundation |
+| Contrast | Meaningful icons must meet 3:1 contrast against their background (WCAG). This is enforced by the semantic color tokens — do not override them with custom colors. |
 
 ---
 
@@ -392,25 +433,25 @@ Use `Icons.Rounded.*` from `androidx.compose.material:material-icons-extended`. 
 ### 3. Filled is default, outlined/border variant is only for toggle states
 All single-state icons use the filled variant (e.g., `Icons.Rounded.Home`). The `*Border`/`*Outlined` variant is used only for the inactive/unselected state of interactive toggles (unselected nav tab, inactive bookmark). If it doesn't toggle — it's filled.
 
-### 4. Glyph ≠ container ≠ touch target
-Set glyph size via WiomIcon token. WiomIconButton handles container and touch target. Don't manually size tap areas.
+### 4. Every tint comes from `icon.*` (Wiom color system)
+Never use Material 3 theme tokens (`MaterialTheme.colorScheme.onSurface`, `.primary`, `.error`, `.success`, `.warning`, etc.) — these are not part of the Wiom system. Never hardcode hex. Every tint is `WiomColors.iconAction` / `iconNonAction` / `iconBrand` / `iconPositive` / `iconCritical` / `iconWarning` / `iconInfo` / `iconInverse` / `iconDisabled`.
 
-### 5. icon.xs (16dp) is restricted
-Only for inline text indicators, input trailing icons, and status dots. Never for standalone tappable actions. Minimum for actions is 20dp (icon.sm).
+### 5. `icon.xs` (16dp) is restricted
+Only for inline text indicators, input trailing icons, and status dots. Never for standalone tappable actions.
 
 ### 6. Icons must not carry critical meaning alone
-Status icons must be paired with text or color. Interactive icons need contentDescription. Decorative icons use contentDescription = null. Meaningful icons must meet 3:1 contrast ratio (WCAG).
+Status icons must be paired with text or color. Interactive icons need `contentDescription`. Decorative icons use `contentDescription = null`. Meaningful icons must meet 3:1 contrast (WCAG).
 
 ### 7. Custom icons need design approval
 Brand: `ic_wiom_*`. Partner: `ic_partner_*`. All must be 4dp multiples. These are the ONLY icons that use `painterResource()`.
 
-### 8. Color follows semantic tokens
-Use `onSurface`, `onSurfaceVariant`, `primary`, `error`, etc. Never hardcode hex colors. Brand and partner icons use `Color.Unspecified`.
+### 8. Set `tint` explicitly on every Icon
+Don't rely on `Button(contentColor)` inheritance for CTA icons — it propagates `#FFFFFF` and overrides `icon.inverse` (#FAF9FC). The small hex difference is intentional (solid-icon weight vs. text glyph). Always set `tint` explicitly.
 
 ### 9. Never create custom icons — ask for drawables
-Do not generate, draw, or create SVG/vector icons. Always use `Icons.Rounded.*`. If the needed icon doesn't exist in Material 3 Icons Rounded, ask the user to provide the drawable. Use a placeholder with a TODO comment until received.
+Do not generate, draw, or create SVG/vector icons. Always use `Icons.Rounded.*`. If the needed icon doesn't exist, ask the user to provide the drawable. Use a placeholder with a TODO comment until received.
 
-### 10. painterResource is only for brand/partner icons
+### 10. `painterResource` is only for brand/partner icons
 Standard Material icons always use `imageVector = Icons.Rounded.*`. Only custom brand (`ic_wiom_*`) and partner (`ic_partner_*`) icons use `painterResource()`.
 
 ---
@@ -422,31 +463,42 @@ LIBRARY   Material 3 Icons Rounded
           Icons.Rounded.*  (from material-icons-extended)
           painterResource() ONLY for ic_wiom_* / ic_partner_*
 ─────────────────────────────────────────────────────────────
-SIZES     icon.xs   16dp glyph  24dp container  40dp touch  ⚠ restricted
-          icon.sm   20dp glyph  32dp container  40dp touch  buttons/compact
-          icon.md   24dp glyph  40dp container  48dp touch  ← DEFAULT
-          icon.lg   48dp glyph  56dp container  56dp touch  hero
+GLYPH     icon.xs   16dp glyph  24dp container  ⚠ restricted
+SIZES     icon.sm   20dp glyph  32dp container    buttons/compact
+          icon.md   24dp glyph  40dp container  ← DEFAULT
+          icon.lg   48dp glyph  56dp container    hero
+          Touch targets — see spacing.md
 ─────────────────────────────────────────────────────────────
 FILL      All icons             → filled (default)
           Nav unselected        → *Border / *Outlined variant
           Toggle off            → *Border variant
           Nav selected / on     → filled
 ─────────────────────────────────────────────────────────────
-COLOR     Default → onSurface     Selected → primary
-          Muted → onSurfaceVariant  Disabled → onSurface 38%
-          Status → success/warning/error tokens
-          Brand/Partner → Color.Unspecified
+TINT      Action  → icon.action      Non-action → icon.nonAction
+(Wiom)    Brand   → icon.brand       Disabled   → icon.disabled
+          Inverse → icon.inverse     Status     → icon.positive /
+                                                  icon.critical /
+                                                  icon.warning /
+                                                  icon.info
+          Brand/Partner mark      → Color.Unspecified
+          Inside Primary/Destructive CTA → icon.inverse
+          Inside Secondary/Tertiary CTA  → icon.brand
+          Inside Pre-booking CTA          → icon.action
+          Inside solid filled badge:
+            bg.brand/critical/positive/info → icon.inverse
+            bg.warning (gold)               → icon.action
 ─────────────────────────────────────────────────────────────
 CUSTOM    Brand: ic_wiom_*     Partner: ic_partner_*
           Design approval required. 4dp multiples only.
           ONLY icons that use painterResource().
 ─────────────────────────────────────────────────────────────
 BANNED    Icons.Default / Filled / Outlined / Sharp / TwoTone
+          MaterialTheme.colorScheme.* (not a Wiom token)
+          Raw hex in tint parameter
           painterResource(R.drawable.rounded_*) for Material icons
           Creating custom SVG/vector icons — always ask for drawable
           Hardcoded dp values on any icon
           Sizes: 12, 18, 28, 32, 36, 40, 56, 64 dp
-          Interactive icons without touch targets
+          icon.xs as a standalone tap target
           Missing contentDescription on tappable icons
-          Hardcoded color values on icons
 ```

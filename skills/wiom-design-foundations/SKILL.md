@@ -32,7 +32,13 @@ Read the relevant reference file(s) BEFORE writing any code or making design dec
 
 | You're working on... | Read |
 |----------------------|------|
-| Any color, fill, tint, or background | `references/color.md` |
+| Any core UI chrome (bg, text, stroke, icon, banners) | `references/color/core-tokens.md` |
+| Any CTA / button (Primary, Secondary, Tertiary, Pre-booking, Destructive) | `references/color/actions.md` |
+| Status bar, badges, empty states, tooltips, ratings, avatars, overlays | `references/color/patterns.md` |
+| Chat screens (bubbles, reply, system messages) | `references/color/chat.md` |
+| Contrast pairs / WCAG verification | `references/color/contrast.md` |
+| Primitive palette | `references/color/primitives.md` |
+| Color overview / routing | `references/color.md` |
 | Text styling, font size, weight, line-height | `references/typography.md` |
 | Icons, icon sizes, fill states, touch targets | `references/iconography.md` |
 | Padding, margin, gap, layout spacing, touch targets | `references/spacing.md` |
@@ -75,8 +81,14 @@ Read the relevant reference file(s) BEFORE writing any code or making design dec
 - Primary CTA: `bg.brand` (#D9008D). Max **one** per screen.
 - `bg.critical` as CTA fill: destructive actions ONLY (Delete, Cancel-plan, Remove). Never for "Dismiss"/"Skip"/"Close".
 - CTA icons use `icon.*` tokens, not `text.on*`. Primary/Destructive → `icon.inverse`; Secondary/Tertiary → `icon.brand`; Pre-booking → `icon.action`.
+- Selected states (tab bg, active chip, current row): `bg.selected` (#FFCCED, Brand_200) + `text.selected` / `stroke.selected` (#D9008D, Brand_600).
+- Tappable chrome icons (back, close, menu, overflow, filter): `icon.action` (#352D42, Neutral_900). Decorative icons: `icon.nonAction` (#A7A1B2).
+- Premium / partner header surface (non-action): `bg.brand.bold` (#443152, Brand_900) + `text.inverse`.
+- Overlay scrim (modal backdrop, bottom-sheet scrim): `overlay.scrim` (rgba(22,16,33,0.50)) — the only overlay token.
+- **Dark mode: NOT yet defined.** If a dark-mode screen is requested, flag to the design system team — do not implement ad-hoc.
+- **Flag a gap, don't invent.** If no token fits, leave a `// GAP: needed X for Y, no token exists` comment and ask. Do not eyedrop from Figma or approximate with the closest token. Only `overlay.scrim` and the 40% disabled-opacity fallback are system-provided exceptions.
 
-→ Full details: `references/color.md` + sub-references in `references/color/` (core-tokens, actions, patterns, chat, primitives, contrast)
+→ Full details: sub-references in `references/color/` — **read `core-tokens.md` + `actions.md` before composing any new screen**.
 
 ### Typography — 13 Semantic Tokens
 
@@ -106,7 +118,7 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 
 ### Iconography — 4 Size Tokens
 
-Library: **Material Symbols Rounded** only. Filled is default. Outlined only for toggle-off/nav-unselected.
+Library: **Material 3 Icons Rounded** (`Icons.Rounded.*` from `androidx.compose.material:material-icons-extended`). Filled is default. Outlined only for toggle-off/nav-unselected. Brand/partner icons (`ic_wiom_*`, `ic_partner_*`) are the ONLY icons that use `painterResource()`.
 
 | Token | Glyph | Container | Touch Target | Use |
 |-------|-------|-----------|-------------|-----|
@@ -119,17 +131,17 @@ Library: **Material Symbols Rounded** only. Filled is default. Outlined only for
 
 → Full details: `references/iconography.md`
 
-### Spacing — 4px Grid, 13 Primitives
+### Spacing — 4px Grid · 13 primitives · 11 semantic tokens
 
-Every spacing/sizing/padding/margin value must be a **multiple of 4px**.
+Every spacing/sizing/padding/margin value must be a **multiple of 4px**. Primitives `space/1` and `space/2` are utility-only (hairlines, optical adjustments) — they have no semantic alias.
 
-| Token | 4px | 8px | 12px | 16px | 24px | 32px | 40px | 48px | 64px | 72px | 84px |
+| Semantic tokens (11) | 4px | 8px | 12px | 16px | 24px | 32px | 40px | 48px | 64px | 72px | 84px |
 |-------|-----|-----|------|------|------|------|------|------|------|------|------|
 
 **Hierarchy:** Tight (8–12px) = one unit. Medium (16–24px) = same section. Loose (32–40px+) = separate sections.
 **Margins:** Never. Parents own gap between children (Arrangement.spacedBy). Children own internal padding.
 **Screen margins:** 16px default, 12px chat screens. Between cards: 16px. Card padding: 16px.
-**Touch targets:** Action 48px, Navigation 32px, Info 24px.
+**Dialog padding:** 24px all sides. **Bottom sheet padding:** 16px all sides.
 
 → Full details: `references/spacing.md`
 
@@ -138,7 +150,7 @@ Every spacing/sizing/padding/margin value must be a **multiple of 4px**.
 | Token | Value | Use |
 |-------|-------|-----|
 | `radius-none` | 0px | Table cells, app bar, square thumbnails |
-| `radius-tiny` | 4px | Badges, tags, tooltips, checkbox |
+| `radius-tiny` | 4px | Badges, tags, tiny chips, lozenges, checkbox |
 | `radius-small` | 8px | Chips, snackbars, small containers |
 | `radius-medium` | 12px | Input fields, nested containers |
 | `radius-large` | 16px | Buttons, cards, main containers |
@@ -173,7 +185,7 @@ Every spacing/sizing/padding/margin value must be a **multiple of 4px**.
 | `shadow.lg` | `0 4px 12px 0 rgba(0,0,0,0.15)` | Floating toasts, dropdowns over busy backgrounds |
 | `shadow.xl` | `0 8px 24px 0 rgba(0,0,0,0.15)` | Modal dialogs (always with overlay backdrop) |
 
-**Rule:** Default to `shadow.md`. Max 1–2 `shadow.lg` per screen. `shadow.xl` always paired with `color.overlay.default`.
+**Rule:** Default to `shadow.md`. Max 1–2 `shadow.lg` per screen. `shadow.xl` is always paired with `overlay.scrim` (the modal backdrop — the only overlay token).
 
 → Full details: `references/shadow.md`
 
@@ -185,7 +197,7 @@ These rules span multiple foundations. Violations are common — check these fir
 
 ### 1. Shadow vs Border — Never Both
 A component uses EITHER a border OR a shadow, not both. Flat (0dp) → 1px border. Elevated (shadow) → no border.
-**Exception:** On critical interactive surfaces (payment cards), pair `shadow.md` + `stroke-small` + `color.border.default` for budget device robustness.
+**Exception:** On critical interactive surfaces (payment cards), pair `shadow.md` + `stroke-small` (1px) + `stroke.subtle` (#D7D3E0) for budget device robustness.
 
 ### 2. Filled State = No Border
 Checked checkbox, toggled switch, selected chip, filled button — fill IS the boundary. Remove the stroke.
@@ -197,16 +209,21 @@ Border radius must match the component's radius token. Focus ring radius = compo
 Parents set gap between children. Children set their own padding. No margins — ever.
 
 ### 5. Touch Targets Are Non-Negotiable
-Action icons: 48×48px minimum. Navigation: 32×32px. Info: 24×24px. Buttons: padding naturally achieves 48px height.
+Owned by `spacing.md` §6. Three-tier system by action importance:
+- **Action** 48×48dp (`space-48`) — high-consequence interactive icons (delete, edit, share, close, menu, back)
+- **Navigation** 32×32dp (`space-32`) — medium-priority frequent-use icons (expand, sort, arrows, pagination, filters)
+- **Info** 24×24dp (`space-24`) — low-stakes informational icons (help, tooltip triggers, status indicators)
+
+Buttons reach ≥48dp height automatically via `space-12` vertical padding + 24sp line-height — no explicit touch-target rule needed. `icon.xs` (16dp glyph) is restricted — never use it for a standalone tappable action; add invisible hit-area padding so any tappable icon still reaches its tier's minimum.
 
 ### 6. Token-Only Values
 Every color, size, spacing, radius, stroke, and shadow value must come from the token system. No hardcoded values. No "close enough" approximations.
 
 ### 7. Status Color Families Don't Mix
-A success icon never appears on a warning surface. A negative border never wraps a positive card. Each status family (positive/negative/warning/info) is self-contained.
+A success icon never appears on a warning surface. A critical border never wraps a positive card. Each status family (**positive / critical / warning / info** — "critical", not "negative"; "negative" is a legacy term) is self-contained.
 
 ### 8. Text on Status Banners
-Use `text.default` (#161021) for body text on ALL status banners (including warning). Reserve `text.critical` / `text.positive` / `text.info` for headings and emphasis. No `text.warning` token exists.
+Use `text.default` (#161021) for body text on warning, critical, and positive banners — reserve `text.critical` / `text.positive` for headings and emphasis (their subtle-bg contrast is AA-large only for critical / marginal for positive). **Info is the exception:** `text.info` on `bg.info.subtle` is 6.53:1 (AA comfortably), so either `text.default` or `text.info` is valid for info-banner body. No `text.warning` token exists.
 
 ### 9. Dividers Inside Cards Respect Padding
 Dividers inside a card are inset to match the card's content padding (typically 16px from both edges). Never full-bleed inside a card.
@@ -224,12 +241,13 @@ When building a common component, here's which tokens from each foundation apply
 | Foundation | Token |
 |-----------|-------|
 | Surface | `bg.default` |
-| Border | `stroke-small` (1px) + `stroke.default` |
+| Border | `stroke-small` (1px) + `stroke.subtle` (#D7D3E0 — card outlines) |
 | Radius | `radius-large` (16px) |
 | Shadow | `shadow.none` (flat) OR `shadow.md` (elevated — then no border) |
 | Padding | `space-16` all sides |
 | Title | `type.title.sm` + `text.default` |
 | Body | `type.body.md` + `text.subtle` |
+| Internal divider | `stroke-small` (1px) + `stroke.default` (#E8E4F0 — lighter, inner only) — inset to card padding |
 | Internal gap | `space-16` between sections, `space-8` title→subtitle, `space-32` content→CTA |
 
 ### Primary Button
@@ -243,17 +261,55 @@ When building a common component, here's which tokens from each foundation apply
 | Icon (if any) | `icon.sm` (20dp), filled + `icon.inverse` |
 | Min height | 48px (via `space-12` vertical padding + 24sp line-height) |
 
+### Secondary Button (outlined)
+| Foundation | Token |
+|-----------|-------|
+| Fill (rest) | transparent (no background) |
+| Fill (pressed) | `bg.brand.subtle` (#FFE5F6) |
+| Hover | **No hover token — text color shift only** (`text.brand` → `text.brand.hover`) |
+| Border | `stroke-medium` (2px) + `stroke.brand.focus` (#D9008D — saturated) |
+| Text | `type.label.lg` + `text.brand` |
+| Icon (if any) | `icon.sm` (20dp) + `icon.brand` |
+| Radius | `radius-large` (16px) |
+
+### Tertiary Button (text-only)
+| Foundation | Token |
+|-----------|-------|
+| Fill (rest) | transparent · no border |
+| Fill (pressed) | `bg.brand.subtle` (#FFE5F6) — shared with Secondary |
+| Text | `type.label.lg` + `text.brand` (hover → `text.brand.hover`) |
+| Icon (if any) | `icon.sm` (20dp) + `icon.brand` |
+
+### Pre-booking CTA (customer-app only)
+| Foundation | Token |
+|-----------|-------|
+| Fill | `bg.brand.accent` (#FF66C9, Brand_400) → pressed: `bg.brand.accent.pressed` (#EA5DB8) |
+| Text | `type.label.lg` + `text.onBrandAccent` (#161021 — **dark** label, not white; white fails AA on bright pink) |
+| Icon (if any) | `icon.sm` (20dp) + `icon.action` (#352D42) |
+| Radius | `radius-large` (16px) |
+| Use | Customer-app pre-booking flows **only**. Never for generic "Book"/"Buy"/transactional CTAs. |
+
+### Destructive Button
+| Foundation | Token |
+|-----------|-------|
+| Fill | `bg.critical` → hover: `bg.critical.hover` → pressed: `bg.critical.pressed` |
+| Text | `type.label.lg` + `text.onCritical` (#FFFFFF) |
+| Icon (if any) | `icon.sm` (20dp) + `icon.inverse` |
+| Focus ring | `stroke.critical.focus` (#D92130) — destructive elements get red focus, not brand pink |
+| Use | Irreversible destruction only (Delete, Cancel-plan, Remove). Max 1 per screen. NEVER "Dismiss"/"Skip"/"Cancel"/"Close" — those are Secondary/Tertiary. |
+
 ### Input Field
 | Foundation | Token |
 |-----------|-------|
-| Border (rest) | `stroke-small` (1px) + `stroke.default` |
-| Border (active) | `stroke-medium` (2px) + `stroke.brand.focus` |
-| Border (error) | `stroke-medium` (2px) + `stroke.critical` |
+| Border (rest) | `stroke-small` (1px) + `stroke.subtle` (#D7D3E0) |
+| Border (active / keyboard focus) | `stroke-medium` (2px) + `stroke.brand.focus` (#D9008D — saturated) |
+| Border (error, invalid input) | `stroke-medium` (2px) + `stroke.critical.focus` (#D92130 — saturated, not the soft #FFB3B9) |
 | Radius | `radius-medium` (12px) |
 | Label | `type.label.lg` (16sp SemiBold) + `text.default` |
 | Value | `type.body.lg` (16sp Regular) + `text.default` |
 | Helper | `type.body.md` (14sp) + `text.subtle` — 12sp `body.sm` acceptable if space-constrained |
-| Error | `type.body.md` (14sp) + `text.critical` |
+| Error | `type.body.md` (14sp) + `text.critical` (#D92130) |
+| Required asterisk | `text.critical` |
 | Padding | `space-16` horizontal, `space-12` vertical |
 | Shadow | `shadow.none` |
 
@@ -266,6 +322,18 @@ When building a common component, here's which tokens from each foundation apply
 | Padding | `space-16` all sides |
 | Header | `type.heading.lg` (24sp Bold) + `text.default` — `heading.md` (20) only for compact secondary sheets |
 | Stroke | None (shadow provides depth) |
+
+### Checkbox / Radio
+| State | Stroke | Fill |
+|---|---|---|
+| Unchecked (rest) | `stroke-medium` (2px) + `stroke.strong` (#473F55) | transparent |
+| Checked | none (filled = no border) | `bg.brand` (#D9008D) + checkmark `text.onBrand` |
+| Focused (keyboard) | `stroke.brand.focus` (#D9008D) ring **outside** | (unchanged) |
+| Error (unchecked) | `stroke-medium` + `stroke.critical.focus` (#D92130) | transparent |
+| **Checked + in error** | none | **`bg.critical`** (#D92130) + checkmark `text.onCritical` — fill swaps from brand to critical |
+| Disabled | `bg.disabled` (#D7D3E0) | `bg.disabled` |
+
+Radius: checkbox `radius-tiny` (4px); radio `radius-full`. Label next to control stays `text.default` in all states — the control carries the error signal, not the label.
 
 ---
 
@@ -283,7 +351,8 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] `text.warning` used anywhere (doesn't exist — warning text is always `text.default`)
 - [ ] `text.onBrand` / `text.onCritical` used as an `Icon(tint=)` value (icons use `icon.*` tokens, even inside CTAs)
 - [ ] Namespace/slot mismatch (e.g., `Text(color = bgCriticalSubtle)` — `bg.*` never valid on text)
-- [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` (use Material Symbols Rounded drawables)
+- [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` / `Icons.Sharp` / `Icons.TwoTone` (use `Icons.Rounded.*` from Material 3 Icons Rounded)
+- [ ] `painterResource(R.drawable.rounded_*)` for a standard Material icon (`painterResource` is only for `ic_wiom_*` and `ic_partner_*`)
 - [ ] Icon sizes not in {16, 20, 24, 48}dp
 - [ ] Spacing values not on the 4px grid
 - [ ] Font sizes not in the 13-token type scale
@@ -295,5 +364,6 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 
 ---
 
-*Wiom Design System Foundations — Unified Skill. April 2026.*
-*References: color.md · typography.md · iconography.md · spacing.md · radius.md · stroke.md · shadow.md*
+*Wiom Design System Foundations — Unified Skill.*
+*References (source of truth): color.md + color/{core-tokens, actions, patterns, chat, primitives, contrast}.md · typography.md · iconography.md · spacing.md · radius.md · stroke.md · shadow.md*
+*When SKILL.md and a reference file disagree, the reference file wins — SKILL.md is a quick summary, not the authoritative spec.*
