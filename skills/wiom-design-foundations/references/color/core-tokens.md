@@ -73,11 +73,13 @@ Box(
 | `text.onPositive` | #FFFFFF | Gray_50 | Text on `bg.positive` (green badge) |
 | `text.critical` | #D92130 | Critical_600 | Error text, required asterisk |
 | `text.onCritical` | #FFFFFF | Gray_50 | Text on `bg.critical` (red button) |
-| `text.onWarning` | #372902 | Warning_900 | **Warning-family body and label text.** Used on both `bg.warning` (solid gold badge, 7.16:1) and `bg.warning.subtle` (warning banner/card, 8.76:1). Dark olive on gold and yellow — cohesive warning identity. |
+| `text.onWarning` | #372902 | Warning_900 | **Warning-family body and label text — single token for the whole family.** Valid on three surfaces: `bg.warning` (solid gold badge, 7.16:1 AA), `bg.warning.subtle` (warning banner/card, 8.76:1 AA), and **`bg.default` (14.18:1 AAA)** for inline warning-tinted text on white. Warning is the one status family where the `text.on*` token doubles as family text on `bg.default`, because warning bgs are light (yellow/gold) so `text.on*` is dark (olive) — works on both light and white surfaces. |
 | `text.info` | #6D17CE | Info_600 | Info text |
 | `text.onInfo` | #FFFFFF | Gray_50 | Text on `bg.info` (purple badge) |
 
-**Warning is the one status family with its own body-text token.** Use `text.onWarning` on any warning surface — solid or subtle. Do not use `text.default` on `bg.warning` or `bg.warning.subtle`. `text.warning` as a separate token does not exist; `text.onWarning` is the warning-family text.
+**Warning is a deliberate one-token family.** `text.onWarning` is the single text token for every warning context: solid `bg.warning` badge (7.16:1 AA), subtle `bg.warning.subtle` banner (8.76:1 AA), and inline warning-tinted text on `bg.default` (14.18:1 AAA). A separate `text.warning` token is intentionally not defined — it would be redundant, since `text.onWarning`'s dark-olive value (#372902) already passes AAA on white. Do not use `text.default` on warning surfaces.
+
+Contrast with the other status families: `text.onCritical`, `text.onPositive`, `text.onInfo` are all `#FFFFFF` and fail on `bg.default`, so those families need a saturated colored variant (`text.critical`, `text.positive`, `text.info`) for default-surface text. Warning inverts the pattern — its light bg means its `text.on*` is dark, which works everywhere.
 
 ### text.brand is in actions.md
 `text.brand`, `text.brand.hover`, `text.onBrand`, `text.onBrandAccent` live in `actions.md` because they're interactive.

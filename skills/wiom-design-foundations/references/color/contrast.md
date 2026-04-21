@@ -6,13 +6,14 @@ All common Wiom color pairings are pre-verified against WCAG AA (4.5:1 for body 
 
 ## WCAG levels used
 
-Only the real WCAG 2.1 levels:
+Real WCAG 2.1 levels:
 
 - **AA** — ≥ 4.5:1 for body text, ≥ 3:1 for large text (18pt+ or 14pt+bold) and graphics/icons
 - **AA-Large** — ≥ 3:1, passes for large text only (not small body)
+- **AAA** — ≥ 7:1 for body text (only called out where it's load-bearing — currently `text.onWarning` on `bg.default`, which is why Wiom doesn't need a separate `text.warning` token)
 - **Fail** — below these thresholds
 
-"AA+" / "AAA" are not used in this file. If a pair exceeds AA, it's still "AA" — the ratio tells you how comfortable.
+If a pair exceeds AA, it's usually labelled "AA" — the ratio tells you how comfortable. AAA is labelled explicitly only where the headroom matters for a design decision.
 
 ---
 
@@ -66,12 +67,13 @@ Same pattern: `text.critical` is safe for headings/buttons/icons on error banner
 |---|---|---|---|
 | `text.onWarning` (#372902) | `bg.warning` (#E2B203) | 7.16 | AA |
 | `text.onWarning` (#372902) | `bg.warning.subtle` (#FFE9A1) | 8.76 | AA |
+| `text.onWarning` (#372902) | `bg.default` (#FAF9FC) | **14.18** | **AAA** — warning-family text on white/light neutral surfaces |
 | `icon.warning` (#E2B203) | `bg.warning.subtle` (#FFE9A1) | 1.64 | **Fails — OK for accent, not text** |
 | `icon.warning` | `bg.default` | 1.89 | **Fails — token is invalid on bg.default** |
 
 ### Three things to know
 
-1. **Warning has its own body-text token.** `text.onWarning` (#372902) pairs with both `bg.warning` (solid gold, 7.16:1) and `bg.warning.subtle` (banner, 8.76:1). Do not use `text.default` on a warning surface — warning is the one status family with a family-specific body-text token, creating a cohesive dark-olive identity across solid and subtle variants.
+1. **`text.onWarning` is a one-token family — valid on three surfaces.** `bg.warning` (solid gold, 7.16:1 AA), `bg.warning.subtle` (banner, 8.76:1 AA), and `bg.default` (white, 14.18:1 AAA). Warning is the only family where `text.on*` doubles as the family's default-surface text because warning bgs are light (yellow/gold) so `text.on*` is dark (olive). Critical/positive/info `text.on*` tokens are white, so they only work on their saturated-colored bgs — those families use separate `text.critical` / `text.positive` / `text.info` tokens for default-surface text. Warning doesn't need one. Do not use `text.default` on a warning surface.
 
 2. **`icon.warning` is only AA-pass for graphics (≥3:1)** when it's inside `bg.warning.subtle` at sufficient size (≥24dp with 2dp+ stroke). The icon is decorative-tier on this surface — the warning signal is carried by the surface color and context, not by icon contrast. This is documented and accepted; the token is scoped to warning surfaces only.
 
