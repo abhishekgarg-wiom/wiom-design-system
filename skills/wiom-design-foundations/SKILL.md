@@ -85,6 +85,7 @@ Read the relevant reference file(s) BEFORE writing any code or making design dec
 - Tappable chrome icons (back, close, menu, overflow, filter): `icon.action` (#352D42, Neutral_900). Decorative icons: `icon.nonAction` (#A7A1B2).
 - Premium / partner header surface (non-action): `bg.brand.bold` (#443152, Brand_900) + `text.inverse`.
 - Overlay scrim (modal backdrop, bottom-sheet scrim): `overlay.scrim` (rgba(22,16,33,0.50)) — the only overlay token.
+- **`text.placeholder` doesn't exist — use `text.disabled`.** Same hex #A7A1B2 serves both "text in a visually disabled component" and "placeholder copy in an empty form field." An empty input isn't truly disabled (it's awaiting input) but its placeholder uses the same muted gray by design. Sub-AA (2.39:1) is intentional for placeholders — they're ephemeral.
 - **Dark mode: NOT yet defined.** If a dark-mode screen is requested, flag to the design system team — do not implement ad-hoc.
 - **Flag a gap, don't invent.** If no token fits, leave a `// GAP: needed X for Y, no token exists` comment and ask. Do not eyedrop from Figma or approximate with the closest token. Only `overlay.scrim` and the 40% disabled-opacity fallback are system-provided exceptions.
 
@@ -231,8 +232,28 @@ Body text on status banners is family-specific:
 ### 9. Dividers Inside Cards Respect Padding
 Dividers inside a card are inset to match the card's content padding (typically 16px from both edges). Never full-bleed inside a card.
 
-### 10. Disabled State Pattern
-Text → `text.disabled` (#A7A1B2). Icon → `icon.disabled` (#D7D3E0). Fill → `bg.disabled` (#D7D3E0). For non-Neutral base colors (Brand/Positive/Critical/Warning/Info) with no dedicated disabled token, apply 40% opacity to the base color. Never apply opacity to Neutral-family tokens. No pointer events.
+### 10. Disabled State Tokens
+Text → `text.disabled` (#A7A1B2). Icon → `icon.disabled` (#D7D3E0). Fill → `bg.disabled` (#D7D3E0). **Never combine all three on the same component** — that triple-dim fails contrast (see Rule 11 for the correct per-component pattern). For non-Neutral base colors (Brand/Positive/Critical/Warning/Info) with no dedicated disabled token, apply 40% opacity to the base color. Never apply opacity to Neutral-family tokens. No pointer events.
+
+### 11. Disabled Dims One Side, Never Both
+A disabled component dims **either** its surface **or** its content — never both. Pairing `bg.disabled` with `text.disabled` + `icon.disabled` collapses contrast below ~2:1 and fails WCAG.
+
+Two valid patterns:
+
+| Pattern | Surface | Content (text + icon) | Used for |
+|---|---|---|---|
+| **A. Disabled surface** | `bg.disabled` (#D7D3E0) | Unchanged — keeps the rest-state `text.on*` / `icon.*` tokens | Filled CTAs: Primary, Destructive, Pre-booking |
+| **B. Disabled content** | Unchanged (`bg.default`, `bg.subtle`, or transparent) | `text.disabled` + `icon.disabled` | Outlined/text CTAs (Secondary, Tertiary), inputs, textareas, list rows, cards |
+
+**Primary / Destructive / Pre-booking (Pattern A):** only `bg.brand|critical|brand.accent` → `bg.disabled`. Label stays `text.onBrand` / `text.onCritical` / `text.onBrandAccent`; icon stays `icon.inverse` / `icon.action`. The muted-gray surface signals "unavailable"; the preserved text.on* keeps the component readable-ish (Primary/Destructive at ~1.35:1 white-on-gray, Pre-booking at ~11:1 dark-on-gray because its label is dark by design). Contrast is intentionally low on Primary/Destructive — disabled elements signal "not available," not "readable."
+
+**Secondary (Pattern B with stroke change):** stroke `stroke.brand.focus` → `stroke.subtle` (#D7D3E0). Label `text.brand` → `text.disabled`. Icon `icon.brand` → `icon.disabled`. Bg stays transparent.
+
+**Tertiary (Pattern B):** label `text.brand` → `text.disabled`. Icon `icon.brand` → `icon.disabled`. No bg, no stroke.
+
+**Inputs / cards / list rows (Pattern B):** Surface stays `bg.default` or `bg.subtle`. Text → `text.disabled`. Icon → `icon.disabled`. Border may lighten to `stroke.subtle` but the surface doesn't turn gray.
+
+Pick exactly one pattern per component. Never mix.
 
 ---
 
@@ -354,6 +375,8 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] Legacy role-first tokens (`color.brand.primary`, `color.warning.primary` #B85C00 brown, `warning.soft` #FFDA40 — all deprecated; use element-first `bg.*`/`text.*`/`stroke.*`/`icon.*`)
 - [ ] `text.default` used on a warning surface (`bg.warning` or `bg.warning.subtle`) — warning body + label text is `text.onWarning` (#372902), which is also valid for warning-tinted inline text on `bg.default` (14.18:1 AAA).
 - [ ] Inventing a `text.warning` token — use `text.onWarning` instead. Its dark-olive value passes AAA on white, so a separate default-surface token would be redundant. Warning is deliberately a one-token family.
+- [ ] Inventing a `text.placeholder` token — use `text.disabled` (same hex #A7A1B2 covers both disabled-text and empty-input placeholders by design).
+- [ ] `bg.disabled` paired with `text.disabled` and/or `icon.disabled` on the same component (Rule 11 — disabled dims exactly one side, not both; triple-dim fails contrast at ~1.6–2.2:1). Filled CTAs use Pattern A (bg.disabled + `text.on*` unchanged); outlined/text CTAs and non-CTA components use Pattern B (surface unchanged + `text.disabled` + `icon.disabled`).
 - [ ] `text.onBrand` / `text.onCritical` used as an `Icon(tint=)` value (icons use `icon.*` tokens, even inside CTAs)
 - [ ] Namespace/slot mismatch (e.g., `Text(color = bgCriticalSubtle)` — `bg.*` never valid on text)
 - [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` / `Icons.Sharp` / `Icons.TwoTone` (use `Icons.Rounded.*` from Material 3 Icons Rounded)
