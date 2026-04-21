@@ -29,7 +29,8 @@
 | Tertiary (text-only) | `icon.brand` | #D9008D (Brand_600) | `text.brand` (#D9008D) |
 | Pre-booking (`bg.brand.accent`) | `icon.action` | #352D42 (Neutral_900) | `text.onBrandAccent` (#161021) |
 | Destructive (`bg.critical`) | `icon.inverse` | #FAF9FC (Neutral_50) | `text.onCritical` (#FFFFFF) |
-| Any CTA, disabled | `icon.disabled` | #D7D3E0 (Neutral_300) | `text.disabled` |
+| Disabled — Secondary / Tertiary | `icon.disabled` | #D7D3E0 (Neutral_300) | `text.disabled` (#A7A1B2, Neutral_400) |
+| Disabled — Primary / Destructive / Pre-booking | **unchanged from rest** (`icon.inverse` or `icon.action`) | — | **unchanged from rest** (`text.onBrand` / `text.onCritical` / `text.onBrandAccent`) |
 
 All pairings are AA-verified (see `contrast.md`). Every icon-vs-text pair is either the identical hex or differs by less than 0.05 in relative luminance — visually indistinguishable.
 
@@ -79,9 +80,27 @@ Button(
 
 `Button(contentColor)` propagates to child Icons automatically — but it would push `#FFFFFF` (pure white) into the Icon, overriding `icon.inverse` (#FAF9FC). Set `tint` explicitly to preserve the icon-weight calibration.
 
-### Disabled state
+### Disabled state (per CTA type)
 
-When a CTA is disabled, both icon and label use the `text.disabled` / `icon.disabled` pair (both Neutral_300 / #D7D3E0). The CTA's container fill becomes `bg.disabled` (also #D7D3E0) — same hex intentionally, so the button reads as a single low-contrast block. The disabled state deliberately has low contrast (1.0:1) because disabled elements aren't meant to be readable — they're meant to signal "not available."
+Disabled CTAs follow **SKILL.md Rule 11 — Disabled Dims One Side, Never Both.** Filled CTAs use Pattern A (surface dimmed, content unchanged); outlined/text CTAs use Pattern B (content dimmed, surface unchanged). Never apply `bg.disabled` + `text.disabled` + `icon.disabled` together — that triple-dim collapses contrast below ~2:1 and fails WCAG.
+
+| CTA | Pattern | Fill | Label | Icon | Stroke |
+|---|---|---|---|---|---|
+| **Primary** | A (surface) | `bg.brand` → **`bg.disabled`** (#D7D3E0) | `text.onBrand` (#FFFFFF) — unchanged | `icon.inverse` (#FAF9FC) — unchanged | none |
+| **Destructive** | A (surface) | `bg.critical` → **`bg.disabled`** | `text.onCritical` (#FFFFFF) — unchanged | `icon.inverse` — unchanged | none |
+| **Pre-booking** | A (surface) | `bg.brand.accent` → **`bg.disabled`** | `text.onBrandAccent` (#161021) — unchanged | `icon.action` (#352D42) — unchanged | none |
+| **Secondary** (outlined) | B (content) | transparent — unchanged | `text.brand` → **`text.disabled`** (#A7A1B2) | `icon.brand` → **`icon.disabled`** (#D7D3E0) | `stroke.brand.focus` → **`stroke.subtle`** (#D7D3E0) |
+| **Tertiary** (text-only) | B (content) | transparent — unchanged | `text.brand` → **`text.disabled`** | `icon.brand` → **`icon.disabled`** | none |
+
+**Why the difference:**
+
+- **Filled CTAs (Primary/Destructive/Pre-booking):** swap the fill to `bg.disabled` gray and keep the rest-state label/icon tokens. The gray surface signals "unavailable"; the preserved `text.on*` keeps the component's token structure consistent across states. Primary + Destructive land at ~1.35:1 white-on-gray (intentionally low — "not readable" signals "not available"), Pre-booking at ~11:1 dark-on-gray (readable because its label is dark by design).
+- **Secondary (outlined):** stroke lightens to a neutral gray (`stroke.subtle`, same hex as `bg.disabled`) and label/icon shift to `text.disabled` / `icon.disabled`. Bg stays transparent.
+- **Tertiary (text-only):** label and icon shift to `text.disabled` / `icon.disabled`. No surface or stroke to change.
+
+**All disabled CTAs:** no pointer events, `cursor: not-allowed` on web, `onClick = null` in Compose.
+
+**Stroke token on disabled Secondary:** `stroke.subtle` (#D7D3E0, Neutral_300) is the right semantic — it's the neutral "card outline / input rest" token, visually the disabled gray. Reusing it avoids inventing a `stroke.disabled` token.
 
 ### Icons OUTSIDE the button (but near it)
 

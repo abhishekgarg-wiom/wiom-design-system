@@ -66,7 +66,7 @@ Box(
 |---|---|---|---|
 | `text.default` | #161021 | Neutral_950 | Headings, body, labels on neutral + positive/critical/info surfaces. **Not for warning surfaces** — those use `text.onWarning`. |
 | `text.subtle` | #5C5570 | Neutral_700 | Descriptions, placeholders, metadata |
-| `text.disabled` | #A7A1B2 | Neutral_400 | Disabled text (sub-AA intentional) |
+| `text.disabled` | #A7A1B2 | Neutral_400 | **Two sanctioned uses, same hex:** (1) text inside a component that is visually disabled; (2) placeholder copy in empty form fields (inputs, textareas, OTP digits). An empty input isn't truly disabled — it's awaiting input — but its placeholder uses the same muted gray. Contrast on `bg.default` is 2.39:1 (sub-AA, intentional — placeholders are ephemeral, not primary content). **No separate `text.placeholder` token exists.** |
 | `text.inverse` | #FAF9FC | Neutral_50 | Text on dark neutral surfaces |
 | `text.selected` | #D9008D | Brand_600 | Selected tab label, active chip, current nav |
 | `text.positive` | #008043 | Positive_600 | Success text |
