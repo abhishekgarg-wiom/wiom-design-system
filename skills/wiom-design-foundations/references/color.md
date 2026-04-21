@@ -60,8 +60,6 @@ Step numbers match the Tailwind/Radix convention so AI pattern-matching works. N
 
 These gaps are by design. Do not invent tokens to fill them.
 
-**No `text.warning` token.** Warning text is always `text.default`. Rationale: amber text dark enough for AA contrast reads as brown and loses its yellow character. The warning signal is carried by `icon.warning` + `bg.warning.subtle`, not by text color.
-
 **No hover/pressed states on Positive, Info, Warning, or Neutral.** These are feedback families (banners, toasts, badges) — not interactive surfaces. Actions inside a feedback surface (e.g., "Undo" on a success toast) use brand or critical tokens, which have interaction states.
 
 **No green CTA.** Confirmation buttons use `bg.brand`. Wiom presents choices neutrally — no green "yes" / red "no" pressure.
@@ -73,7 +71,7 @@ These gaps are by design. Do not invent tokens to fill them.
 ## Six most common decisions (memorize these)
 
 ### 1. "What color is body text?"
-`text.default` (#161021 ← Neutral_950). Used on every light surface including status banners. Warning banners use `text.default`, not a warning-tinted text.
+`text.default` (#161021 ← Neutral_950) on every light surface — **except warning surfaces.** Warning body and label text uses `text.onWarning` (#372902 ← Warning_900), the one family with its own body-text token. It pairs with both `bg.warning` (solid gold badge, 7.16:1) and `bg.warning.subtle` (warning banner, 8.76:1), creating a cohesive dark-olive identity across the warning family.
 
 ### 2. "What's the fill for the main CTA on this screen?"
 `bg.brand` (#D9008D ← Brand_600). Max one primary CTA per screen — this is a rate limit, not a suggestion. If you have two actions and both feel primary, one of them is actually Secondary (use Secondary CTA tokens).
@@ -84,8 +82,10 @@ No rest-state fill. `text.brand` label + `stroke.brand.focus` border (saturated 
 ### 4. "How do I color an error banner?"
 `bg.critical.subtle` (#FFE5E7) background, `text.default` body text, `text.critical` (#D92130) for headings/emphasis, `icon.critical` for the alert icon. **Not** white text on red — that's the destructive CTA pattern, used only on buttons.
 
-### 5. "How do I color a warning badge?"
-Solid yellow fill `bg.warning` (#E2B203 ← Warning_300) with `text.onWarning` (#372902 ← Warning_900) label. Dark olive text on gold badge — cohesive warning identity. Note: white text on this fill fails AA (1.98:1); `text.onWarning` is required.
+### 5. "How do I color a warning surface (badge or banner)?"
+**Solid badge:** `bg.warning` (#E2B203 ← Warning_300) + `text.onWarning` (#372902 ← Warning_900) label. 7.16:1, AA.
+**Subtle banner/card:** `bg.warning.subtle` (#FFE9A1 ← Warning_100) + `text.onWarning` body + `icon.warning` (#E2B203) for the alert icon + optional `stroke.warning` (#E2B203) outline. 8.76:1, AA.
+Dark olive text on both — cohesive warning identity across the family. Note: white text on either fill fails AA (1.98:1 on solid gold, ~1.75:1 on subtle yellow); `text.onWarning` is the only valid warning-text token.
 
 ### 6. "My CTA has an icon next to the label — what tint?"
 Use the `icon.*` family, with one token per CTA type:
@@ -160,7 +160,7 @@ If you're writing a lint rule, reference these invariants.
 ## Anti-patterns (mistakes we've seen)
 
 - **Using `bg.brand.subtle` as a text color**: It's a background. Use `text.brand` for brand-tinted text.
-- **Using `text.warning`**: Doesn't exist. Use `text.default` on warning surfaces.
+- **Using `text.default` on a warning surface**: Warning is the one family with its own body-text token — `text.onWarning` (#372902) pairs with both `bg.warning` (solid badge, 7.16:1) and `bg.warning.subtle` (banner, 8.76:1). `text.warning` as a separate token does not exist; `text.onWarning` is the warning-family text.
 - **Adding hover to a success toast button**: The button uses brand tokens (`text.brand` with `text.brand.hover`), not positive tokens.
 - **Red button for "Cancel subscription flow"**: If the user is dismissing a form, that's Secondary, not Destructive. Red is only for actual destruction.
 - **`#FFFFFF` hardcoded**: Use `Gray_50` — but even then, only inside a semantic token definition. In feature code, use `text.onBrand` / `text.onCritical` / `chat.bg.userBubble` etc.

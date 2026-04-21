@@ -87,7 +87,7 @@ Badges can also use the subtle-tier fill (e.g., `bg.positive.subtle` + `text.pos
 |---|---|---|
 | `bg.positive.subtle` | `text.positive` (for headings/short labels) or `text.default` (for body) | `icon.positive` |
 | `bg.critical.subtle` | `text.critical` (AA-large only — large text or bold) or `text.default` | `icon.critical` |
-| `bg.warning.subtle` | `text.default` (no `text.warning` exists) | `icon.warning` |
+| `bg.warning.subtle` | `text.onWarning` (warning family's own body-text token — do not use `text.default`) | `icon.warning` |
 | `bg.info.subtle` | `text.info` or `text.default` | `icon.info` |
 
 ---

@@ -75,9 +75,9 @@ Read the relevant reference file(s) BEFORE writing any code or making design dec
 | **Info** | 100–900 | Purple; Info_600 = #6D17CE |
 
 **Critical rules:**
-- Body text on ALL light surfaces (including status banners): `text.default` (#161021). No `text.warning` token exists.
+- Body text on most light surfaces: `text.default` (#161021). **Exception: warning surfaces use `text.onWarning` (#372902)** — the one status family with its own body-text token (see warning rule below).
 - Error banner: `bg.critical.subtle` + `text.default` body + `text.critical` for heading/icon. Never white-on-red (that's destructive CTA only).
-- Warning badge: `bg.warning` (#E2B203) + `text.onWarning` (#372902). White text on warning fill fails AA.
+- Warning surfaces (badge + banner): both use `text.onWarning` (#372902 ← Warning_900). Solid `bg.warning` (#E2B203) at 7.16:1 AA · Subtle `bg.warning.subtle` (#FFE9A1) at 8.76:1 AA. Dark olive on gold and yellow — cohesive warning identity. White on either fails AA (1.98:1 / ~1.75:1).
 - Primary CTA: `bg.brand` (#D9008D). Max **one** per screen.
 - `bg.critical` as CTA fill: destructive actions ONLY (Delete, Cancel-plan, Remove). Never for "Dismiss"/"Skip"/"Close".
 - CTA icons use `icon.*` tokens, not `text.on*`. Primary/Destructive → `icon.inverse`; Secondary/Tertiary → `icon.brand`; Pre-booking → `icon.action`.
@@ -223,7 +223,10 @@ Every color, size, spacing, radius, stroke, and shadow value must come from the 
 A success icon never appears on a warning surface. A critical border never wraps a positive card. Each status family (**positive / critical / warning / info** — "critical", not "negative"; "negative" is a legacy term) is self-contained.
 
 ### 8. Text on Status Banners
-Use `text.default` (#161021) for body text on warning, critical, and positive banners — reserve `text.critical` / `text.positive` for headings and emphasis (their subtle-bg contrast is AA-large only for critical / marginal for positive). **Info is the exception:** `text.info` on `bg.info.subtle` is 6.53:1 (AA comfortably), so either `text.default` or `text.info` is valid for info-banner body. No `text.warning` token exists.
+Body text on status banners is family-specific:
+- **Critical & Positive:** `text.default` (#161021). Reserve `text.critical` / `text.positive` for headings/emphasis (their subtle-bg contrast is AA-large only for critical, marginal for positive).
+- **Warning (badge + banner):** `text.onWarning` (#372902) on both `bg.warning` (7.16:1) and `bg.warning.subtle` (8.76:1). Warning is the one status family with its own body-text token — do not use `text.default` on warning surfaces.
+- **Info:** either `text.default` or `text.info` (#6D17CE). Both AA (6.53:1 for text.info on `bg.info.subtle`).
 
 ### 9. Dividers Inside Cards Respect Padding
 Dividers inside a card are inset to match the card's content padding (typically 16px from both edges). Never full-bleed inside a card.
@@ -348,7 +351,7 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] Same radius on nested containers (use inner = outer − padding)
 - [ ] Full-bleed divider inside a padded card (inset to match padding)
 - [ ] Legacy role-first tokens (`color.brand.primary`, `color.warning.primary` #B85C00 brown, `warning.soft` #FFDA40 — all deprecated; use element-first `bg.*`/`text.*`/`stroke.*`/`icon.*`)
-- [ ] `text.warning` used anywhere (doesn't exist — warning text is always `text.default`)
+- [ ] `text.default` used on a warning surface (`bg.warning` or `bg.warning.subtle`) — warning body + label text is `text.onWarning` (#372902), the one status family with its own body-text token. `text.warning` as a separate token still does not exist; `text.onWarning` is the warning-family text.
 - [ ] `text.onBrand` / `text.onCritical` used as an `Icon(tint=)` value (icons use `icon.*` tokens, even inside CTAs)
 - [ ] Namespace/slot mismatch (e.g., `Text(color = bgCriticalSubtle)` — `bg.*` never valid on text)
 - [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` / `Icons.Sharp` / `Icons.TwoTone` (use `Icons.Rounded.*` from Material 3 Icons Rounded)

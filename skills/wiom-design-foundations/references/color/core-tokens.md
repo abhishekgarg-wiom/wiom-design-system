@@ -28,8 +28,8 @@ Subtle-first ordering within each role.
 | `bg.positive.subtle` | #E1FAED | Positive_100 | Success banner, success card bg |
 | `bg.positive` | #008043 | Positive_600 | Solid success fill (badge, chip) |
 | `bg.critical.subtle` | #FFE5E7 | Critical_100 | Error banner, error card bg |
-| `bg.warning.subtle` | #FFE9A1 | Warning_100 | Warning banner, warning card bg |
-| `bg.warning` | #E2B203 | Warning_300 | Solid warning fill (badge, chip) |
+| `bg.warning.subtle` | #FFE9A1 | Warning_100 | Warning banner, warning card bg · PAIRS with `text.onWarning` (8.76:1, AA) |
+| `bg.warning` | #E2B203 | Warning_300 | Solid warning fill (badge, chip) · PAIRS with `text.onWarning` (7.16:1, AA) |
 | `bg.info.subtle` | #F1E5FF | Info_100 | Info banner, info card bg |
 | `bg.info` | #6D17CE | Info_600 | Solid info fill (badge) |
 
@@ -64,7 +64,7 @@ Box(
 
 | Token | Hex | Primitive | Use |
 |---|---|---|---|
-| `text.default` | #161021 | Neutral_950 | Headings, body, labels, **warning banner text** |
+| `text.default` | #161021 | Neutral_950 | Headings, body, labels on neutral + positive/critical/info surfaces. **Not for warning surfaces** — those use `text.onWarning`. |
 | `text.subtle` | #5C5570 | Neutral_700 | Descriptions, placeholders, metadata |
 | `text.disabled` | #A7A1B2 | Neutral_400 | Disabled text (sub-AA intentional) |
 | `text.inverse` | #FAF9FC | Neutral_50 | Text on dark neutral surfaces |
@@ -73,11 +73,11 @@ Box(
 | `text.onPositive` | #FFFFFF | Gray_50 | Text on `bg.positive` (green badge) |
 | `text.critical` | #D92130 | Critical_600 | Error text, required asterisk |
 | `text.onCritical` | #FFFFFF | Gray_50 | Text on `bg.critical` (red button) |
-| `text.onWarning` | #372902 | Warning_900 | Text on `bg.warning` (yellow badge) — **dark olive on gold** |
+| `text.onWarning` | #372902 | Warning_900 | **Warning-family body and label text.** Used on both `bg.warning` (solid gold badge, 7.16:1) and `bg.warning.subtle` (warning banner/card, 8.76:1). Dark olive on gold and yellow — cohesive warning identity. |
 | `text.info` | #6D17CE | Info_600 | Info text |
 | `text.onInfo` | #FFFFFF | Gray_50 | Text on `bg.info` (purple badge) |
 
-**No `text.warning` token exists.** Warning text is always `text.default`.
+**Warning is the one status family with its own body-text token.** Use `text.onWarning` on any warning surface — solid or subtle. Do not use `text.default` on `bg.warning` or `bg.warning.subtle`. `text.warning` as a separate token does not exist; `text.onWarning` is the warning-family text.
 
 ### text.brand is in actions.md
 `text.brand`, `text.brand.hover`, `text.onBrand`, `text.onBrandAccent` live in `actions.md` because they're interactive.
