@@ -23,7 +23,7 @@ Only the real WCAG 2.1 levels:
 | `text.default` (#161021) | `bg.default` (#FAF9FC) | 17.71 | AA |
 | `text.default` | `bg.subtle` (#F1EDF7) | 16.10 | AA |
 | `text.default` | `bg.muted` (#E8E4F0) | 14.85 | AA |
-| `text.default` | `bg.warning.subtle` (#FFE9A1) | 15.42 | AA |
+| `text.onWarning` (#372902) | `bg.warning.subtle` (#FFE9A1) | 8.76 | AA |
 | `text.default` | `bg.positive.subtle` (#E1FAED) | 16.90 | AA |
 | `text.default` | `bg.critical.subtle` (#FFE5E7) | 15.58 | AA |
 | `text.default` | `bg.info.subtle` (#F1E5FF) | 15.39 | AA |
@@ -65,15 +65,17 @@ Same pattern: `text.critical` is safe for headings/buttons/icons on error banner
 | Foreground | Background | Ratio | Level |
 |---|---|---|---|
 | `text.onWarning` (#372902) | `bg.warning` (#E2B203) | 7.16 | AA |
-| `text.default` (#161021) | `bg.warning.subtle` (#FFE9A1) | 15.42 | AA |
+| `text.onWarning` (#372902) | `bg.warning.subtle` (#FFE9A1) | 8.76 | AA |
 | `icon.warning` (#E2B203) | `bg.warning.subtle` (#FFE9A1) | 1.64 | **Fails — OK for accent, not text** |
 | `icon.warning` | `bg.default` | 1.89 | **Fails — token is invalid on bg.default** |
 
-### Two things to know
+### Three things to know
 
-1. **`icon.warning` is only AA-pass for graphics (≥3:1)** when it's inside `bg.warning.subtle` at sufficient size (≥24dp with 2dp+ stroke). The icon is decorative-tier on this surface — the warning signal is carried by the surface color and context, not by icon contrast. This is documented and accepted; the token is scoped to warning surfaces only.
+1. **Warning has its own body-text token.** `text.onWarning` (#372902) pairs with both `bg.warning` (solid gold, 7.16:1) and `bg.warning.subtle` (banner, 8.76:1). Do not use `text.default` on a warning surface — warning is the one status family with a family-specific body-text token, creating a cohesive dark-olive identity across solid and subtle variants.
 
-2. **`icon.warning` on `bg.default` is 1.62:1 — invalid.** A lint rule checks this. If you need a yellow warning indicator on a white card, wrap it in a `bg.warning.subtle` chip or use `icon.critical` (red) for the alert instead.
+2. **`icon.warning` is only AA-pass for graphics (≥3:1)** when it's inside `bg.warning.subtle` at sufficient size (≥24dp with 2dp+ stroke). The icon is decorative-tier on this surface — the warning signal is carried by the surface color and context, not by icon contrast. This is documented and accepted; the token is scoped to warning surfaces only.
+
+3. **`icon.warning` on `bg.default` is 1.89:1 — invalid.** A lint rule checks this. If you need a yellow warning indicator on a white card, wrap it in a `bg.warning.subtle` chip or use `icon.critical` (red) for the alert instead.
 
 ## Status — info
 
@@ -84,20 +86,20 @@ Same pattern: `text.critical` is safe for headings/buttons/icons on error banner
 | `text.info` | `bg.info.subtle` (#F1E5FF) | 6.53 | AA |
 | `icon.info` | `bg.default` | 7.52 | AA |
 
-### Info is the one status family where colored text IS safe on its own backgrounds
+### Warning and Info have family-specific body-text tokens
 
-Every other status family requires `text.default` for body copy on its banner:
+Positive and Critical banners still use `text.default` for body text (family-colored text fails or is AA-large only on its own subtle bg). **Warning and Info each have a family-specific token:**
 
-| Family | Colored text on its own subtle bg | Safe? |
+| Family | Body text on subtle bg | Ratio |
 |---|---|---|
-| Positive | `text.positive` on `bg.positive.subtle` | 4.58:1 — AA (marginal) |
-| Critical | `text.critical` on `bg.critical.subtle` | 4.18:1 — **AA-Large only** |
-| Warning | (no `text.warning` exists) | — |
-| **Info** | `text.info` on `bg.info.subtle` | **6.53:1 — AA comfortably** |
+| Positive | `text.default` on `bg.positive.subtle` — reserve `text.positive` for headings (4.58:1, AA marginal) | 16.90:1 |
+| Critical | `text.default` on `bg.critical.subtle` — reserve `text.critical` for headings (4.18:1, AA-Large only) | 15.58:1 |
+| **Warning** | **`text.onWarning` on `bg.warning.subtle`** — the family's own body-text token | **8.76:1 AA** |
+| **Info** | `text.info` on `bg.info.subtle` (or `text.default` for long body copy) | 6.53:1 AA |
 
-**Why this matters:** agents applying the rule "body text on status banners is always `text.default`" will correctly use `text.default` on positive/critical/warning banners. But on info banners, `text.info` is a valid choice — purple on lavender reads clearly and gives the banner more visual identity. Use whichever reads better for the content.
+Warning is now a cohesive-identity family: the dark olive `text.onWarning` that sits on the solid gold badge also sits on the subtle yellow banner, tying the family together. Info similarly has its own saturated purple body-text option.
 
-Positive and Critical are stricter: prefer `text.default` for body text, reserve the family-colored text for headings and icons.
+Positive and Critical stay stricter — prefer `text.default` for body copy, reserve the family-colored text for headings and icons.
 
 ## Pre-booking CTA
 
@@ -174,6 +176,7 @@ When adding a new semantic token, verify against the relevant background using t
 | `text.critical` for body text on `bg.critical.subtle` | 4.18:1 — passes AA-large only, fails for small body |
 | (none — `text.critical` on bg.default is 4.75:1, passes AA for body) | — |
 | `text.brand` for body text on `bg.brand.subtle` | 4.10:1 — passes AA-large only |
+| `text.default` on `bg.warning.subtle` | ratio fine (15.42:1) but **wrong token** — warning family uses `text.onWarning` for cohesive identity |
 | `icon.warning` on `bg.default` | 1.89:1 — invalid |
 | `icon.nonAction` on `bg.default` | 2.39:1 — **fails graphics AA (3:1)**. Decorative icons at Neutral_400 are borderline-invisible on budget-Android low-brightness screens. Consider using `icon.action` (Neutral_900, 12.47:1) even for non-tappable icons, or escalating this as a known issue. |
 | White text on `bg.brand.accent` (#FF66C9) | 2.63:1 — fails. Must use `text.onBrandAccent` (dark) |
