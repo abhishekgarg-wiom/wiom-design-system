@@ -77,7 +77,7 @@ Read the relevant reference file(s) BEFORE writing any code or making design dec
 **Critical rules:**
 - Body text on most light surfaces: `text.default` (#161021). **Exception: warning surfaces use `text.onWarning` (#372902)** — the one status family with its own body-text token (see warning rule below).
 - Error banner: `bg.critical.subtle` + `text.default` body + `text.critical` for heading/icon. Never white-on-red (that's destructive CTA only).
-- Warning surfaces (badge + banner): both use `text.onWarning` (#372902 ← Warning_900). Solid `bg.warning` (#E2B203) at 7.16:1 AA · Subtle `bg.warning.subtle` (#FFE9A1) at 8.76:1 AA. Dark olive on gold and yellow — cohesive warning identity. White on either fails AA (1.98:1 / ~1.75:1).
+- Warning-family text token: `text.onWarning` (#372902 ← Warning_900). **One token, three valid surfaces:** `bg.warning` (7.16:1 AA), `bg.warning.subtle` (8.76:1 AA), AND `bg.default` (14.18:1 AAA) for inline warning-tinted text on white. Warning is the only family where the `text.on*` token doubles as the family's default-surface text — its bg is light (yellow/gold), so its `text.on*` is dark (olive), which works on white too. Critical/positive/info can't do this (their `text.on*` tokens are white). `text.warning` as a separate token is intentionally not defined. White on warning fills fails AA (1.98:1 / ~1.75:1).
 - Primary CTA: `bg.brand` (#D9008D). Max **one** per screen.
 - `bg.critical` as CTA fill: destructive actions ONLY (Delete, Cancel-plan, Remove). Never for "Dismiss"/"Skip"/"Close".
 - CTA icons use `icon.*` tokens, not `text.on*`. Primary/Destructive → `icon.inverse`; Secondary/Tertiary → `icon.brand`; Pre-booking → `icon.action`.
@@ -225,7 +225,7 @@ A success icon never appears on a warning surface. A critical border never wraps
 ### 8. Text on Status Banners
 Body text on status banners is family-specific:
 - **Critical & Positive:** `text.default` (#161021). Reserve `text.critical` / `text.positive` for headings/emphasis (their subtle-bg contrast is AA-large only for critical, marginal for positive).
-- **Warning (badge + banner):** `text.onWarning` (#372902) on both `bg.warning` (7.16:1) and `bg.warning.subtle` (8.76:1). Warning is the one status family with its own body-text token — do not use `text.default` on warning surfaces.
+- **Warning (badge + banner + inline on default surface):** `text.onWarning` (#372902) on all three — `bg.warning` (7.16:1 AA), `bg.warning.subtle` (8.76:1 AA), and `bg.default` (14.18:1 AAA). Warning is the only family whose `text.on*` doubles as the family's default-surface text, because warning bgs are light so `text.on*` is dark. Do not use `text.default` on warning surfaces. No separate `text.warning` token — `text.onWarning` covers the whole family.
 - **Info:** either `text.default` or `text.info` (#6D17CE). Both AA (6.53:1 for text.info on `bg.info.subtle`).
 
 ### 9. Dividers Inside Cards Respect Padding
@@ -311,6 +311,7 @@ When building a common component, here's which tokens from each foundation apply
 | Label | `type.label.lg` (16sp SemiBold) + `text.default` |
 | Value | `type.body.lg` (16sp Regular) + `text.default` |
 | Helper | `type.body.md` (14sp) + `text.subtle` — 12sp `body.sm` acceptable if space-constrained |
+| Helper (warning state) | `type.body.md` (14sp) + `text.onWarning` (#372902) — for warning-tinted helper copy on the default input background (14.18:1 AAA) |
 | Error | `type.body.md` (14sp) + `text.critical` (#D92130) |
 | Required asterisk | `text.critical` |
 | Padding | `space-16` horizontal, `space-12` vertical |
@@ -351,7 +352,8 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] Same radius on nested containers (use inner = outer − padding)
 - [ ] Full-bleed divider inside a padded card (inset to match padding)
 - [ ] Legacy role-first tokens (`color.brand.primary`, `color.warning.primary` #B85C00 brown, `warning.soft` #FFDA40 — all deprecated; use element-first `bg.*`/`text.*`/`stroke.*`/`icon.*`)
-- [ ] `text.default` used on a warning surface (`bg.warning` or `bg.warning.subtle`) — warning body + label text is `text.onWarning` (#372902), the one status family with its own body-text token. `text.warning` as a separate token still does not exist; `text.onWarning` is the warning-family text.
+- [ ] `text.default` used on a warning surface (`bg.warning` or `bg.warning.subtle`) — warning body + label text is `text.onWarning` (#372902), which is also valid for warning-tinted inline text on `bg.default` (14.18:1 AAA).
+- [ ] Inventing a `text.warning` token — use `text.onWarning` instead. Its dark-olive value passes AAA on white, so a separate default-surface token would be redundant. Warning is deliberately a one-token family.
 - [ ] `text.onBrand` / `text.onCritical` used as an `Icon(tint=)` value (icons use `icon.*` tokens, even inside CTAs)
 - [ ] Namespace/slot mismatch (e.g., `Text(color = bgCriticalSubtle)` — `bg.*` never valid on text)
 - [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` / `Icons.Sharp` / `Icons.TwoTone` (use `Icons.Rounded.*` from Material 3 Icons Rounded)

@@ -60,6 +60,8 @@ Step numbers match the Tailwind/Radix convention so AI pattern-matching works. N
 
 These gaps are by design. Do not invent tokens to fill them.
 
+**No separate `text.warning` token — warning is a deliberate one-token family.** `text.onWarning` (#372902) is the single text token for every warning context: solid `bg.warning` badge (7.16:1 AA), subtle `bg.warning.subtle` banner (8.76:1 AA), and inline warning-tinted text on `bg.default` (14.18:1 AAA). Warning is the only family where the `text.on*` token doubles as the family's default-surface text — its bg is light (yellow/gold) so its `text.on*` is dark (olive), which works on white too. Critical, positive, and info `text.on*` tokens are all white, so they fail on `bg.default` — those families need saturated colored variants (`text.critical`, `text.positive`, `text.info`) for default-surface text. Warning inverts the pattern and doesn't need a second token.
+
 **No hover/pressed states on Positive, Info, Warning, or Neutral.** These are feedback families (banners, toasts, badges) — not interactive surfaces. Actions inside a feedback surface (e.g., "Undo" on a success toast) use brand or critical tokens, which have interaction states.
 
 **No green CTA.** Confirmation buttons use `bg.brand`. Wiom presents choices neutrally — no green "yes" / red "no" pressure.
