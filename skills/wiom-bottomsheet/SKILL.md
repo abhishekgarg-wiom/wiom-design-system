@@ -1,524 +1,586 @@
-# Wiom Design System — Bottom Sheet Component Skill
+---
+name: wiom-bottom-sheet
+description: Wiom Bottom Sheet component spec, anatomy, token contract, property API, and Figma↔Kotlin mapping. Use this skill EVERY TIME you work with bottom sheets, modal sheets, drawer-style surfaces, option menus, payment confirmations, success/error feedback sheets, or any Figma design containing a handle-topped surface anchored to the screen bottom. Trigger when user mentions "bottom sheet", "modal sheet", "drawer", "option menu", "confirm sheet", "success sheet", "error sheet", "payment confirm", "sort/filter sheet", or shares a Figma design with a drag-handle + content + CTA layout. Also trigger when implementing bottom sheet UI in Kotlin/Compose for Wiom Android app.
+---
 
-You are generating a design or UI that includes a bottom sheet for the Wiom product ecosystem. You MUST use ONLY the approved Wiom bottom sheet specification below. Do NOT deviate from the defined anatomy, token assignments, variant rules, or sizing. Every bottom sheet in your output must conform exactly to this system.
+# Wiom Bottom Sheet — Component Skill
 
-## Context
-
-Wiom serves lower- and middle-income Indian households. Bottom sheet decisions must account for:
-- **Mobile-first** — budget Android devices, outdoor use, small screens
-- **Trust-heavy** — payment confirmations, policy details, consent flows are critical path
-- **Bilingual** — Hindi and English content, Devanagari characters are taller/wider at same size
-- **Low cognitive load** — clear hierarchy, scannable list items, obvious dismiss affordance
-- **Contextual actions** — option menus, quick settings, supplementary info without full navigation
+You are generating a design or UI that includes a bottom sheet for the Wiom product ecosystem. Use ONLY the approved tokens, composition rules, and property API below. This skill covers the Bottom Sheet container + its Header sub-component + the Safe Space pattern. For CTA configuration inside the action bar, defer to the `wiom-button-group` skill.
 
 ---
 
-## Component Overview
+## Where it lives
+
+- **Figma file:** Wiom DS - Next · `ZPErh7YU7omdbyy2o268Qo`
+- **Page:** `Saurav / Bottomsheet`
+- **Rule (hard):** all Bottom Sheet + Bottom Sheet Header changes happen on `Saurav / Bottomsheet` only. Never build duplicates on other pages.
+
+### Component IDs
+
+| Component | Node ID | Type |
+|---|---|---|
+| `Bottom Sheet` | `3022:424` | COMPONENT_SET (5 Size variants) |
+| `Bottom Sheet Header` | `2993:8` | COMPONENT (booleans + text props) |
+| `BS Illustration` | `2958:17` | COMPONENT_SET (5 Tone variants) |
+
+### Composed-from (external, must stay in sync)
+
+| Component | Node ID | Lives on |
+|---|---|---|
+| CTA | `2038:116` | `Saad / Components / CTA` |
+| Button Group | `2982:357` | `Saad / Components / CTA` |
+| List Item | `1655:487` | `Saurav / List items` |
+| Foundation Icons | — | `Foundation / icons` |
+
+---
+
+## Context — why these rules matter
+
+Wiom serves lower- and middle-income Indian households on budget Android devices. Bottom sheet decisions must account for:
+- **Mobile-first** — small screens, outdoor use, thumb reach
+- **Trust-heavy** — payment confirmations, consent, policy details
+- **Bilingual** — Hindi + English, Devanagari is taller at the same size
+- **Low cognitive load** — clear hierarchy, scannable rows, obvious dismiss affordance
+
+---
+
+## Component overview
 
 ```
-PURPOSE:  Surface anchored to screen bottom for supplementary content and contextual actions.
-WIDTH:    360px (standard Android viewport). Fills screen width.
-TYPES:    Standard (persistent, no scrim) and Modal (blocks background with scrim overlay).
-LAYOUTS:  List-based (Compact/Half/Expanded/Full) and Illustration-based (with/without CTA).
-SHADOW:   shadow/md (Standard) or shadow/xl (Modal) — never both shadow and border.
-NOTE:     Hover and Focused states are excluded from V1 — mobile-first product.
+PURPOSE:    Surface anchored to screen bottom for supplementary content and contextual actions.
+WIDTH:      360px (standard Android viewport). Fills screen width.
+TYPES:      Standard (no scrim) and Modal (scrim overlay) — controlled via `Is Modal` boolean.
+LAYOUTS:    List-based (Compact / Half / Expanded / Full) and Illustration-based.
+DISMISS:    Drag handle (primary) + scrim tap (Modal only) + back button.
+SHADOW:     shadow/md effect style on the Sheet Surface.
+NOTE:       Hover/Focused states excluded from V1 (mobile-first).
 ```
 
 ---
 
-## Anatomy — List Layout
+## Property API (Bottom Sheet)
+
+| Property | Type | Default | Purpose |
+|---|---|---|---|
+| `Size` | Variant | `Compact` | 5 options: Compact · Half · Expanded · Full · Illustration |
+| `Is Modal` | Boolean | `false` | Shows/hides scrim overlay above the sheet |
+| `Show Handle` | Boolean | `true` | Toggles drag handle container |
+| `Show Title` | Boolean | `true` | Toggles entire Header instance + divider (list variants only) |
+| `Show Button Group` | Boolean | `true` | Toggles Action Bar (containing Button Group) |
+| `Show Top Safe Space` | Boolean | `false` | Reveals 16px top spacer (use when `Show Title = false`) |
+| `Show Bottom Safe Space` | Boolean | `false` | Reveals 16px bottom spacer (use when `Show Button Group = false`) |
+| `Heading` | Text | `"Heading"` | Illustration variant heading |
+| `Subtext` | Text | `"Description…"` | Illustration variant subtext |
+
+**Design rule — why booleans over variants:** 2-choice properties are booleans per the Wiom design-system convention. `Size` is the only variant dimension because it has 5 values.
+
+### Nested component properties (bubble up via instance overrides)
+
+**Bottom Sheet Header properties** (access via the nested Header instance in a Bottom Sheet):
+
+| Property | Type | Default |
+|---|---|---|
+| `Title` | Text | `"Title"` |
+| `Subtitle` | Text | `"Subtitle description"` |
+| `Trailing Action Label` | Text | `"Action"` |
+| `Show Leading Icon` | Boolean | `false` |
+| `Show Title` | Boolean | `true` |
+| `Show Subtitle` | Boolean | `false` |
+| `Show Trailing Action` | Boolean | `false` |
+| `Leading Icon` | INSTANCE_SWAP | `arrow_back` |
+
+**Button Group properties** (nested via Action Bar — see `wiom-button-group` skill):
+- `Count`: 1 · 2 · 3
+- `Layout`: Side by side · Stacked
+- Per-CTA `Type` override for Destructive / Pre-booking / Acknowledge variants
+
+**BS Illustration properties** (Illustration variant only):
+- `Tone`: Neutral · Success · Error · Warning · Info (5 semantic tones)
+
+---
+
+## Anatomy
+
+### List layout (Compact / Half / Expanded / Full)
 
 ```
-┌─────────────────────────────────────────────────┐
-│                 ── Handle ──                     │  ← 32×4px pill, centered
-│                                                  │
-│  Title                                           │  ← type/heading/md, left-aligned
-│─────────────────────────────────────────────────│  ← 1px divider, full width
-│                                                  │
-│  [icon]  Label                            ›     │  ← list item row
-│          Description                             │
-│  ─────────────────────────────────────────      │  ← inset divider (76px from left)
-│  [icon]  Label                            ›     │
-│          Description                             │
-│                                                  │
-│─────────────────────────────────────────────────│  ← 1px top border on action bar
-│  ┌─ Secondary ─┐  ┌─── Primary ───┐            │  ← CTA component instances
-│  └─────────────┘  └───────────────┘            │
-└─────────────────────────────────────────────────┘
+Root [VERTICAL, 360 wide, HUG height]
+├── Scrim                              ← visible: Is Modal
+└── Sheet Surface [VERTICAL, shadow/md, top radius xlarge, fill bg/default]
+    ├── Handle container               ← visible: Show Handle
+    │   └── Indicator 32×4 pill
+    ├── Top Safe Space (16px spacer)   ← visible: Show Top Safe Space
+    ├── Header (BS Header instance)    ← visible: Show Title
+    ├── Divider (1px)                  ← visible: Show Title
+    ├── Content
+    │   └── List Item instances (2 / 4 / 7 / 7)
+    ├── Action Bar                     ← visible: Show Button Group
+    │   └── Button Group instance
+    └── Bottom Safe Space (16px)       ← visible: Show Bottom Safe Space
 ```
 
-| Element | Required | Spec |
-|---------|----------|------|
-| **Drag Handle** | Yes | 32×4px pill, `radius/full`, `color/border/strong`. Primary dismiss affordance. |
-| **Header** | Yes | Title text left-aligned, `type/heading/md` (20sp Bold 28sp LH). |
-| **Divider** | Yes | 1px `color/border/subtle`, full width below header. |
-| **List Items** | Yes (list layout) | Instances of `List Item` component (Type=Default) from design system. Has Leading icon, Primary text, Secondary text, trailing chevron. |
-| **Action Bar** | Conditional | CTA component instances. Present in Expanded, Full, and Illustration CTA variants. |
-
----
-
-## Anatomy — Illustration Layout
+### Illustration layout
 
 ```
-┌─────────────────────────────────────────────────┐
-│                 ── Handle ──                     │  ← 32×4px pill, centered
-│                                                  │
-│              ┌──────────┐                        │
-│              │  120×120  │                        │  ← illustration circle, centered
-│              │   icon    │                        │
-│              └──────────┘                        │
-│                                                  │
-│               Heading                            │  ← type/heading/md, centered
-│         Description subtext                      │  ← type/body/md, centered
-│                                                  │
-│─────────────────────────────────────────────────│
-│  ┌─ Secondary ─┐  ┌─── Primary ───┐            │  ← optional CTA bar
-│  └─────────────┘  └───────────────┘            │
-└─────────────────────────────────────────────────┘
+Root [VERTICAL, 360 wide, HUG height]
+├── Scrim                              ← visible: Is Modal
+└── Sheet Surface
+    ├── Handle container
+    ├── Top Safe Space                 ← visible: Show Top Safe Space
+    ├── Illustration Block [VERTICAL, center-aligned]
+    │   ├── BS Illustration instance (120×120)
+    │   └── Text column
+    │       ├── Heading (center)
+    │       └── Subtext (center)
+    ├── Action Bar                     ← visible: Show Button Group
+    │   └── Button Group instance (Stacked default for illustration)
+    └── Bottom Safe Space              ← visible: Show Bottom Safe Space
 ```
 
-| Element | Required | Spec |
-|---------|----------|------|
-| **Illustration circle** | Yes | 120×120px, `color/brand/primary-tint` fill, `radius/full`. Contains 48dp icon (`icon/lg`). |
-| **Icon** | Yes | Instance from icon library (Material Symbols Rounded), `color/brand/primary` fill override. |
-| **Heading** | Yes | `type/heading/md`, `color/text/primary`, center-aligned. |
-| **Subtext** | Yes | `type/body/md`, `color/text/secondary`, center-aligned. |
+### BS Header anatomy
+
+```
+Header [HORIZONTAL, padding 16/16/8/16, center-aligned]
+├── Leading Icon (24dp)                ← visible: Show Leading Icon (INSTANCE_SWAP)
+├── Text Column [VERTICAL, FILL, gap 4]
+│   ├── Title (type/heading/md)        ← visible: Show Title · characters: Title
+│   └── Subtitle (type/body/sm)        ← visible: Show Subtitle · characters: Subtitle
+└── Trailing Action (type/label/md, text/brand)  ← visible: Show Trailing Action
+```
 
 ---
 
-## Variant Properties (Figma)
+## Size presets
 
-| Property | Values | Type | Default |
-|----------|--------|------|---------|
-| Type | Standard, Modal | Variant | Standard |
-| Size | Compact, Half, Expanded, Full, Illustration, Illustration CTA | Variant | Compact |
-| Title | (editable) | Text | "Title" |
-| Heading | (editable) | Text | "Heading" |
-| Subtext | (editable) | Text | "Description text goes here..." |
-| Show Secondary CTA | true, false | Boolean | true |
-| Vertical CTA | true, false | Boolean | false |
-
-**Total variants:** 2 types × 6 sizes = 12
-
-**Note on Vertical CTA:** When enabled, an "Action Bar – Vertical" frame appears with CTAs stacked vertically (Primary on top, Secondary below). The horizontal Action Bar should be manually hidden by the designer when using vertical stacking. Applies to variants with action bars: Expanded, Full, and Illustration CTA.
+| Size | Height (approx) | Content | Action Bar default |
+|---|---|---|---|
+| Compact | ~200px | Handle + Header + 2 items | Visible |
+| Half | ~370px | Handle + Header + 4 items | Visible |
+| Expanded | ~600px | Handle + Header + 7 items | Visible |
+| Full | ~600px | Handle + Header + 7 items (scrollable in real use) | Visible |
+| Illustration | ~300px (hug) | Handle + Illustration Block | Visible (Stacked default) |
 
 ---
 
-## Size Presets
+## Spacing contract (per `Wiom-spacing` skill)
 
-| Size | Height | Content | Action Bar | Use Case |
-|------|--------|---------|------------|----------|
-| **Compact** | 240px | Handle + Header + 2 items | No | Quick peek, simple option menu |
-| **Half** | 400px | Handle + Header + 4 items | No | Standard option list, settings |
-| **Expanded** | 600px | Handle + Header + 7 items | Yes | Full content, confirmations |
-| **Full** | 756px | Handle + Header + 7 items | Yes | Complex flows, long scrollable content |
-| **Illustration** | Auto (hug) | Handle + illustration + heading + subtext | No | Info, success, error states |
-| **Illustration CTA** | Auto (hug) | Handle + illustration + heading + subtext | Yes | Confirmations with visual context |
+This follows the **Bottom Sheet recipe**: 16px all-sides base, 16px Title → content, 24px Content → action buttons, 12px between CTAs.
 
----
+```
+Handle container      → padding top 8, bottom 8
+Top Safe Space (when shown) → 16px tall spacer
+Header                → padding 16L, 16R, 8T, 16B (16 = Title → content)
+Divider               → 1px, FILL width, stroke/subtle
+List Items            → each has 12 internal vertical padding (inherit from List Item)
+Action Bar            → padding 16L, 16R, 24T, 16B (24 = Content → CTAs loose gap)
+  └── Button Group    → 12px gap between CTAs (inherit from Button Group)
+Bottom Safe Space (when shown) → 16px tall spacer
+```
 
-## Type Behavior
+### Illustration Block spacing
 
-| Type | Scrim | Shadow | Dismiss | Background |
-|------|-------|--------|---------|------------|
-| **Standard** | None | `shadow/md` effect style | Swipe down on handle | Interactive — user can still interact with content behind |
-| **Modal** | `color/overlay/default` (rgba 22,16,33 @ 50%) | `shadow/xl` effect style | Swipe down on handle OR tap scrim | Blocked — scrim prevents background interaction |
+```
+Illustration Block    → padding 16L, 16R, 16T, 24B · gap 16 (circle → text)
+Text column           → gap 8 (Heading → Subtext)
+```
 
----
+### Why no top border on Action Bar
 
-## Complete Token Reference
-
-### Sheet surface tokens
-
-| Property | Token | Value |
-|----------|-------|-------|
-| Fill | `color/surface/base` | #FAF9FC |
-| Top corners | `radius/xlarge` | 24px |
-| Bottom corners | `radius/none` | 0px |
-| Shadow (Standard) | `shadow/md` effect style | 0 2px 6px rgba(0,0,0,0.15) |
-| Shadow (Modal sheet) | `shadow/xl` effect style | 0 8px 24px rgba(0,0,0,0.15) |
-| Scrim (Modal only) | `color/overlay/default` | rgba(22,16,33,0.50) |
-
-### Drag handle tokens
-
-| Property | Token | Value |
-|----------|-------|-------|
-| Size | — | 32×4px |
-| Radius | `radius/full` | 9999px |
-| Fill | `color/border/strong` | #665E75 |
-| Container padding | `space/8` top and bottom | 8px |
-
-### Header tokens
-
-| Property | Token | Value |
-|----------|-------|-------|
-| Title style | `type/heading/md` | 20sp / Bold 700 / 28sp LH |
-| Title color | `color/text/primary` | #161021 |
-| Padding left | `space/24` | 24px |
-| Padding right | `space/16` | 16px |
-| Padding top | `space/4` | 4px |
-| Padding bottom | `space/12` | 12px |
-
-### List item tokens
-
-List items use instances of the `List Item` component (Type=Default) from the "Saurav / List items" page (Component Set ID: 1655:487).
-
-| Property | Configuration |
-|----------|--------------|
-| Component | List Item (Type=Default) |
-| Has Leading | true — icon in leading slot |
-| Has Secondary | true — description text below primary |
-| Has Trailing Icon | true — chevron_right |
-| Has Trailing Meta | false |
-| Primary Text | Item label (e.g., "View Policy Details") |
-| Secondary Text | Item description (e.g., "Check your coverage and benefits") |
-
-### Action bar tokens (horizontal — default)
-
-| Property | Token | Value |
-|----------|-------|-------|
-| Top border | 1px `color/border/subtle` |
-| Padding | `space/24` horizontal, `space/16` vertical |
-| CTA gap | `space/12` | 12px |
-| Buttons | CTA component instances (Primary + Secondary from design system) |
-
-### Action bar tokens (vertical — Vertical CTA = true)
-
-| Property | Token | Value |
-|----------|-------|-------|
-| Fill | `color/surface/primary` | #FAF9FC |
-| Top border | None |
-| Padding | `space/24` horizontal, `space/16` bottom, `0` top |
-| CTA gap | `space/12` | 12px |
-| Buttons | Primary CTA on top, Secondary CTA below — both FILL width |
-
-### Illustration tokens
-
-| Property | Token | Value |
-|----------|-------|-------|
-| Circle size | 120×120px |
-| Circle fill | `color/brand/primary-tint` | #FFE5F6 |
-| Circle radius | `radius/full` | 9999px |
-| Icon size | `icon/lg` | 48dp |
-| Icon color | `color/brand/primary` | #D9008D |
-| Heading style | `type/heading/md` | 20sp / Bold 700 / 28sp LH, center-aligned |
-| Heading color | `color/text/primary` | #161021 |
-| Subtext style | `type/body/md` | 14sp / Regular 400 / 20sp LH, center-aligned |
-| Subtext color | `color/text/secondary` | #5C5570 |
-| Heading-to-subtext gap | `space/8` | 8px |
-| Text area padding | `space/24` horizontal, `space/16` top, `space/24` bottom |
+Per the spacing skill, **related = tight, unrelated = loose**. Content and the CTA bar are DIFFERENT concerns — 24px loose gap (Action Bar's `paddingTop`) delivers the visual separation. A 1px border would be redundant and clutter. Don't add one.
 
 ---
 
-## CTA Configuration
+## Token reference
 
-### Layout direction
+All visual values bind to the file's variable collections. NEVER hardcode.
 
-| Config | Vertical CTA | Result |
-|--------|-------------|--------|
-| **Horizontal** (default) | false | Secondary + Primary side by side in Action Bar |
-| **Vertical** | true | Primary on top, Secondary below in "Action Bar – Vertical" frame. Designer must hide the horizontal Action Bar manually. |
+### Surface
 
-### Secondary toggle
+| Property | Token |
+|---|---|
+| Sheet fill | `bg/default` (#FAF9FC) |
+| Scrim fill | `overlay/scrim` (rgba #161021 @ 50%) |
+| Top corner radius | `radius/xlarge` (24) |
+| Bottom corner radius | `radius/none` (0) |
+| Sheet shadow | `shadow/md` effect style |
 
-| Config | Show Secondary CTA | Result |
-|--------|-------------------|--------|
-| **Dual CTA** | true (default) | Secondary (outlined) + Primary (filled), each FILL width |
-| **Single CTA** | false | Primary CTA fills full width. Use for simple confirmations. |
+### Handle
 
-**Rule:** CTAs are instances of the existing CTA component from the design system (Component Set on "Components / CTA, Tabs, Filters, Chips" page). Never recreate buttons — always use CTA instances.
+| Property | Token |
+|---|---|
+| Indicator size | 32 × 4 |
+| Indicator fill | `stroke/strong` |
+| Indicator radius | `radius/full` (9999) |
+
+### Header
+
+| Property | Token |
+|---|---|
+| Title style | `type/heading/md` (20sp Bold 28LH) |
+| Title color | `text/default` |
+| Subtitle style | `type/body/sm` (12sp Regular 16LH) |
+| Subtitle color | `text/subtle` |
+| Trailing Action style | `type/label/md` |
+| Trailing Action color | `text/brand` (acts as link) |
+| Leading Icon color | `icon/nonAction` |
+
+### Divider
+
+| Property | Token |
+|---|---|
+| Thickness | 1px |
+| Fill | `stroke/subtle` |
+
+### Action Bar
+
+| Property | Token |
+|---|---|
+| Background | transparent (no fill) |
+| Top border | **none** — spacing provides separation |
+| Button Group gap | 12 (inherited) |
+
+### Illustration tones
+
+| Tone | Circle fill | Icon color | Default icon |
+|---|---|---|---|
+| Neutral | `bg/brand/subtle` | `icon/brand` | `celebration` |
+| Success | `bg/positive/subtle` | `icon/positive` | `check_circle` |
+| Error | `bg/critical/subtle` | `icon/critical` | `error` |
+| Warning | `bg/warning/subtle` | `icon/warning` | `warning` |
+| Info | `bg/info/subtle` | `icon/info` | `info` |
 
 ---
 
-## Decision Trees
+## Safe Space pattern (critical behavior)
+
+The Bottom Sheet's bottom and top safe spaces are **conditional** — they appear only when the adjacent "anchor" element (Title or Button Group) is hidden.
+
+### The rule
+
+| Situation | Effective bottom space | Effective top space |
+|---|---|---|
+| Title shown + BG shown (default) | 16px (from Action Bar's padding-bottom) | 16px (from Handle + Header's top padding) |
+| Title shown + BG **hidden** | 0px ❌ → need Bottom Safe Space | 16px ✓ |
+| Title **hidden** + BG shown | 16px ✓ | ~20px (Handle's padding only — minimal) → need Top Safe Space for 16+ explicit gap |
+| Title hidden + BG hidden | 0px ❌ | ~20px | 
+
+### Platform limitation — no auto-inverse
+
+**Figma's `visible` binding supports only direct-state logic** — there is no inverse (NOT) operator. So `Show Top Safe Space` and `Show Bottom Safe Space` **cannot auto-mirror** `Show Title` and `Show Button Group`. They are paired booleans designers toggle together.
+
+### Designer pairings
+
+| Intent | Toggles |
+|---|---|
+| Default sheet | All booleans at default |
+| Hide title with breathing room | `Show Title = false` + `Show Top Safe Space = true` |
+| Hide Button Group with safe area | `Show Button Group = false` + `Show Bottom Safe Space = true` |
+| Bare list (no header, no CTAs) | Title=false, BG=false, both safe spaces=true |
+
+**Document this pairing on any Figma Dev Mode handoff** so implementers know the safe space is required.
+
+---
+
+## Composition rules
+
+### Action Bar always uses Button Group
+
+Never recreate buttons inside the Action Bar. Always use a Button Group instance. To vary CTA count, layout, or types, use the Button Group's properties (see `wiom-button-group` skill):
+
+- `Count`: 1 / 2 / 3 CTAs
+- `Layout`: Side by side (horizontal) / Stacked (vertical)
+- Inner CTA `Type` swap: Primary / Secondary / Tertiary / Destructive / Pre-booking / Acknowledge
+
+**3-side-by-side rule (from button-group skill):** When Count=3, Layout=Side by side, NO Primary CTA allowed — the 101dp width collapses the hierarchy. Use Secondary + Tertiary mix, OR switch to Stacked.
+
+### Header is composable
+
+Don't recreate the header markup inline. Always use a `Bottom Sheet Header` instance and configure via its properties. This keeps padding, typography, colors, and leading/trailing patterns consistent across all sheets.
+
+### Illustration tone must be semantic
+
+- `Neutral` → tips, info announcements, first-run celebrations
+- `Success` → payment success, activation success, verification done
+- `Error` → payment failure, network errors, permission denied, destructive confirmations
+- `Warning` → low balance, expiring plan, permission required
+- `Info` → explanatory feedback, neutral status changes
+
+---
+
+## Decision trees
 
 ### When to use Bottom Sheet
 
 ```
-User needs supplementary content without leaving the current screen?
+Supplementary content without leaving the screen?
   → Bottom Sheet
 
-User needs to pick from a list of contextual actions?
+Pick from a list of contextual actions?
   → Bottom Sheet (list layout, Compact or Half)
 
-User needs to confirm an action with visual context?
-  → Bottom Sheet (Illustration CTA layout)
+Confirm an action with visual context?
+  → Bottom Sheet (Illustration + Button Group)
 
-User needs to see success/error/info feedback with detail?
+Show success/error/info feedback?
   → Bottom Sheet (Illustration layout)
 
-User needs to complete a short form or flow?
-  → Bottom Sheet (Expanded or Full, with action bar)
+Short form or flow?
+  → Bottom Sheet (Expanded or Full)
 ```
 
 ### When NOT to use Bottom Sheet
 
 ```
-Content requires immediate attention and blocks all interaction?
+Critical alert blocking all interaction?
   → Dialog (not Bottom Sheet)
 
-Content is a full page or complex multi-step flow?
+Full page or multi-step flow?
   → New screen (not Bottom Sheet)
 
-Content is a simple toast-style notification?
-  → Snackbar / Toast (not Bottom Sheet)
+Toast-style notification?
+  → Snackbar / Toast
 
-Content is a tooltip or contextual hint?
-  → Tooltip (not Bottom Sheet)
-
-Content needs to persist across navigation?
-  → Persistent UI element (not Bottom Sheet)
+Tooltip or hint?
+  → Tooltip
 ```
 
-### Which type?
+### Which type (Is Modal)?
 
 ```
-User may continue interacting with background content?
-  → Standard
+User may keep interacting with background content?
+  → Standard (Is Modal = false)
 
-Sheet requires user attention before continuing?
-  → Modal
+Requires user attention before continuing?
+  → Modal (Is Modal = true)
 
-Sheet shows critical confirmation (payment, delete, consent)?
+Payment / delete / consent (critical)?
   → Modal
 ```
 
 ### Which size?
 
 ```
-2 or fewer list items, quick action?
-  → Compact (240px)
+≤2 items, quick action?     → Compact
+3-4 items, option menu?     → Half
+5+ items with CTAs?         → Expanded
+Long scrollable content?    → Full
+Visual feedback?            → Illustration
+```
 
-3-4 list items, option menu?
-  → Half (400px)
+### Which Button Group layout?
 
-5+ list items with action buttons?
-  → Expanded (600px)
-
-Long scrollable content or complex flow?
-  → Full (756px)
-
-Visual feedback (success, error, info)?
-  → Illustration or Illustration CTA
+```
+1 CTA?                      → Count=1 (layout irrelevant)
+Confirm + Cancel?           → Count=2, Side by side (Secondary left, Primary right)
+Long labels?                → Count=2, Stacked (Primary top, Secondary below)
+3 short options?            → Count=3, Side by side (NO Primary — see button-group skill)
+3 with hierarchy?           → Count=3, Stacked (Primary top)
 ```
 
 ---
 
-## Wiom Use Cases
+## Wiom use cases
 
 ### Policy quick actions
-
 ```
-Screen: Policy details, Home screen long-press
-Title:  "Policy Options"
-Items:  View Policy Details (policy icon)
-        Make a Payment (currency_rupee icon)
-        Contact Support (support_agent icon)
-        Download Documents (download icon)
-Size:   Half (4 items)
-Type:   Standard
+Size:  Half · Type: Standard
+Header: "Policy Options" (no subtitle, no icons)
+Items: View Policy Details · Make a Payment · Contact Support · Download Documents
+CTA:   Show Button Group = false (no action bar)
 ```
 
 ### Payment confirmation
-
 ```
-Screen: Recharge checkout
-Title:  "Confirm Payment"
-Layout: Illustration CTA
-Icon:   currency_rupee (48dp in 120px circle)
+Size:  Illustration · Type: Modal
 Heading: "Pay Rs 299?"
 Subtext: "Monthly recharge for Plan A — 1.5GB/day. Amount will be debited from your UPI account."
-CTA:    Single Primary — "Pay Now" (Show Secondary CTA = false)
-Type:   Modal
+Tone:  Neutral
+CTA:   Count=2, Stacked — Primary "Pay now" / Secondary "Cancel"
 ```
 
-### Success state
-
+### Payment success
 ```
-Screen: Post-payment, Post-activation
-Layout: Illustration (no CTA)
-Icon:   check_circle or task_alt (48dp in 120px circle)
+Size:  Illustration · Type: Modal
 Heading: "Payment Successful"
 Subtext: "Rs 299 has been charged. Your plan is now active until 15 May 2026."
-Type:   Modal
-Rule:   Auto-dismiss after 3 seconds or tap scrim to close.
+Tone:  Success
+CTA:   Count=1, Stacked — Primary "Done"
 ```
 
-### Error state
-
+### Payment failure
 ```
-Screen: Payment failure, Network error
-Layout: Illustration CTA
-Icon:   error or warning (48dp in 120px circle)
+Size:  Illustration · Type: Modal
 Heading: "Payment Failed"
 Subtext: "We couldn't process your payment. Please check your UPI app and try again."
-CTA:    Dual — "Cancel" + "Retry"
-Type:   Modal
+Tone:  Error
+CTA:   Count=2, Side by side — Secondary "Cancel" / Primary "Retry"
 ```
 
-### Settings menu
-
+### Delete confirmation
 ```
-Screen: Account, Profile
-Title:  "Account Settings"
-Items:  Account Settings (settings icon)
-        Help & FAQ (quiz icon)
-        Rate this App (star icon)
-Size:   Compact (3 items, no action bar)
-Type:   Standard
+Size:  Illustration · Type: Modal
+Heading: "Delete Account?"
+Subtext: "This will permanently remove your account and all associated data. This cannot be undone."
+Tone:  Error
+CTA:   Count=2, Stacked — Primary swapped to Destructive "Delete" / Secondary "Cancel"
 ```
 
----
-
-## Figma Component Structure
-
+### Filter sheet
 ```
-Bottom Sheet (Standard)            ← root component, auto-layout vertical
-├── Drag Handle                    ← frame, centered, space/8 padding
-│   └── Indicator                  ← 32×4px rectangle, radius/full, color/border/strong
-├── Header                         ← frame, horizontal, space/24 left padding
-│   └── Title                      ← text, type/heading/md, color/text/primary
-├── Divider                        ← 1px rectangle, color/border/subtle, full width
-├── Content                        ← frame, vertical, HUG height (minHeight preserves size)
-│   └── List Item (×N)             ← instances of List Item component (Type=Default)
-│       Properties: Has Leading=true, Has Secondary=true, Has Trailing Icon=true
-├── Action Bar (conditional)       ← frame, horizontal, space/12 gap
-│   ├── CTA / Secondary            ← instance of CTA component (boolean toggle)
-│   └── CTA / Primary              ← instance of CTA component
-└── Action Bar – Vertical (conditional) ← frame, vertical, space/12 gap, Vertical CTA boolean
-    ├── CTA / Primary              ← instance of CTA component
-    └── CTA / Secondary            ← instance of CTA component (boolean toggle)
+Size:  Half · Type: Modal
+Header: Title "Filter Plans" + Subtitle "3 filters applied" + Trailing Action "Clear all"
+Items:  Filter rows (Checkbox list item type)
+CTA:   Count=2, Side by side — Secondary "Cancel" / Primary "Apply"
 ```
 
+### Nested flow sheet
 ```
-Bottom Sheet (Modal)               ← root component, auto-layout vertical, primaryAxisAlignItems MAX
-├── [Scrim]                        ← root fill: color/overlay/default
-└── Sheet Surface                  ← frame, same structure as Standard
-    ├── Drag Handle
-    ├── Header
-    ├── Divider
-    ├── Content
-    ├── Action Bar (conditional)
-    └── Action Bar – Vertical (conditional)
+Size:  Full · Type: Modal
+Header: Leading Icon = arrow_back + Title "Terms & Conditions"
+Content: Scrollable text
+CTA:   Count=1 — Primary "I Agree"
 ```
 
 ---
 
-## Interaction Behavior
-
-| Behavior | Standard | Modal |
-|----------|----------|-------|
-| **Dismiss** | Swipe down on drag handle | Swipe down on handle OR tap scrim |
-| **Animation** | Spring animation, slides down | Spring animation with scrim fade |
-| **Snap points** | Snaps to nearest size preset based on drag velocity | Same |
-| **Scroll** | Content area scrolls independently, header/actions fixed | Same |
-| **Background** | Interactive — user can interact behind sheet | Blocked by scrim |
-| **Back button** | Dismisses sheet | Dismisses sheet |
-
----
-
-## Accessibility
-
-| Requirement | Implementation |
-|-------------|---------------|
-| Focus management | Focus moves into sheet on open, returns to trigger on close |
-| Focus trap (Modal) | Tab/swipe navigation stays within sheet, cannot escape to background |
-| Dismiss alternatives | Provide button alternative for swipe-down gesture |
-| Touch targets | All interactive elements min 48×48px |
-| Screen reader | Announce sheet as dialog/panel with title |
-| Reduce motion | Skip spring animation, use instant show/hide |
-
----
-
-## Strict Rules
+## Strict rules
 
 ### DO
-- Use ONLY the tokens listed in this skill — no hardcoded values
-- Always include a drag handle — it's the primary dismiss affordance
-- Use `shadow/md` for Standard, `shadow/xl` for Modal — applied via effect styles
-- Use `radius/xlarge` (24px) for top corners only — bottom corners always `radius/none`
-- Use CTA component instances — never recreate buttons inside the sheet
-- Use icon instances from the icon library — never raw vectors
-- Bind all colors to Figma variables from the Color collection
-- Bind all spacing to Figma variables from the Spacing collection
-- Bind all radii to Figma variables from the Radius collection
-- Apply text styles from the file's local text styles
-- Use `color/overlay/default` for Modal scrim — not a custom opacity
-- Keep list item dividers inset to text start (76px from left)
-- Use `space/12` gap between CTA buttons in action bar
-- Use `space/24` horizontal content padding consistently
-- Test with Hindi text — Devanagari wraps differently
+
+- Use ONLY the tokens listed above — no hardcoded values
+- Always include a drag handle (dismiss affordance) unless `Show Handle = false` is explicit
+- Use `shadow/md` effect style on the Sheet Surface — no borders
+- Top corners `radius/xlarge` only; bottom corners always `radius/none`
+- Use Button Group instance inside the Action Bar — never raw CTAs
+- Use Bottom Sheet Header instance for headers — never recreate inline
+- Use BS Illustration instance for illustration content — never raw icon + circle
+- Bind every color/spacing/radius to Figma variables
+- Pair `Show Title = false` with `Show Top Safe Space = true` when you need visible breathing room
+- Pair `Show Button Group = false` with `Show Bottom Safe Space = true`
+- Use BS Illustration `Tone` semantically (Success for wins, Error for failures, etc.)
 
 ### DO NOT
+
 - Do NOT add a close button — drag handle is the dismiss affordance
-- Do NOT use border AND shadow on the sheet surface — shadow alone provides depth
-- Do NOT use `shadow/xl` on Standard type — only Modal sheets get xl shadow
+- Do NOT add a top border on the Action Bar — spacing provides separation
+- Do NOT use `shadow/xl` — `shadow/md` is standard for both Standard and Modal types (platform limitation: shadow can't be boolean-bound)
 - Do NOT nest a bottom sheet inside another bottom sheet
-- Do NOT use bottom sheet for critical alerts requiring immediate action — use Dialog
-- Do NOT add more than 7 list items without scrollable content area
-- Do NOT use custom button frames — always use CTA component instances
-- Do NOT use custom icon shapes — always use icon library instances
-- Do NOT hardcode hex colors — bind to Figma color variables
-- Do NOT hardcode spacing values — bind to Figma spacing variables
-- Do NOT put bottom radius on the sheet — it anchors to screen bottom
-
-### WHEN IN DOUBT
-- Type should be Modal for confirmations and critical actions
-- Size should be Half for standard option menus (most common)
-- Use Illustration layout for feedback states (success, error, info)
-- Single Primary CTA for simple confirmations, dual for cancel/confirm flows
-- Content padding is `space/24` horizontal — consistent across all variants
-- Shadow is `shadow/md` for Standard — unless Modal, then `shadow/xl`
+- Do NOT use bottom sheet for blocking alerts — use Dialog
+- Do NOT put more than 7 items in Expanded/Full without scrollable content
+- Do NOT recreate CTAs, Headers, or Illustrations as custom groups — always instance
+- Do NOT hardcode hex values — bind to variables
+- Do NOT add bottom corner radius — the sheet anchors to the screen edge
+- Do NOT enable `Show CTA Bar` + `Vertical CTAs` booleans simultaneously if this is a V1 design (the 2-boolean pairing conflicts — use only the current `Show Button Group` with a Stacked Button Group)
 
 ---
 
-## Anti-Pattern Checklist
+## Anti-pattern checklist
 
-Before submitting any design or code with bottom sheets, verify NONE of these are present:
+Before submitting any bottom sheet design, verify NONE of these are present:
 
-- [ ] Hardcoded hex values instead of Figma variable bindings
-- [ ] Close button present (removed in V1 — drag handle is dismiss affordance)
-- [ ] Border AND shadow on sheet surface (pick shadow only)
-- [ ] Bottom corners with radius (should always be 0px / radius/none)
-- [ ] Custom button frames instead of CTA component instances
-- [ ] Raw vector icons instead of icon library instances
-- [ ] Missing drag handle (always required)
-- [ ] Standard type with shadow/xl (should be shadow/md)
-- [ ] Modal type without scrim overlay
-- [ ] Full-bleed dividers inside content area (should be inset to 76px)
-- [ ] Icon containers not 40×40px circle
-- [ ] Spacing values not from the Spacing variable collection
-- [ ] Text not using local text styles
+- [ ] Hardcoded hex values instead of variable bindings
+- [ ] Close button present (removed in V1 — drag handle is dismiss)
+- [ ] Border on Sheet Surface (shadow only)
+- [ ] Border on Action Bar (spacing only)
+- [ ] Bottom corners with radius > 0
+- [ ] Raw CTA instances instead of Button Group
+- [ ] Inline header markup instead of BS Header instance
+- [ ] Raw icon + circle instead of BS Illustration instance
+- [ ] Missing drag handle (unless Show Handle = false is explicit)
+- [ ] Modal type without scrim (Is Modal must be true)
+- [ ] 3-Side-by-side Button Group with a Primary CTA
+- [ ] Icon tone mismatch (Success tone with "Payment Failed" heading, etc.)
+- [ ] Spacing not matching the Bottom Sheet recipe (16/16/8/16 header, 24T/16B Action Bar)
+- [ ] Title hidden without Top Safe Space enabled
+- [ ] Button Group hidden without Bottom Safe Space enabled
 - [ ] Nested bottom sheet (never valid)
-- [ ] More than 7 list items without scrollable content
-- [ ] Missing title in header
 
 ---
 
-## Quick Token Lookup
+## Figma ↔ Kotlin mapping
 
+### Bottom Sheet top level
+
+```kotlin
+@Composable
+fun WiomBottomSheet(
+    isModal: Boolean = false,
+    showHandle: Boolean = true,
+    size: SheetSize = SheetSize.Compact,
+    content: @Composable ColumnScope.() -> Unit,
+) { ... }
 ```
-SURFACE:     color/surface/base (#FAF9FC)
-CORNERS:     radius/xlarge (24px) top only, radius/none bottom
-SHADOW:      shadow/md (Standard) / shadow/xl (Modal) — effect styles
-SCRIM:       color/overlay/default (rgba 22,16,33,0.50) — Modal only
-HANDLE:      32×4px, radius/full, color/border/strong (#665E75), space/8 padding
-TITLE:       type/heading/md (20sp Bold 28sp LH), color/text/primary, space/24 left
-DIVIDER:     1px color/border/subtle, full width (header) or inset 76px (items)
-ICON CIRCLE: 40×40px (space/40), radius/full, color/brand/primary-tint
-ICON GLYPH:  icon library instance, color/brand/primary fill
-LABEL:       type/label/md (14sp SemiBold 20sp LH), color/text/primary
-DESCRIPTION: type/body/sm (12sp Regular 16sp LH), color/text/secondary
-CHEVRON:     chevron_right instance, icon/md (24dp), color/text/disabled
-LIST ITEM:   Instances of List Item component (Type=Default, Has Leading, Has Secondary, Has Trailing Icon)
-ACTION BAR:  1px top border color/border/subtle, space/24 h-pad, space/16 v-pad, space/12 gap (horizontal)
-ACTION BAR V:color/surface/primary fill, no top border, space/24 h-pad, 0 top / space/16 bottom pad, space/12 gap
-CTA:         Instances from CTA component set. Secondary toggle via boolean property.
-ILLUSTRATION:120px circle, color/brand/primary-tint, icon/lg (48dp), color/brand/primary
-HEADING:     type/heading/md, color/text/primary, center
-SUBTEXT:     type/body/md, color/text/secondary, center
+
+| Figma property | Compose mapping |
+|---|---|
+| `Is Modal` | `ModalBottomSheet(...)` vs `BottomSheetScaffold(...)` |
+| `Show Handle` | `dragHandle = { WiomDragHandle() }` or `null` |
+| `Size` | Height constraint (Compact 240 / Half 400 / Expanded 600 / Full 756) or Modifier.wrapContentHeight() for Illustration |
+| `Heading` / `Subtext` | Text composables inside illustration layout |
+
+### Bottom Sheet Header
+
+```kotlin
+@Composable
+fun WiomBottomSheetHeader(
+    title: String,
+    subtitle: String? = null,
+    leadingIcon: Painter? = null,
+    trailingActionLabel: String? = null,
+    onTrailingClick: (() -> Unit)? = null,
+) { ... }
 ```
+
+### Safe spaces
+
+In Compose, safe spaces aren't needed — use `Modifier.navigationBarsPadding()` on the root sheet for bottom, and standard top padding. The Figma booleans exist only to represent the visual state in designs; Kotlin implementations get this for free from system insets.
+
+### Illustration tone
+
+```kotlin
+enum class IllustrationTone { Neutral, Success, Error, Warning, Info }
+```
+
+Maps to circle fill + icon tint:
+- Neutral → `colors.bg.brand.subtle` + `colors.icon.brand`
+- Success → `colors.bg.positive.subtle` + `colors.icon.positive`
+- Error → `colors.bg.critical.subtle` + `colors.icon.critical`
+- Warning → `colors.bg.warning.subtle` + `colors.icon.warning`
+- Info → `colors.bg.info.subtle` + `colors.icon.info`
 
 ---
 
-Apply this bottom sheet specification to the user's design request. Use token names in your output (not just values) so the design is traceable back to the Wiom Design System. Reference variant properties (Type, Size, Show Secondary CTA, Vertical CTA) when describing bottom sheet instances.
+## Known gaps (V1) — deferred work
+
+These Material Design 3 patterns are NOT yet in the Wiom Bottom Sheet. Each is a separate work stream:
+
+- **Dark mode** — blocked until Color collection gains a Dark mode
+- **Keyboard push-up / form sheet** — when IME opens (text field inside sheet)
+- **Search header variant** — autocomplete sheets
+- **Grid content layout** — share sheet / contact picker patterns
+- **Tabs inside sheet** — multi-section content switcher
+- **Motion tokens** — spring-drag physics, snap points
+- **Hover / Focused states** — excluded in V1, required if extending to tablet/web
+- **CTA Label text property** — CTA component doesn't expose label; swapping CTA text requires drilling into the nested CTA inside Button Group
+
+When these are scoped, they become new variants or properties on this same Bottom Sheet set.
+
+---
+
+## Related skills
+
+- **`wiom-button-group`** — CTA count, layout, 3-side-by-side rules, stacked vs side-by-side guidance
+- **`wiom-list-item`** — the List Item component used inside Content
+- **`wiom-design-foundations`** — color / type / icon / spacing / radius / stroke / shadow tokens
+- **`Wiom-spacing`** — the 4px grid, bottom sheet recipe, gap-only convention, touch target tiers
+- **(memory) `wiom-ds-project.md`** — file state, page map, and component registry for Wiom DS - Next
+
+---
+
+## When to read this skill
+
+- Before creating, editing, or reviewing any bottom sheet in a Figma design
+- Before generating Kotlin / Compose code for bottom sheet UI
+- When the user references "bottom sheet", "modal sheet", "option menu", "payment confirm", "success sheet", "error sheet", "drawer", "filter sheet", or shares a Figma node with a drag-handle + anchored surface
+- When the user asks to benchmark a sheet against Material Design — cross-reference the "Known gaps" section before proposing new variants
+- **HARD RULE:** read this BEFORE any `use_figma` call that creates or modifies a Bottom Sheet component, instance, or variant on `Saurav / Bottomsheet`
