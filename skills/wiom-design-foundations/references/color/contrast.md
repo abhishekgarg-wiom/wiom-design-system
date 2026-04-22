@@ -135,7 +135,8 @@ Non-text elements (icons, borders, focus rings) need 3:1 minimum against their b
 | `icon.inverse` on `bg.critical` (#D92130) | 4.75 | AA |
 | `icon.brand` (#D9008D) on `bg.default` — Secondary/Tertiary icon | 4.62 | AA |
 | `icon.action` (#352D42) on `bg.brand.accent` (#FF66C9) — Pre-booking | 4.98 | AA |
-| `icon.disabled` (#D7D3E0) on `bg.disabled` (#D7D3E0) | 1.00 | **Intentionally low** — disabled signals unavailable |
+| `icon.disabled` (#A7A1B2) on `bg.disabled` (#D7D3E0) | 1.64 | **Intentionally sub-AA** — disabled signals unavailable; `icon.disabled` sits above `bg.disabled` hex so the icon stays visible |
+| `text.disabled` (#A7A1B2) on `bg.disabled` (#D7D3E0) | 1.64 | **Intentionally sub-AA** — same pairing as icon, since `text.disabled` and `icon.disabled` now share hex |
 
 All CTA icon pairings pass AA. Icon-vs-label hex mismatches on filled CTAs (icon `#FAF9FC` vs label `#FFFFFF` on Primary; icon `#352D42` vs label `#161021` on Pre-booking) are **intentional** to rebalance solid-icon visual weight against text glyphs — documented in `core-tokens.md` under `icon.*`.
 

@@ -201,7 +201,7 @@ Safe sizes: **14sp+ regular, 12sp+ bold.** Below that, use `text.default` for bo
 |---|---|
 | Container fill | `bg.disabled` (#D7D3E0 ← Neutral_300) |
 | Text/label | `text.disabled` (#A7A1B2 ← Neutral_400) |
-| Icon | `icon.disabled` (#D7D3E0 ← Neutral_300) |
+| Icon | `icon.disabled` (#A7A1B2 ← Neutral_400) |
 
 **Fallback when no dedicated token exists** (e.g., disabled Pre-booking CTA, disabled colored badge):
 

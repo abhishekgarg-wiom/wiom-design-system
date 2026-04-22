@@ -133,7 +133,7 @@ Two-tier neutral split covers the light-surface case:
 | `icon.critical` | #D92130 | Critical_600 | Error alerts |
 | `icon.warning` | #E2B203 | Warning_300 | Warning indicator (inside `bg.warning.subtle`) · **also reused for star ratings** (gold is the industry convention) |
 | `icon.info` | #6D17CE | Info_600 | Info indicators |
-| `icon.disabled` | #D7D3E0 | Neutral_300 | Disabled icons (lighter than `icon.nonAction`) |
+| `icon.disabled` | #A7A1B2 | Neutral_400 | Disabled interactive icons. Shares hex with `text.disabled` and `icon.nonAction` — the disabled token family is unified at Neutral_400 so a disabled icon stays visible on `bg.disabled` (#D7D3E0 Neutral_300) at ~1.64:1. Sub-AA is intentional; disabled signals "unavailable," not "readable." |
 
 ### icon.nonAction vs icon.action — when to use which
 

@@ -354,7 +354,7 @@ Icon(
 | Warning | `icon.warning` | #E2B203 | Warning indicator — **ONLY** on `bg.warning.subtle` or inside a rating component. Fails AA graphics contrast (3:1) on `bg.default` |
 | Info | `icon.info` | #6D17CE | Info indicators (filled) |
 | Inverse | `icon.inverse` | #FAF9FC | Icons on `bg.inverse`, `bg.brand.bold`, and inside Primary/Destructive CTAs |
-| Disabled | `icon.disabled` | #D7D3E0 | Disabled interactive icons |
+| Disabled | `icon.disabled` | #A7A1B2 | Disabled interactive icons. Same hex as `text.disabled` and `icon.nonAction` — a disabled icon on `bg.disabled` lands at ~1.64:1 (sub-AA, intentional). |
 
 ### Inside a CTA — per `color/actions.md`
 
