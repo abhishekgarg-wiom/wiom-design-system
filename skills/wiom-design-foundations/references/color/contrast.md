@@ -124,7 +124,9 @@ Non-text elements (icons, borders, focus rings) need 3:1 minimum against their b
 | `stroke.subtle` (#D7D3E0) | `bg.default` | 1.40 | **Fails graphics AA** — OK because decorative only, not a focus ring |
 | `stroke.strong` (#473F55) | `bg.default` | 9.49 | AA |
 | `icon.action` (#352D42) | `bg.default` | 12.47 | AA |
-| `icon.nonAction` (#A7A1B2) | `bg.default` | 2.39 | **Fails graphics AA (3:1)** |
+| `icon.nonAction` (#898296) | `bg.default` | 3.48 | AA graphics (repointed to Neutral_500 to clear 3:1) |
+| `icon.nonAction` (#898296) | `bg.subtle` (#F1EDF7) | 3.18 | AA graphics (marginal) |
+| `icon.nonAction` (#898296) | `bg.muted` (#E8E4F0) | 2.92 | **Fails graphics AA** — avoid decorative icons on muted surfaces |
 | `icon.brand` (#D9008D) | `bg.default` | 4.62 | AA |
 
 ### Icons inside CTAs
@@ -181,7 +183,7 @@ When adding a new semantic token, verify against the relevant background using t
 | `text.brand` for body text on `bg.brand.subtle` | 4.10:1 — passes AA-large only |
 | `text.default` on `bg.warning.subtle` | ratio fine (15.42:1) but **wrong token** — warning family uses `text.onWarning` for cohesive identity |
 | `icon.warning` on `bg.default` | 1.89:1 — invalid |
-| `icon.nonAction` on `bg.default` | 2.39:1 — **fails graphics AA (3:1)**. Decorative icons at Neutral_400 are borderline-invisible on budget-Android low-brightness screens. Consider using `icon.action` (Neutral_900, 12.47:1) even for non-tappable icons, or escalating this as a known issue. |
+| `icon.nonAction` on `bg.muted` | 2.92:1 — **fails graphics AA** on that specific surface. Keep decorative icons on `bg.default` or `bg.subtle`; if the surface must be `bg.muted` and the icon is meaningful, escalate to `icon.action` (Neutral_900). |
 | White text on `bg.brand.accent` (#FF66C9) | 2.63:1 — fails. Must use `text.onBrandAccent` (dark) |
 | White text on `bg.warning` (#E2B203) | 1.98:1 — fails. Must use `text.onWarning` (dark) |
 

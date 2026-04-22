@@ -102,7 +102,7 @@ Each category has different fill and color rules. Always identify the category b
 | Category | Examples | Default State | Selected / Active State | Tint (from `icon.*`) |
 |----------|----------|--------------|------------------------|----------------------|
 | **Action** | ArrowBack, Search, Share, Close, Edit, MoreVert, Menu | Rounded (filled) | N/A — no selected state | `icon.action` (#352D42) |
-| **Navigation** | Home, AccountBalanceWallet, AccountCircle, Explore | Outlined variant (unselected) | Filled variant (selected) | `icon.nonAction` unselected (#A7A1B2); `icon.brand` selected (#D9008D) |
+| **Navigation** | Home, AccountBalanceWallet, AccountCircle, Explore | Outlined variant (unselected) | Filled variant (selected) | `icon.nonAction` unselected (#898296); `icon.brand` selected (#D9008D) |
 | **Status** | CheckCircle, Cancel, Warning, Info | Filled always | N/A | `icon.positive` / `icon.critical` / `icon.warning` / `icon.info` |
 | **Toggle** | Bookmark/BookmarkBorder, Favorite/FavoriteBorder | `*Border` variant (off) | Filled variant (on) | `icon.nonAction` off; `icon.brand` on |
 | **Brand** | Wiom logo, Wiom SIM icon | Original brand colors | N/A | `Color.Unspecified` — exempt from tinting |
@@ -347,14 +347,14 @@ Icon(
 | Context | Token | Hex | When |
 |---------|-------|-----|------|
 | Tappable chrome | `icon.action` | #352D42 | Back, close, menu, overflow, filter — any icon the user taps directly |
-| Decorative / non-tappable | `icon.nonAction` | #A7A1B2 | Leading list icons without their own tap target, decorative illustrations, unselected nav |
+| Decorative / non-tappable | `icon.nonAction` | #898296 | Leading list icons without their own tap target, decorative illustrations, unselected nav. Neutral_500 (not Neutral_400) so it passes graphics AA (3.48:1) on `bg.default` and `bg.subtle`. Marginal on `bg.muted` (2.92:1) — prefer other surfaces. |
 | Brand accent | `icon.brand` | #D9008D | Selected nav, active toggles, focused chevron, inside Secondary/Tertiary CTAs |
 | Success / positive | `icon.positive` | #008043 | Success check, verified, confirmation (filled) |
 | Critical / error | `icon.critical` | #D92130 | Error alerts, cancel, destructive indicators (filled) |
 | Warning | `icon.warning` | #E2B203 | Warning indicator — **ONLY** on `bg.warning.subtle` or inside a rating component. Fails AA graphics contrast (3:1) on `bg.default` |
 | Info | `icon.info` | #6D17CE | Info indicators (filled) |
 | Inverse | `icon.inverse` | #FAF9FC | Icons on `bg.inverse`, `bg.brand.bold`, and inside Primary/Destructive CTAs |
-| Disabled | `icon.disabled` | #A7A1B2 | Disabled interactive icons. Same hex as `text.disabled` and `icon.nonAction` — a disabled icon on `bg.disabled` lands at ~1.64:1 (sub-AA, intentional). |
+| Disabled | `icon.disabled` | #A7A1B2 | Disabled interactive icons. Same hex as `text.disabled` (both Neutral_400) so a disabled icon + disabled label read as one muted pair on `bg.disabled` at ~1.64:1 (sub-AA, intentional). Distinct from `icon.nonAction` (Neutral_500, darker) — non-action icons sit on light surfaces and need AA. |
 
 ### Inside a CTA — per `color/actions.md`
 
@@ -381,7 +381,7 @@ Badge icons follow the same dark-fill / light-fill logic as CTAs: a solid dark f
 
 ### `icon.nonAction` versus `icon.action`
 
-- `icon.nonAction` (#A7A1B2): chrome, navigation bar icons you can't tap, decorative icons, list-item leading icons that don't have their own tap target
+- `icon.nonAction` (#898296): chrome, navigation bar icons you can't tap, decorative icons, list-item leading icons that don't have their own tap target
 - `icon.action` (#352D42): close (✕), back (←), menu (☰), overflow (⋯), filter, any icon the user taps directly
 
 If the icon is inside a tappable card/row but the icon itself isn't the tap target, use `icon.nonAction` — the whole-row tap is handled by the row.

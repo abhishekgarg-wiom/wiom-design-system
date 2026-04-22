@@ -82,7 +82,7 @@ Read the relevant reference file(s) BEFORE writing any code or making design dec
 - `bg.critical` as CTA fill: destructive actions ONLY (Delete, Cancel-plan, Remove). Never for "Dismiss"/"Skip"/"Close".
 - CTA icons use `icon.*` tokens, not `text.on*`. Primary/Destructive → `icon.inverse`; Secondary/Tertiary → `icon.brand`; Pre-booking → `icon.action`.
 - Selected states (tab bg, active chip, current row): `bg.selected` (#FFCCED, Brand_200) + `text.selected` / `stroke.selected` (#D9008D, Brand_600).
-- Tappable chrome icons (back, close, menu, overflow, filter): `icon.action` (#352D42, Neutral_900). Decorative icons: `icon.nonAction` (#A7A1B2).
+- Tappable chrome icons (back, close, menu, overflow, filter): `icon.action` (#352D42, Neutral_900). Decorative / non-tappable icons: `icon.nonAction` (#898296, Neutral_500) — dark enough to pass graphics AA (3.48:1 on `bg.default`).
 - Premium / partner header surface (non-action): `bg.brand.bold` (#443152, Brand_900) + `text.inverse`.
 - Overlay scrim (modal backdrop, bottom-sheet scrim): `overlay.scrim` (rgba(22,16,33,0.50)) — the only overlay token.
 - **`text.placeholder` doesn't exist — use `text.disabled`.** Same hex #A7A1B2 serves both "text in a visually disabled component" and "placeholder copy in an empty form field." An empty input isn't truly disabled (it's awaiting input) but its placeholder uses the same muted gray by design. Sub-AA (2.39:1) is intentional for placeholders — they're ephemeral.
@@ -237,7 +237,7 @@ A disabled component uses all three disabled tokens together:
 
 - **Surface / fill** → `bg.disabled` (#D7D3E0, Neutral_300)
 - **Text** → `text.disabled` (#A7A1B2, Neutral_400)
-- **Icon** → `icon.disabled` (#A7A1B2, Neutral_400 — same hex as `text.disabled` and `icon.nonAction`; keeps the icon visible on `bg.disabled`)
+- **Icon** → `icon.disabled` (#A7A1B2, Neutral_400 — same hex as `text.disabled`; keeps the icon visible on `bg.disabled`). Distinct from `icon.nonAction` (Neutral_500 #898296), which is darker because decorative icons need graphics AA on light surfaces.
 - **Outline variants** (Secondary CTA, inputs) additionally change stroke from the rest-state token to `stroke.subtle` (#D7D3E0)
 
 Triple-dim lands at ~1.64:1 (text/icon on disabled surface) — **intentionally sub-AA.** Disabled signals "not available," not "readable." The Neutral_400 / Neutral_300 hex split guarantees content stays visible above the disabled surface (unlike an older pattern where `icon.disabled` shared hex with `bg.disabled` and vanished).
@@ -367,7 +367,8 @@ Before submitting any Wiom UI code, verify NONE of these are present:
 - [ ] `text.default` used on a warning surface (`bg.warning` or `bg.warning.subtle`) — warning body + label text is `text.onWarning` (#372902), which is also valid for warning-tinted inline text on `bg.default` (14.18:1 AAA).
 - [ ] Inventing a `text.warning` token — use `text.onWarning` instead. Its dark-olive value passes AAA on white, so a separate default-surface token would be redundant. Warning is deliberately a one-token family.
 - [ ] Inventing a `text.placeholder` token — use `text.disabled` (same hex #A7A1B2 covers both disabled-text and empty-input placeholders by design).
-- [ ] Using stale `icon.disabled` hex #D7D3E0 — the token now resolves to `#A7A1B2` (Neutral_400, same as `text.disabled` / `icon.nonAction`). The old #D7D3E0 value was same-hex as `bg.disabled` and vanished on disabled surfaces.
+- [ ] Using stale `icon.disabled` hex #D7D3E0 — the token now resolves to `#A7A1B2` (Neutral_400, same hex as `text.disabled`). The old #D7D3E0 value was same-hex as `bg.disabled` and vanished on disabled surfaces.
+- [ ] Using stale `icon.nonAction` hex #A7A1B2 — the token now resolves to `#898296` (Neutral_500). The old Neutral_400 value failed graphics AA on `bg.default` (2.39:1); Neutral_500 clears 3:1 (3.48:1).
 - [ ] `text.onBrand` / `text.onCritical` used as an `Icon(tint=)` value (icons use `icon.*` tokens, even inside CTAs)
 - [ ] Namespace/slot mismatch (e.g., `Text(color = bgCriticalSubtle)` — `bg.*` never valid on text)
 - [ ] `Icons.Default` / `Icons.Filled` / `Icons.Outlined` / `Icons.Sharp` / `Icons.TwoTone` (use `Icons.Rounded.*` from Material 3 Icons Rounded)

@@ -61,7 +61,7 @@ Use core text tokens — chat doesn't need its own text palette.
 
 These aren't in the token set — handle them in the chat component itself:
 - **Typing indicator dots**: Use Gray_400 (#9FA1A7) with animation
-- **Read receipt checkmarks**: `icon.brand` (#D9008D) when read, `icon.nonAction` (#A7A1B2) when delivered
+- **Read receipt checkmarks**: `icon.brand` (#D9008D) when read, `icon.nonAction` (#898296) when delivered
 - **Media message backgrounds**: `chat.bg.systemBubble` (messages with images) or `chat.bg.userBubble`
 - **Timestamp divider ("Today", "Yesterday")**: `text.subtle` centered, no background
 
