@@ -125,7 +125,7 @@ Two-tier neutral split covers the light-surface case:
 
 | Token | Hex | Primitive | Use |
 |---|---|---|---|
-| `icon.nonAction` | #A7A1B2 | Neutral_400 | Decorative / non-actionable icons |
+| `icon.nonAction` | #898296 | Neutral_500 | Decorative / non-actionable icons — darkened from Neutral_400 so it passes graphics AA (3.48:1 on `bg.default`). Still distinctly "faded" against `icon.action` (#352D42 Neutral_900). On `bg.muted` (#E8E4F0) it lands at 2.92:1 — marginal; prefer placing decorative icons on `bg.default` or `bg.subtle`. |
 | `icon.action` | #352D42 | Neutral_900 | Actionable icons (back, close, menu, tappable) · also used inside Pre-booking CTAs |
 | `icon.inverse` | #FAF9FC | Neutral_50 | Icons on dark neutral surfaces · also used inside Primary and Destructive CTAs |
 | `icon.brand` | #D9008D | Brand_600 | Brand accent (selected check, focused chevron) |
@@ -133,7 +133,7 @@ Two-tier neutral split covers the light-surface case:
 | `icon.critical` | #D92130 | Critical_600 | Error alerts |
 | `icon.warning` | #E2B203 | Warning_300 | Warning indicator (inside `bg.warning.subtle`) · **also reused for star ratings** (gold is the industry convention) |
 | `icon.info` | #6D17CE | Info_600 | Info indicators |
-| `icon.disabled` | #A7A1B2 | Neutral_400 | Disabled interactive icons. Shares hex with `text.disabled` and `icon.nonAction` — the disabled token family is unified at Neutral_400 so a disabled icon stays visible on `bg.disabled` (#D7D3E0 Neutral_300) at ~1.64:1. Sub-AA is intentional; disabled signals "unavailable," not "readable." |
+| `icon.disabled` | #A7A1B2 | Neutral_400 | Disabled interactive icons. Shares hex with `text.disabled` (also Neutral_400) so a disabled icon + disabled label read as one muted pair on a `bg.disabled` (#D7D3E0 Neutral_300) surface at ~1.64:1. Sub-AA is intentional; disabled signals "unavailable," not "readable." Distinct from `icon.nonAction` (Neutral_500), which is darker because non-action icons sit on light surfaces and need graphics AA. |
 
 ### icon.nonAction vs icon.action — when to use which
 

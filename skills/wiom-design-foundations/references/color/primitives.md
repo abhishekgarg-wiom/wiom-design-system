@@ -41,8 +41,8 @@ Warm mauve undertone (hue ~320°). Carries brand warmth into all grays.
 | Neutral_100 | #F1EDF7 | `bg.subtle` |
 | Neutral_200 | #E8E4F0 | `bg.muted`, `stroke.default` |
 | Neutral_300 | #D7D3E0 | `bg.disabled`, `stroke.subtle` |
-| Neutral_400 | #A7A1B2 | `icon.nonAction`, `text.disabled`, `icon.disabled` |
-| Neutral_500 | #898296 | (reserved) |
+| Neutral_400 | #A7A1B2 | `text.disabled`, `icon.disabled` |
+| Neutral_500 | #898296 | `icon.nonAction` |
 | Neutral_600 | #736C82 | (reserved) |
 | Neutral_700 | #665E75 | `text.subtle` |
 | Neutral_800 | #473F55 | `stroke.strong` |
