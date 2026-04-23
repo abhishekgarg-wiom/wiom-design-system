@@ -123,8 +123,39 @@ Use the dedicated **OTP** component, not Input. `Title=Enter OTP` · `6-digit=tr
 ### Currency amount
 `Title=Recharge amount` · `Show Prefix=true` · `Prefix=₹` · `Show Suffix=true` · `Suffix=.00` · `Helper="Includes 18% GST"`
 
-### Dropdown / Select
-`Show Trailing Icon=true` · `Trailing Icon=expand_more` · `Body=` selected option text. Use `State=Read-only` if the field opens a bottom-sheet picker rather than accepting keyboard input.
+### Dropdown field (replaces the deprecated `wiom-dropdown` trigger)
+
+**The Input component IS the dropdown trigger.** The old `wiom-dropdown` skill is deleted; its field anatomy lives here, and its menu UX lives in `wiom-bottomsheet` (picker patterns).
+
+Configure an Input as a dropdown trigger:
+
+- `State=Read-only` — the user cannot type into a dropdown field
+- `Show Trailing Icon=true` · `Trailing Icon=expand_more` (keyboard_arrow_down) · icon tint `icon.action`
+- `Body=` selected option text (placeholder when empty, e.g., "Select an option")
+- `onClick` opens a `wiom-bottomsheet` containing the options — never a popover / anchored menu
+- For **single-select**, the sheet closes on pick
+- For **multi-select**, the Body shows up to N selected values (e.g., "Push, SMS (+1)") and the sheet has a Primary CTA "Done" that commits the selection
+- Label stays `text.default` (Read-only isn't Disabled; copy/paste is allowed; the field is actively awaiting a selection)
+
+```kotlin
+// Dropdown field = Input with Read-only state + chevron + bottom-sheet on tap
+WiomInput(
+    state = FieldState.ReadOnly,
+    title = "Language",
+    body = selectedLanguage?.label ?: "Select language",
+    trailingIcon = Icons.Rounded.KeyboardArrowDown,
+    onClick = { showPickerSheet = true },
+)
+if (showPickerSheet) {
+    WiomBottomSheet(size = BottomSheetSize.Half, onDismiss = { showPickerSheet = false }) {
+        // wiom-bottomsheet "Single-select picker" pattern — List Item rows with Type=Radio
+        // See wiom-bottomsheet for full anatomy.
+    }
+}
+```
+
+### Search bar (alternative trailing to clear)
+`Show Leading Icon=true` · `Leading Icon=search` · `Show Trailing Icon=true` (only while there's a query) · `Trailing Icon=cancel`
 
 ### Clearable search / text
 `Show Trailing Icon=true` · `Trailing Icon=cancel` — hide the clear icon in Default (empty) and Disabled states.
@@ -140,21 +171,28 @@ Every property on every variant resolves to a Wiom foundation token. Full values
 
 | Part | Token |
 |---|---|
-| Container fill (rest) | `color/surface/base` |
-| Container fill (disabled, read-only) | `color/surface/subtle` |
-| Border (rest) | `stroke/small` + `color/border/default` |
-| Border (focused) | `stroke/medium` + `color/brand/primary` |
-| Border (error / success / warning) | `stroke/medium` + matching status primary |
-| Border (read-only) | `stroke/small` + `color/border/subtle` |
-| Container radius | `radius/medium` (12px) |
-| Padding | `space/16` H · `space/12` V |
-| Internal gap (between slots) | `space/12` |
-| Vertical gap (label → wrap → helper) | `space/8` |
-| Label | `type/label/md` · text/primary on Default, text/secondary on all other active states, text/disabled on Disabled |
-| Value / Prefix / Suffix | `type/body/lg` (16sp) · text/primary (text/disabled when Disabled; text/disabled for placeholder in Default) |
-| Helper | `type/body/sm` (12sp) · text/secondary by default; matches border status color in Error/Success/Warning |
-| Counter | `type/body/sm` · text/secondary always |
-| Inline icons | `icon/sm` (20dp) · Material Symbols Rounded · FILL=1 · text/secondary by default; status color when in status state |
+| Container fill (rest) | `bg.default` |
+| Container fill (disabled) | `bg.disabled` |
+| Container fill (read-only) | `bg.subtle` |
+| Border (rest) | `stroke-small` + `stroke.subtle` |
+| Border (focused) | `stroke-medium` + **`stroke.brand.focus`** (#D9008D — saturated) |
+| Border (error) | `stroke-medium` + **`stroke.critical.focus`** (#D92130) |
+| Border (success) | `stroke-medium` + `stroke.positive.focus` (#008043) |
+| Border (warning) | `stroke-medium` + `stroke.warning` (#E2B203) |
+| Border (disabled) | `stroke-medium` + `stroke.subtle` |
+| Border (read-only) | `stroke-small` + `stroke.subtle` |
+| Container radius | `radius-medium` (12dp) |
+| Padding | `space-16` H · `space-12` V |
+| Internal gap (between slots) | `space-12` |
+| Vertical gap (label → wrap → helper) | `space-8` |
+| Label | `type.label.lg` (16sp SemiBold) · `text.default` on Default, `text.subtle` on all other active states, `text.disabled` on Disabled |
+| Value / Prefix / Suffix | `type.body.lg` (16sp) · `text.default` (`text.disabled` when Disabled; `text.disabled` for placeholder in empty Default) |
+| Helper (default) | `type.body.md` (14sp) · `text.subtle` |
+| Helper (error) | `type.body.md` + `text.critical` (#D92130) |
+| Helper (warning) | `type.body.md` + **`text.onWarning`** (#372902 — **not** a nonexistent `text.warning`; foundations uses `text.onWarning` on `bg.default` at 14.18:1 AAA) |
+| Helper (success) | `type.body.md` + `text.positive` |
+| Counter | `type.body.sm` · `text.subtle` always |
+| Inline icons | `icon.sm` (20dp) · `Icons.Rounded.*` (FILL=1) · `icon.action` when tappable (clear, reveal password, dropdown chevron), `icon.nonAction` when purely decorative, status `icon.*` when State is Error/Success/Warning |
 
 No shadow. No hardcoded hex. No fixed height anywhere — height hugs from padding + line-height.
 
@@ -202,7 +240,7 @@ OutlinedTextField(
   value = state.body,
   onValueChange = { state.body = it },
   label = { Text(state.title, style = Wiom.type.labelMd, color = labelColorFor(state.state)) },
-  placeholder = { Text(state.placeholder, color = Wiom.color.text.disabled) },
+  placeholder = { Text(state.placeholder, color = Wiom.text.disabled) },
   leadingIcon = state.leadingIcon?.let { { WiomIcon(it, size = Wiom.icon.sm) } },
   trailingIcon = state.trailingIcon?.let { { WiomIcon(it, size = Wiom.icon.sm) } },
   isError = state.state == FieldState.Error,
@@ -215,3 +253,14 @@ OutlinedTextField(
 ```
 
 `labelColorFor`, `helperColorFor`, and `wiomFieldColors` encode the state table. Prefix/Suffix use Compose's `prefix` / `suffix` slots (Material3 ≥ 1.1). Min-height comes from `body/lg` line-height + 12px vertical padding — do not pin a fixed height.
+
+---
+
+## See also
+
+- `wiom-design-foundations` → Component Quick-Build Reference → Input Field (full state table, focus-ring tokens, warning text rule)
+- `wiom-compose-layout-rules` — Modifier discipline, `Icons.Rounded.*` enforcement, no fixed heights
+- `wiom-bottomsheet` — the picker sheet a Dropdown Input opens (single-select / multi-select patterns, replaces the deprecated dropdown-menu UX)
+- `wiom-selection-controls` — Radio / Checkbox rows inside the picker sheet
+- `wiom-cta` — "Done" CTA inside the multi-select picker sheet
+- `wiom-stepper` — steps with `Type=Input + CTA` or `Type=OTP` embed these fields

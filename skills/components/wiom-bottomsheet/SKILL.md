@@ -50,9 +50,9 @@ Wiom serves lower- and middle-income Indian households on budget Android devices
 PURPOSE:    Surface anchored to screen bottom for supplementary content and contextual actions.
 WIDTH:      360px (standard Android viewport). Fills screen width.
 TYPES:      Standard (no scrim) and Modal (scrim overlay) — controlled via `Is Modal` boolean.
-LAYOUTS:    List-based (Compact / Half / Expanded / Full) and Illustration-based.
+LAYOUTS:    List-based (Compact / Half / Expanded / Full), Illustration-based (Illustration / Illustration Left), Share, and Form.
 DISMISS:    Drag handle (primary) + scrim tap (Modal only) + back button.
-SHADOW:     shadow/md effect style on the Sheet Surface.
+SHADOW:     shadow.md effect style on the Sheet Surface.
 NOTE:       Hover/Focused states excluded from V1 (mobile-first).
 ```
 
@@ -62,7 +62,7 @@ NOTE:       Hover/Focused states excluded from V1 (mobile-first).
 
 | Property | Type | Default | Purpose |
 |---|---|---|---|
-| `Size` | Variant | `Compact` | 5 options: Compact · Half · Expanded · Full · Illustration |
+| `Size` | Variant | `Compact` | 8 options: Compact · Half · Expanded · Full · Illustration · Illustration Left · Share · Form |
 | `Is Modal` | Boolean | `false` | Shows/hides scrim overlay above the sheet |
 | `Show Handle` | Boolean | `true` | Toggles drag handle container |
 | `Show Title` | Boolean | `true` | Toggles entire Header instance + divider (list variants only) |
@@ -106,7 +106,7 @@ NOTE:       Hover/Focused states excluded from V1 (mobile-first).
 ```
 Root [VERTICAL, 360 wide, HUG height]
 ├── Scrim                              ← visible: Is Modal
-└── Sheet Surface [VERTICAL, shadow/md, top radius xlarge, fill bg/default]
+└── Sheet Surface [VERTICAL, shadow.md, top radius xlarge, fill bg/default]
     ├── Handle container               ← visible: Show Handle
     │   └── Indicator 32×4 pill
     ├── Top Safe Space (16px spacer)   ← visible: Show Top Safe Space
@@ -143,9 +143,9 @@ Root [VERTICAL, 360 wide, HUG height]
 Header [HORIZONTAL, padding 16/16/8/16, center-aligned]
 ├── Leading Icon (24dp)                ← visible: Show Leading Icon (INSTANCE_SWAP)
 ├── Text Column [VERTICAL, FILL, gap 4]
-│   ├── Title (type/heading/md)        ← visible: Show Title · characters: Title
-│   └── Subtitle (type/body/sm)        ← visible: Show Subtitle · characters: Subtitle
-└── Trailing Action (type/label/md, text/brand)  ← visible: Show Trailing Action
+│   ├── Title (type.heading.md)        ← visible: Show Title · characters: Title
+│   └── Subtitle (type.body.sm)        ← visible: Show Subtitle · characters: Subtitle
+└── Trailing Action (type.label.md, text/brand)  ← visible: Show Trailing Action
 ```
 
 ---
@@ -158,7 +158,10 @@ Header [HORIZONTAL, padding 16/16/8/16, center-aligned]
 | Half | ~370px | Handle + Header + 4 items | Visible |
 | Expanded | ~600px | Handle + Header + 7 items | Visible |
 | Full | ~600px | Handle + Header + 7 items (scrollable in real use) | Visible |
-| Illustration | ~300px (hug) | Handle + Illustration Block | Visible (Stacked default) |
+| Illustration | ~300px (hug) | Handle + centered Illustration Block (image top, text below) | Visible (Stacked default) |
+| **Illustration Left** | ~300px (hug) | Handle + left-aligned Illustration Block (image left, text right) | Visible (Stacked default) |
+| **Share** | ~220px (hug) | Handle + Header + horizontal row of share targets (chips / icons) + optional "More" row | Optional |
+| **Form** | ~400px (hug) | Handle + Header + 1–3 input fields inline (from `wiom-input-fields`) + CTAs | Visible |
 
 ---
 
@@ -200,9 +203,9 @@ All visual values bind to the file's variable collections. NEVER hardcode.
 |---|---|
 | Sheet fill | `bg/default` (#FAF9FC) |
 | Scrim fill | `overlay/scrim` (rgba #161021 @ 50%) |
-| Top corner radius | `radius/xlarge` (24) |
-| Bottom corner radius | `radius/none` (0) |
-| Sheet shadow | `shadow/md` effect style |
+| Top corner radius | `radius-xlarge` (24) |
+| Bottom corner radius | `radius-none` (0) |
+| Sheet shadow | `shadow.md` effect style |
 
 ### Handle
 
@@ -210,17 +213,17 @@ All visual values bind to the file's variable collections. NEVER hardcode.
 |---|---|
 | Indicator size | 32 × 4 |
 | Indicator fill | `stroke/strong` |
-| Indicator radius | `radius/full` (9999) |
+| Indicator radius | `radius-full` (9999) |
 
 ### Header
 
 | Property | Token |
 |---|---|
-| Title style | `type/heading/md` (20sp Bold 28LH) |
+| Title style | `type.heading.md` (20sp Bold 28LH) |
 | Title color | `text/default` |
-| Subtitle style | `type/body/sm` (12sp Regular 16LH) |
+| Subtitle style | `type.body.sm` (12sp Regular 16LH) |
 | Subtitle color | `text/subtle` |
-| Trailing Action style | `type/label/md` |
+| Trailing Action style | `type.label.md` |
 | Trailing Action color | `text/brand` (acts as link) |
 | Leading Icon color | `icon/nonAction` |
 
@@ -360,11 +363,14 @@ Payment / delete / consent (critical)?
 ### Which size?
 
 ```
-≤2 items, quick action?     → Compact
-3-4 items, option menu?     → Half
-5+ items with CTAs?         → Expanded
-Long scrollable content?    → Full
-Visual feedback?            → Illustration
+≤2 items, quick action?                           → Compact
+3-4 items, option menu / picker?                   → Half
+5+ items with CTAs?                                → Expanded
+Long scrollable content?                           → Full
+Centered visual feedback / celebration?            → Illustration
+Compact feedback with image left of text?          → Illustration Left
+System share targets / Wiom share affordance?      → Share
+1–3 inline inputs (e.g., enter PIN + label)?       → Form
 ```
 
 ### Which Button Group layout?
@@ -449,8 +455,8 @@ CTA:   Count=1 — Primary "I Agree"
 
 - Use ONLY the tokens listed above — no hardcoded values
 - Always include a drag handle (dismiss affordance) unless `Show Handle = false` is explicit
-- Use `shadow/md` effect style on the Sheet Surface — no borders
-- Top corners `radius/xlarge` only; bottom corners always `radius/none`
+- Use `shadow.md` effect style on the Sheet Surface — no borders
+- Top corners `radius-xlarge` only; bottom corners always `radius-none`
 - Use Button Group instance inside the Action Bar — never raw CTAs
 - Use Bottom Sheet Header instance for headers — never recreate inline
 - Use BS Illustration instance for illustration content — never raw icon + circle
@@ -463,7 +469,7 @@ CTA:   Count=1 — Primary "I Agree"
 
 - Do NOT add a close button — drag handle is the dismiss affordance
 - Do NOT add a top border on the Action Bar — spacing provides separation
-- Do NOT use `shadow/xl` — `shadow/md` is standard for both Standard and Modal types (platform limitation: shadow can't be boolean-bound)
+- Do NOT use `shadow.xl` — `shadow.md` is standard for both Standard and Modal types (platform limitation: shadow can't be boolean-bound)
 - Do NOT nest a bottom sheet inside another bottom sheet
 - Do NOT use bottom sheet for blocking alerts — use Dialog
 - Do NOT put more than 7 items in Expanded/Full without scrollable content
@@ -584,3 +590,103 @@ When these are scoped, they become new variants or properties on this same Botto
 - When the user references "bottom sheet", "modal sheet", "option menu", "payment confirm", "success sheet", "error sheet", "drawer", "filter sheet", or shares a Figma node with a drag-handle + anchored surface
 - When the user asks to benchmark a sheet against Material Design — cross-reference the "Known gaps" section before proposing new variants
 - **HARD RULE:** read this BEFORE any `use_figma` call that creates or modifies a Bottom Sheet component, instance, or variant on `Saurav / Bottomsheet`
+
+---
+
+## Picker patterns (replaces the deprecated `wiom-dropdown` menu UX)
+
+The old `wiom-dropdown` skill is deleted. Its **field trigger** lives in `wiom-input-fields` (Dropdown field). Its **menu UX** — the open-list surface — lives here: a bottom sheet built from `wiom-list-item` rows. There is no popover / anchored menu in Wiom mobile; picker lists always open bottom-anchored.
+
+### Single-select picker
+
+- `Size=Half` (up to ~4 options visible) or `Expanded` (5+) or `Full` (long scrollable lists)
+- `Is Modal=true` (picker is a commit moment — the scrim blocks background taps)
+- Header: `Title` = the field's label (e.g., "Choose language"), `Show Subtitle=false`, `Show Trailing Action=false`
+- Rows: `wiom-list-item` with `Type=Radio` — one per option. Radio Selection = Yes on the currently chosen row
+- `Show Button Group=false` — tapping a row commits immediately and closes the sheet
+- Close behavior: Scrim tap / drag-down / back = cancel (reverts to pre-open value); row tap = commit
+
+```
+┌─ 360w · Half ─────────────────────┐
+│         ▬▬ (handle)                │
+│  Choose language                   │
+│  ─────────────────────────────    │
+│  ( ) English                       │  ← List Item, Type=Radio, Selection=No
+│  (●) हिन्दी                        │  ← List Item, Type=Radio, Selection=Yes
+│  ( ) मराठी                         │
+│  ( ) தமிழ்                         │
+└────────────────────────────────────┘
+```
+
+### Multi-select picker
+
+- `Size=Expanded` or `Full` (multi-select sheets usually have more options)
+- `Is Modal=true`
+- Header: `Title` = field label, optional `Subtitle` describing the rule ("Select up to 3"), `Show Trailing Action=false`
+- Rows: `wiom-list-item` with `Type=Checkbox` — Selection = Selected / No / Indeterminate
+- **`Show Button Group=true`** — user confirms with a Primary **"Done" / "Apply"** CTA. Add a Tertiary "Cancel" for explicit dismissal. Pattern:
+  - 1 CTA → Primary "Done" only (swipe-down or scrim-tap cancels)
+  - 2 CTAs → Primary "Apply" + Tertiary "Cancel" (stacked)
+- Close behavior: "Done" commits; scrim tap / drag / "Cancel" reverts to pre-open selection
+
+```
+┌─ 360w · Expanded ─────────────────┐
+│         ▬▬ (handle)                │
+│  Filter notifications              │
+│  Select up to 3                    │
+│  ─────────────────────────────    │
+│  [ ] Push                          │  ← List Item, Type=Checkbox
+│  [✓] SMS                           │
+│  [✓] Email                         │
+│  [ ] WhatsApp                      │
+│  [ ] Voice call                    │
+│  ─────────────────────────────    │
+│  ┌────────── Apply ──────────┐    │
+│  └───────────────────────────┘    │
+└────────────────────────────────────┘
+```
+
+### Action menu (list of actions, no selection state)
+
+- `Size=Compact` (≤2 actions) or `Half` (3–4 actions)
+- `Is Modal=true`
+- Header: optional `Title` ("Choose action"), or omit Header entirely for very short menus (then `Show Top Safe Space=true`)
+- Rows: `wiom-list-item` with `Type=Default`, `Has Leading=false`, `Has Trailing Icon=false`, `Selected=false` for all
+- `Show Button Group=false` — tapping a row fires the action and dismisses the sheet
+
+```
+┌─ 360w · Compact ──────────────────┐
+│         ▬▬ (handle)                │
+│  Edit                              │  ← List Item, Type=Default, no leading, no chevron
+│  Duplicate                         │
+│  Share                             │
+│  Delete                            │  (for destructive, leading icon `icon.critical` optional)
+└────────────────────────────────────┘
+```
+
+### Search-header picker
+
+For long lists (> 10 items). Use `Size=Full`. Header is replaced by / supplemented with a `wiom-input-fields` Search bar pinned at the top. Rows filter live as the user types.
+
+### Picker vs Dialog Selection
+
+| When | Use |
+|---|---|
+| ≤ 4 options, dialog-context flow (confirm + pick) | `wiom-dialog` with `Type=Selection` |
+| > 4 options, or any search / scroll requirement | Bottom sheet picker (this section) |
+| Picker triggered from an Input field | Bottom sheet picker (always) |
+
+Dialogs forbid scrollable content; pickers with more than 4 rows belong here, not in Dialog Selection.
+
+---
+
+## See also
+
+- `wiom-design-foundations` → Bottom Sheet component quick-reference, `overlay.scrim` token, `shadow.md`
+- `wiom-compose-layout-rules` — Modifier discipline, Arrangement.spacedBy for stacked rows, no fixed heights
+- `wiom-input-fields` — the Dropdown-field trigger that opens this sheet
+- `wiom-list-item` — every row inside a picker / action menu
+- `wiom-selection-controls` — Radio / Checkbox controls inside picker rows
+- `wiom-cta` — button-group inside a multi-select picker (Done / Cancel)
+- `wiom-dialog` — the alternate centered surface for very short selection flows (≤ 4 items)
+- `wiom-icon-badge` — the illustration slot for Illustration / Illustration Left variants
