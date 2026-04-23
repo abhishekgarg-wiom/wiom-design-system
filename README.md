@@ -5,7 +5,8 @@ The official Wiom Design System for the Wiom Partner & Customer Android apps —
 This repo contains:
 
 - **`skills/`** — 18 installable Claude Code skills (foundations + 16 components + compose layout rules)
-- **`docs/`** — PDF and HTML reference documents (component anatomies, foundation usage guides) for human reading
+
+> Human-readable reference documents (`docs/`) were removed in the V2 refresh because they had drifted from the skills. They will be regenerated in a follow-up pass.
 
 ---
 
@@ -141,9 +142,7 @@ wiom-design-system/
 │       ├── wiom-progress-indicator/SKILL.md
 │       ├── wiom-stepper/SKILL.md
 │       └── wiom-pagination/SKILL.md
-└── docs/                            # Human-readable references
-    ├── foundations/
-    └── components/
+└── …
 ```
 
 ---
