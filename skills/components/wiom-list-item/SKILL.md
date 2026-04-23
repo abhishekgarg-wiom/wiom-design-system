@@ -1,5 +1,5 @@
 ---
-name: list-item
+name: wiom-list-item
 description: Wiom List Item component spec, usage patterns, and Figma↔Kotlin code mapping. Use this skill EVERY TIME you work with list rows, settings lists, selection lists, toggle lists, or any Figma design containing list-row patterns from the Wiom DS - Next file. Trigger when user mentions "list item", "list row", "settings list", "selection list", "toggle list", "list cell", or shares a Figma design with stacked rows. Also trigger when implementing list UI in Kotlin/Compose for Wiom Android app.
 ---
 

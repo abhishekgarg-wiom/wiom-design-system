@@ -1,11 +1,11 @@
 ---
-name: wiom-bottom-sheet
+name: wiom-bottomsheet
 description: Wiom Bottom Sheet component spec, anatomy, token contract, property API, and Figma↔Kotlin mapping. Use this skill EVERY TIME you work with bottom sheets, modal sheets, drawer-style surfaces, option menus, payment confirmations, success/error feedback sheets, or any Figma design containing a handle-topped surface anchored to the screen bottom. Trigger when user mentions "bottom sheet", "modal sheet", "drawer", "option menu", "confirm sheet", "success sheet", "error sheet", "payment confirm", "sort/filter sheet", or shares a Figma design with a drag-handle + content + CTA layout. Also trigger when implementing bottom sheet UI in Kotlin/Compose for Wiom Android app.
 ---
 
 # Wiom Bottom Sheet — Component Skill
 
-You are generating a design or UI that includes a bottom sheet for the Wiom product ecosystem. Use ONLY the approved tokens, composition rules, and property API below. This skill covers the Bottom Sheet container + its Header sub-component + the Safe Space pattern. For CTA configuration inside the action bar, defer to the `wiom-button-group` skill.
+You are generating a design or UI that includes a bottom sheet for the Wiom product ecosystem. Use ONLY the approved tokens, composition rules, and property API below. This skill covers the Bottom Sheet container + its Header sub-component + the Safe Space pattern. For CTA configuration inside the action bar, defer to the `wiom-cta` skill (§4 Button Group).
 
 ---
 
@@ -89,7 +89,7 @@ NOTE:       Hover/Focused states excluded from V1 (mobile-first).
 | `Show Trailing Action` | Boolean | `false` |
 | `Leading Icon` | INSTANCE_SWAP | `arrow_back` |
 
-**Button Group properties** (nested via Action Bar — see `wiom-button-group` skill):
+**Button Group properties** (nested via Action Bar — see `wiom-cta` skill (§4 Button Group)):
 - `Count`: 1 · 2 · 3
 - `Layout`: Side by side · Stacked
 - Per-CTA `Type` override for Destructive / Pre-booking / Acknowledge variants
@@ -288,7 +288,7 @@ The Bottom Sheet's bottom and top safe spaces are **conditional** — they appea
 
 ### Action Bar always uses Button Group
 
-Never recreate buttons inside the Action Bar. Always use a Button Group instance. To vary CTA count, layout, or types, use the Button Group's properties (see `wiom-button-group` skill):
+Never recreate buttons inside the Action Bar. Always use a Button Group instance. To vary CTA count, layout, or types, use the Button Group's properties (see `wiom-cta` skill (§4 Button Group)):
 
 - `Count`: 1 / 2 / 3 CTAs
 - `Layout`: Side by side (horizontal) / Stacked (vertical)
@@ -575,7 +575,7 @@ When these are scoped, they become new variants or properties on this same Botto
 
 ## Related skills
 
-- **`wiom-button-group`** — CTA count, layout, 3-side-by-side rules, stacked vs side-by-side guidance
+- **`wiom-cta`** (Button Group) — CTA count, layout, 3-side-by-side rules, stacked vs side-by-side guidance
 - **`wiom-list-item`** — the List Item component used inside Content
 - **`wiom-design-foundations`** — color / type / icon / spacing / radius / stroke / shadow tokens
 - **`Wiom-spacing`** — the 4px grid, bottom sheet recipe, gap-only convention, touch target tiers
