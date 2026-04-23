@@ -170,7 +170,16 @@ Every spacing/sizing/padding/margin value must be a **multiple of 4px**. Primiti
 | `stroke-small` | 1px | Dividers, card outlines, input borders (rest) |
 | `stroke-medium` | 2px | Outlined buttons, checkbox/radio, selected/active/error states, focus rings |
 
-**Position:** Always inside. Focus rings outside (a11y only).
+**Focus-ring color tokens** (saturated, pulled from `stroke.*.focus` in `references/color/core-tokens.md` — cite these directly from component skills):
+
+| Token | Hex | Use |
+|---|---|---|
+| `stroke.brand.focus` | #D9008D | Keyboard focus ring · Secondary CTA rest border · active input |
+| `stroke.critical.focus` | #D92130 | Invalid-input border · destructive-element focus ring |
+| `stroke.positive.focus` | #008043 | Focus ring on positive elements |
+| `stroke.info.focus` | #6D17CE | Focus ring on info elements |
+
+**Position:** Always inside. Focus rings outside (a11y only), offset 2px, radius = component radius + 2px.
 **Style:** Solid always. Dashed only for empty states / upload zones.
 **Filled state rule:** When a component becomes filled (checked checkbox, toggled switch), the border is removed.
 
@@ -350,6 +359,35 @@ When building a common component, here's which tokens from each foundation apply
 | Disabled | `stroke-medium` + `stroke.subtle` (#D7D3E0) | transparent (unchecked) · `bg.disabled` + checkmark `icon.disabled` (checked) |
 
 Radius: checkbox `radius-tiny` (4px); radio `radius-full`. Label next to control stays `text.default` in all states — the control carries the error signal, not the label.
+
+### Icon Badge (icon with bg)
+
+A glyph inside a filled, circular container. Used as a leading affordance in list rows, empty-state hero, inline status indicators, and settings sections. Container is always filled + circular; glyph is always a single `Icons.Rounded.*`.
+
+**Three sizes — glyph + padding scale proportionally with container:**
+
+| Size | Container | Glyph | Padding | Radius |
+|---|---|---|---|---|
+| `sm` | 24×24 | `icon.xs` (16dp) | `space-4` (4dp) | `radius-full` |
+| `md` | 48×48 | `icon.md` (24dp) | `space-12` (12dp) | `radius-full` |
+| `lg` | 96×96 | `icon.lg` (48dp) | `space-24` (24dp) | `radius-full` |
+
+**Six tones — pair container bg with matching glyph tint; never mix across tones:**
+
+| Tone | Container bg | Glyph tint | When to use |
+|---|---|---|---|
+| `neutral` | `bg.subtle` (#F1EDF7) | `icon.nonAction` (#898296) | Default · decorative leading slot in list rows (row itself carries the tap target) |
+| `brand` | `bg.brand.subtle` (#FFE5F6) | `icon.brand` (#D9008D) | Featured / promoted rows · brand-flagged settings entry |
+| `positive` | `bg.positive.subtle` (#E1FAED) | `icon.positive` (#008043) | Success summary · confirmed / completed rows |
+| `warning` | `bg.warning.subtle` (#FFE9A1) | `icon.warning` (#E2B203) | Warning summary · attention rows (glyph is inside warning-tinted surface — one of the sanctioned uses of `icon.warning`) |
+| `critical` | `bg.critical.subtle` (#FFE5E7) | `icon.critical` (#D92130) | Error summary · attention-required rows |
+| `info` | `bg.info.subtle` (#F1E5FF) | `icon.info` (#6D17CE) | Informational rows · tips · helper cards |
+
+**Rules:**
+- No border, no shadow — container fill is the only visual weight (Shadow vs Border rule).
+- Icon Badge is a **display element**. Tap lives on the parent row or CTA, never on the badge itself.
+- `icon.warning` is invisible on `bg.default`, but valid inside `bg.warning.subtle` here where context carries the meaning.
+- Neutral tone uses `icon.nonAction` by default (decorative-inside-tappable-row). Use `icon.action` (#352D42) instead only when the badge is genuinely the sole affordance — a rare case; prefer restructuring.
 
 ---
 
