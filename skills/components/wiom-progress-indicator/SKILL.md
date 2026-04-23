@@ -432,3 +432,12 @@ All 5 slots default to `router` (`1232:5141`) — a placeholder fitting the net-
 - Unlabeled "how far am I" wizard dots → load `wiom-pagination`
 - Data usage meters → Wiom is unlimited, this use case doesn't exist
 - Plan validity countdowns → use text + colored tag, not a progress bar
+
+---
+
+## See also
+
+- `wiom-design-foundations` — status color tokens, `bg.muted` track, `radius-full`, `bg.brand` / `bg.positive` / `bg.info` fill tokens
+- `wiom-compose-layout-rules` — Compose structural rules
+- `wiom-loader` — sibling component for indeterminate / full-screen waits (spinner, status ring, skeleton, dots, brand)
+- `wiom-stepper` — sibling component when progress has labeled steps
