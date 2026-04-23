@@ -33,7 +33,7 @@ Always use this component for screen headers. Never assemble a custom row of ico
 |---|---|---|
 | `Default` | Standard screen header. | Small · Medium · Large |
 | `Centered` | **Modal / bottom-sheet headers only.** Constrained to 1 trailing icon (or a Text CTA) so the title stays truly centered. | Small only |
-| `Scrolled` | Switch to this **programmatically** when scroll offset > 0. Applies `shadow/sm`. Never ship at rest. | Small · Medium · Large |
+| `Scrolled` | Switch to this **programmatically** when scroll offset > 0. Applies `shadow.sm`. Never ship at rest. | Small · Medium · Large |
 | `Search` | Search mode is active. Leading becomes back (exit search) + pill-shaped search field replaces the title. | Small only |
 
 ### Size × State matrix
@@ -65,7 +65,7 @@ Eight valid combinations. The four blank cells are intentional — the picker sh
 | `Show Trailing 3` | BOOL | true | Third action — usually overflow |
 | `Trailing Icon 3` | INSTANCE_SWAP | `more_vert` | Overflow menu icon |
 | `Show Trailing Text` | BOOL | true | Text CTA (e.g., "Save", "Done", "Cancel") instead of or next to icons |
-| `Trailing Text` | TEXT | "Save" | CTA label · `type/label/md` · `color/brand/primary` |
+| `Trailing Text` | TEXT | "Save" | CTA label · `type.label.md` · `bg.brand` |
 | `Size` | VARIANT | Small | Small / Medium / Large |
 | `State` | VARIANT | Default | Default / Centered / Scrolled / Search |
 
@@ -119,25 +119,25 @@ Same props as Default, just swap `State=Default` → `State=Scrolled` when scrol
 
 | Part | Token |
 |---|---|
-| Container fill | `color/surface/base` |
-| Search pill fill | `color/surface/subtle` |
-| Search pill radius | `radius/full` |
-| Search pill placeholder | `type/body/lg` · `color/text/disabled` |
-| Title — Small | `type/title/lg` (20sp Medium 28lh) · `color/text/primary` |
-| Title — Medium | `type/heading/lg` (24sp Bold 32lh) · `color/text/primary` |
-| Title — Large | `type/heading/xl` (32sp Bold 44lh) · `color/text/primary` |
-| Subtitle | `type/body/sm` (12sp Regular 16lh) · `color/text/secondary` |
-| Text CTA | `type/label/md` (14sp SemiBold 20lh) · `color/brand/primary` · `space/12` padding (44dp touch target) |
-| Icons | `icon/md` (24dp) · Material Symbols Rounded FILL=1 · `color/text/secondary` |
-| Icon touch target | 48dp (Material standard) — via `space/12` padding + 24dp glyph |
-| Small horizontal padding | `space/4` outer (yields 16dp from glyph edge to screen edge) |
-| Small vertical padding | `space/8` (with 48dp slot → 64dp total) |
-| Search variant right padding | `space/16` (keeps pill 16dp from right edge) |
-| Small title column inset | `space/12` left/right |
-| Title ↔ subtitle gap | `space/4` |
-| Medium title area | `space/8` top + 32lh + `space/8` bottom = 48dp |
-| Large title area | `space/12` top + 44lh + `space/32` bottom = 88dp |
-| Elevation (Scrolled) | `shadow/sm` |
+| Container fill | `bg.default` |
+| Search pill fill | `bg.subtle` |
+| Search pill radius | `radius-full` |
+| Search pill placeholder | `type.body.lg` · `text.disabled` |
+| Title — Small | `type.title.lg` (20sp Medium 28lh) · `text.default` |
+| Title — Medium | `type.heading.lg` (24sp Bold 32lh) · `text.default` |
+| Title — Large | `type.heading.xl` (32sp Bold 44lh) · `text.default` |
+| Subtitle | `type.body.sm` (12sp Regular 16lh) · `text.subtle` |
+| Text CTA | `type.label.md` (14sp SemiBold 20lh) · `bg.brand` · `space-12` padding (44dp touch target) |
+| Icons | `icon.md` (24dp) · `Icons.Rounded.*` (FILL=1) · **`icon.action`** (#352D42 — tappable chrome icons, NOT `text.subtle`) |
+| Icon touch target | 48dp (Material standard) — via `space-12` padding + 24dp glyph |
+| Small horizontal padding | `space-4` outer (yields 16dp from glyph edge to screen edge) |
+| Small vertical padding | `space-8` (with 48dp slot → 64dp total) |
+| Search variant right padding | `space-16` (keeps pill 16dp from right edge) |
+| Small title column inset | `space-12` left/right |
+| Title ↔ subtitle gap | `space-4` |
+| Medium title area | `space-8` top + 32lh + `space-8` bottom = 48dp |
+| Large title area | `space-12` top + 44lh + `space-32` bottom = 88dp |
+| Elevation (Scrolled) | `shadow.sm` |
 
 **All heights hug from padding + line-height.** Nothing is pinned.
 
@@ -264,4 +264,14 @@ when (cfg.size) {
 
 - `Trailing(cfg)` renders Text CTA (if shown) followed by up to 3 icons.
 - Collapse behaviour (Large → Small) uses Material3's `TopAppBarDefaults.enterAlwaysScrollBehavior()` — don't animate height manually.
-- `SearchPill` = `Surface` + `Wiom.color.surface.subtle` + `RoundedCornerShape(999.dp)` + `BasicTextField` with `Wiom.type.bodyLg`.
+- `SearchPill` = `Surface` + `Wiom.bg.subtle` + `RoundedCornerShape(999.dp)` + `BasicTextField` with `Wiom.type.bodyLg`.
+
+---
+
+## See also
+
+- `wiom-design-foundations` — icon.action vs icon.nonAction rules, typography scale
+- `wiom-compose-layout-rules` — Modifier discipline, Icons.Rounded.* enforcement
+- `wiom-navigation-bar` — paired bottom-nav chrome
+- `wiom-input-fields` — search pill pattern inside the Search state
+- `wiom-cta` — trailing Text CTA

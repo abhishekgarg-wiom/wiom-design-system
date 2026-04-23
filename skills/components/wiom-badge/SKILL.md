@@ -32,7 +32,7 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 | Property | Value | Token |
 |----------|-------|-------|
 | Size | 8×8px | — |
-| Radius | 9999px | `radius/full` |
+| Radius | 9999px | `radius-full` |
 | Colors | Brand / Negative / Neutral | See color table |
 
 ### Count Badge
@@ -40,12 +40,12 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 | Property | Value | Token |
 |----------|-------|-------|
 | Min size | 18×18px | — |
-| Radius | 9999px | `radius/full` |
+| Radius | 9999px | `radius-full` |
 | Horizontal padding | 5px | — |
 | Font | Noto Sans Regular 400 | `type.meta.xs` |
 | Font size | 10sp | `type.meta.xs` |
 | Line height | 16sp | `type.meta.xs` |
-| Text color | #FFFFFF | `color.text.on-color` |
+| Text color | #FFFFFF | `text.onBrand` |
 | Max display | 9+ or 99+ | — |
 | Colors | Brand / Negative | See color table |
 
@@ -54,9 +54,9 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 | Property | Value | Token |
 |----------|-------|-------|
 | Height | 28px | Derived: 4+20+4 |
-| Radius | 4px | `radius/tiny` |
-| Horizontal padding | 12px | `space/12` |
-| Vertical padding | 4px | `space/4` |
+| Radius | 4px | `radius-tiny` |
+| Horizontal padding | 12px | `space-12` |
+| Vertical padding | 4px | `space-4` |
 | Font | Noto Sans SemiBold 600 | `type.label.md` |
 | Font size | 14sp | `type.label.md` |
 | Line height | 20sp | `type.label.md` |
@@ -66,9 +66,9 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 | Property | Value | Token |
 |----------|-------|-------|
 | Height | 24px | Derived: 4+16+4 |
-| Radius | 4px | `radius/tiny` |
-| Horizontal padding | 8px | `space/8` |
-| Vertical padding | 4px | `space/4` |
+| Radius | 4px | `radius-tiny` |
+| Horizontal padding | 8px | `space-8` |
+| Vertical padding | 4px | `space-4` |
 | Font | Noto Sans SemiBold 600 | `type.label.sm` |
 | Font size | 12sp | `type.label.sm` |
 | Line height | 16sp | `type.label.sm` |
@@ -81,36 +81,38 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 
 | Variant | Fill | Token |
 |---------|------|-------|
-| Brand | #D9008D | `color.brand.primary` |
-| Negative | #D92130 | `color.negative.primary` |
-| Neutral | #E8E4F0 | `color.surface.muted` |
+| Brand | #D9008D | `bg.brand` |
+| Negative | #D92130 | `bg.critical` |
+| Neutral | #E8E4F0 | `bg.muted` |
 
 ### Count Badge Colors
 
 | Variant | Fill | Text | Token (fill) |
 |---------|------|------|-------------|
-| Brand | #D9008D | #FFFFFF | `color.brand.primary` |
-| Negative | #D92130 | #FFFFFF | `color.negative.primary` |
+| Brand | #D9008D | #FFFFFF | `bg.brand` |
+| Negative | #D92130 | #FFFFFF | `bg.critical` |
 
 ### Label Badge Colors — Filled (Default size only)
 
-| Color | Fill | Text | Token (fill) |
-|-------|------|------|-------------|
-| Positive | #008043 | #FFFFFF | `color.positive.primary` |
-| Warning | #B85C00 | #FFFFFF | `color.warning.primary` |
-| Negative | #D92130 | #FFFFFF | `color.negative.primary` |
-| Info | #6D17CE | #FFFFFF | `color.info.primary` |
-| Neutral | #E8E4F0 | #5C5570 | `color.surface.muted` / `color.text.secondary` |
+| Color | Fill | Text | Token (fill) | Token (text) |
+|-------|------|------|-------------|-------------|
+| Positive | #008043 | #FFFFFF | `bg.positive` | `text.onPositive` |
+| Warning | #E2B203 | #372902 | `bg.warning` | `text.onWarning` |
+| Negative | #D92130 | #FFFFFF | `bg.critical` | `text.onCritical` |
+| Info | #6D17CE | #FFFFFF | `bg.info` | `text.onInfo` |
+| Neutral | #E8E4F0 | #5C5570 | `bg.muted` | `text.subtle` |
+
+**Warning-family note:** `bg.warning` is gold (#E2B203), not brown. The body label uses `text.onWarning` (#372902 olive) — white on gold would fail AA (1.98:1). Warning is the one family where the "on-surface" text color is dark.
 
 ### Label Badge Colors — Tinted (Default + Small)
 
 | Color | Fill | Text | Token (fill) | Token (text) |
 |-------|------|------|-------------|-------------|
-| Positive | #E1FAED | #008043 | `color.positive.tint` | `color.positive.primary` |
-| Warning | #FFF2BF | #B85C00 | `color.warning.subtle` | `color.warning.primary` |
-| Negative | #FFE5E7 | #D92130 | `color.negative.tint` | `color.negative.primary` |
-| Info | #F1E5FF | #6D17CE | `color.info.tint` | `color.info.primary` |
-| Neutral | #F1EDF7 | #5C5570 | `color.surface.subtle` | `color.text.secondary` |
+| Positive | #E1FAED | #008043 | `bg.positive.subtle` | `text.positive` |
+| Warning | #FFE9A1 | #372902 | `bg.warning.subtle` | `text.onWarning` |
+| Negative | #FFE5E7 | #D92130 | `bg.critical.subtle` | `text.critical` |
+| Info | #F1E5FF | #6D17CE | `bg.info.subtle` | `text.info` |
+| Neutral | #F1EDF7 | #5C5570 | `bg.subtle` | `text.subtle` |
 
 ---
 
@@ -325,7 +327,7 @@ Row(
 ### DO
 - Use the decision tree to pick type → size → style → color
 - Use `type.meta.xs` for Count, `type.label.md` for Default, `type.label.sm` for Small
-- Use `radius/tiny` (4px) for Count and Label, `radius/full` for Dot
+- Use `radius-tiny` (4px) for Count and Label, `radius-full` for Dot
 - Hide Count badge when count = 0
 - Cap Count display at 9+ or 99+
 - Use Filled for terminal states, Tinted for transitional
@@ -343,3 +345,13 @@ Row(
 
 ### WHEN IN DOUBT
 Ask: "Is this passive information (badge) or interactive control (chip)?" — if passive, use badge. If interactive, use chip.
+
+---
+
+## See also
+
+- `wiom-design-foundations` — token values for bg/text/stroke/icon families, warning-family rules (`text.onWarning`), patterns.md badge tables
+- `wiom-compose-layout-rules` — Compose structural rules, Icons.Rounded.* enforcement
+- `wiom-toast` — related feedback surface (also uses the warning-gold token set)
+- `wiom-icon-badge` — the glyph-in-container affordance (distinct from text/count badges)
+- `wiom-tabs-filters` — tabs and filter-chip badge embedding

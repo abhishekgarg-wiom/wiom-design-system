@@ -72,7 +72,7 @@ There is no `Pressed` state as a variant — ripple/state-layer is handled by th
 | Property | Type | Default | Purpose |
 |---|---|---|---|
 | `State` | VARIANT | Default | `Default` or `Selected` |
-| `icon` | INSTANCE_SWAP | per-tab default | Swap to any Material Symbols Rounded icon. `icon/md` = 24dp. Filled automatically in `Selected`. |
+| `icon` | INSTANCE_SWAP | per-tab default | Swap to any Material Symbols Rounded icon. `icon.md` = 24dp. Filled automatically in `Selected`. |
 | `label` | TEXT | "Home" | One-word destination name. Keep it short — see rules below. |
 | `Show Label` | BOOL | true | Hide only in exceptional icon-only configurations (accessibility regression — avoid). |
 | `Show Badge` | BOOL | false | Reveal the notification dot at the top-right of the icon pill. |
@@ -117,23 +117,23 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 
 | Part | Token |
 |---|---|
-| Bar background | `color/surface/base` |
-| Bar top border | `stroke/small` + `color/border/default` |
-| Bar bottom padding | `space/12` (+ OS safe-area inset below that) |
-| Item container padding | `space/4` horizontal · `space/8` vertical |
-| Item gap (pill → label) | `space/4` |
-| IconPill padding | `space/16` horizontal · `space/4` vertical |
-| IconPill radius | `radius/full` |
+| Bar background | `bg.default` |
+| Bar top border | `stroke-small` + `stroke.default` |
+| Bar bottom padding | `space-12` (+ OS safe-area inset below that) |
+| Item container padding | `space-4` horizontal · `space-8` vertical |
+| Item gap (pill → label) | `space-4` |
+| IconPill padding | `space-16` horizontal · `space-4` vertical |
+| IconPill radius | `radius-full` |
 | IconPill fill (Default) | transparent |
-| IconPill fill (Selected) | `color/brand/primary-tint` |
-| Icon size | `icon/md` (24dp) · Material Symbols Rounded |
-| Icon color (Default) | `color/text/secondary` |
-| Icon color (Selected) | `color/brand/primary` · FILL=1 |
-| Label typography | `type/label/sm` (12sp SemiBold, 16 line-height) |
-| Label color (Default) | `color/text/secondary` |
-| Label color (Selected) | `color/brand/primary` |
-| Badge fill | `color/negative/primary` |
-| Badge size | 8dp · `radius/full` · positioned at top-right of IconSlot |
+| IconPill fill (Selected) | `bg.selected` (#FFCCED Brand_200) |
+| Icon size | `icon.md` (24dp) · `Icons.Rounded.*` |
+| Icon color (Default) | **`icon.action`** (#352D42 — tappable chrome; NOT `text.subtle`) |
+| Icon color (Selected) | `icon.brand` (#D9008D) · FILL=1 |
+| Label typography | `type.label.sm` (12sp SemiBold, 16 line-height) |
+| Label color (Default) | `text.subtle` |
+| Label color (Selected) | `text.brand` |
+| Badge fill | `bg.critical` |
+| Badge size | 8dp · `radius-full` · positioned at top-right of IconSlot |
 
 No shadow. No hardcoded hex. No fixed item width — each item is `flex: 1 0 0`, so the bar redistributes evenly when tabs are hidden.
 
@@ -143,12 +143,12 @@ No shadow. No hardcoded hex. No fixed item width — each item is `flex: 1 0 0`,
 
 1. **Exactly one Selected at a time.** The bar reflects the current route — not preferences, not recent activity. Update on navigation.
 2. **Labels stay on.** 12sp is small enough; hiding labels fails first-time users and low-vision users. Don't set `Show Label=false` to "clean up" the bar.
-3. **One word per label.** "Home", "Plans", "Bills" — not "My Bills", not "View Plans". Use `type/label/sm` as-is; don't shrink the type.
+3. **One word per label.** "Home", "Plans", "Bills" — not "My Bills", not "View Plans". Use `type.label.sm` as-is; don't shrink the type.
 4. **Icons use the filled pair on Selected.** The selected icon should be the filled variant of the default (Material Symbols FILL axis). Never use two unrelated glyphs across states.
 5. **Badges are rare and meaningful.** Show only when there's an unread/actionable item. Never badge more than one tab at once unless two things genuinely need attention — it dilutes signal.
 6. **Never put a CTA in the bar.** No "Add", no plus FAB merged into a tab. If you need a primary action, it belongs elsewhere (top bar, inline CTA, FAB above the bar).
 7. **Hide on push.** When the user navigates into a detail or flow, the bar goes away. Don't leave a disabled bar underneath — it invites mis-taps.
-8. **Respect the safe area.** The bar has `space/12` intrinsic bottom padding; add OS bottom inset on top of that so content doesn't collide with home indicators / gesture bars.
+8. **Respect the safe area.** The bar has `space-12` intrinsic bottom padding; add OS bottom inset on top of that so content doesn't collide with home indicators / gesture bars.
 9. **Tabs 1 and 2 are always visible.** Design for the 2-tab fallback; don't put high-traffic destinations in Tab3–5 and then toggle them off for some users.
 10. **Don't restyle per screen.** Same bar on every root destination — same order, same icons, same labels. Consistency is the whole point.
 
@@ -175,11 +175,11 @@ Use `NavigationBar` + `NavigationBarItem` from Material 3 and bind colors/typogr
 
 ```kotlin
 NavigationBar(
-  containerColor = Wiom.color.surface.base,
+  containerColor = Wiom.bg.default,
   tonalElevation = 0.dp,
   modifier = Modifier
     .fillMaxWidth()
-    .drawTopBorder(Wiom.stroke.small, Wiom.color.border.default)
+    .drawTopBorder(Wiom.stroke.small, Wiom.stroke.default)
     .windowInsetsPadding(WindowInsets.navigationBars)
     .padding(bottom = Wiom.space.s12)
 ) {
@@ -199,11 +199,11 @@ NavigationBar(
       label = { Text(dest.label, style = Wiom.type.labelSm) },
       alwaysShowLabel = true,
       colors = NavigationBarItemDefaults.colors(
-        selectedIconColor = Wiom.color.brand.primary,
-        selectedTextColor = Wiom.color.brand.primary,
-        indicatorColor = Wiom.color.brand.primaryTint,
-        unselectedIconColor = Wiom.color.text.secondary,
-        unselectedTextColor = Wiom.color.text.secondary,
+        selectedIconColor = Wiom.bg.brand,
+        selectedTextColor = Wiom.bg.brand,
+        indicatorColor = Wiom.bg.brandTint,
+        unselectedIconColor = Wiom.text.subtle,
+        unselectedTextColor = Wiom.text.subtle,
       )
     )
   }
@@ -211,3 +211,12 @@ NavigationBar(
 ```
 
 `alwaysShowLabel = true` is non-negotiable (see Rule 2). `indicatorColor` is the pill behind the selected icon — keep it `brand/primary-tint`, do not deepen it to `brand/primary`. The destinations list is the source of truth for tab count; at render time, a list of 3 items produces a 3-tab bar with no extra config needed.
+
+---
+
+## See also
+
+- `wiom-design-foundations` — `bg.selected` token, icon.action rules for chrome, badge pattern
+- `wiom-compose-layout-rules` — Modifier discipline, Icons.Rounded.* enforcement
+- `wiom-top-bar` — paired top chrome
+- `wiom-badge` — the 8dp notification dot (`bg.critical`)

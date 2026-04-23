@@ -125,31 +125,31 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 | Part | Token |
 |---|---|
 | Wrapper width | 360dp (FIXED) |
-| Wrapper gap (indicator → counter) | `space/8` |
-| Indicator row gap (Dots) | `space/8` |
-| Indicator row gap (Bars) | `space/4` |
-| Dot — Default size | 8 × 8 dp · `radius/full` · `color/border/default` |
-| Dot — Active (Simple) | 8 × 8 dp · `radius/full` · `color/brand/primary` |
-| Dot — Active (Expanded) | 24 × 8 dp pill · `radius/full` · `color/brand/primary` |
-| Bar — Default | height 4dp · FILL width · `radius/full` · `color/border/default` |
-| Bar — Active | height 4dp · FILL width · `radius/full` · `color/brand/primary` |
-| Counter typography | `type/label/md` (14sp SemiBold, 20 line-height) |
-| Counter color | `color/text/secondary` |
+| Wrapper gap (indicator → counter) | `space-8` |
+| Indicator row gap (Dots) | `space-8` |
+| Indicator row gap (Bars) | `space-4` |
+| Dot — Default size | 8 × 8 dp · `radius-full` · `stroke.default` |
+| Dot — Active (Simple) | 8 × 8 dp · `radius-full` · `bg.brand` |
+| Dot — Active (Expanded) | 24 × 8 dp pill · `radius-full` · `bg.brand` |
+| Bar — Default | height 4dp · FILL width · `radius-full` · `stroke.default` |
+| Bar — Active | height 4dp · FILL width · `radius-full` · `bg.brand` |
+| Counter typography | `type.label.md` (14sp SemiBold, 20 line-height) |
+| Counter color | `text.subtle` |
 
 ### Pagination / Counter
 | Part | Token |
 |---|---|
-| Label typography | `type/label/md` · `color/text/primary` |
-| Chevron size | `icon/md` (24dp), outlined (line) |
-| Chevron color | `color/text/secondary` |
-| Button padding | `space/12` all sides (→ 48dp touch target) |
+| Label typography | `type.label.md` · `text.default` |
+| Chevron size | `icon.md` (24dp), outlined (line) |
+| Chevron color | `text.subtle` |
+| Button padding | `space-12` all sides (→ 48dp touch target) |
 | Container gap | 0 |
 
 ### Pagination / Scroll Indicator
 | Part | Token |
 |---|---|
-| Track height | 4dp · `radius/full` · `color/surface/muted` |
-| Thumb | height 4dp · ~30% track width · `radius/full` · `color/brand/primary` |
+| Track height | 4dp · `radius-full` · `bg.muted` |
+| Thumb | height 4dp · ~30% track width · `radius-full` · `bg.brand` |
 
 No shadows. No hardcoded hex. No fixed inner widths — dots are intrinsic 8dp, bars `FILL` the 360dp rail, the scroll thumb sits inside auto-layout spacers so it aligns correctly at any track width.
 
@@ -181,7 +181,7 @@ No shadows. No hardcoded hex. No fixed inner widths — dots are intrinsic 8dp, 
 - Setting `Current Page=1` but leaving Slot 1 invisible somehow (can't, but guard against edits) — the active slot must always render.
 - Animating the pagination on every tap — platform crossfade on the active slot is enough; heavy animation distracts from content.
 - Putting `Pagination` inside a tight horizontal strip with other controls. It needs the full 360dp to breathe and to allow counter alignment.
-- Repainting the active slot with a secondary brand color to "theme" it. Always `color/brand/primary`.
+- Repainting the active slot with a secondary brand color to "theme" it. Always `bg.brand`.
 
 ---
 
@@ -210,12 +210,12 @@ fun WiomPaginationDots(
           Modifier
             .size(width = width, height = 8.dp)
             .clip(RoundedCornerShape(Wiom.radius.full))
-            .background(if (active) Wiom.color.brand.primary else Wiom.color.border.default)
+            .background(if (active) Wiom.bg.brand else Wiom.stroke.default)
         )
       }
     }
     counterLabel?.let {
-      Text(it, style = Wiom.type.labelMd, color = Wiom.color.text.secondary,
+      Text(it, style = Wiom.type.labelMd, color = Wiom.text.subtle,
            textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
     }
   }
@@ -243,12 +243,12 @@ fun WiomPaginationBars(
           Modifier
             .weight(1f).fillMaxHeight()
             .clip(RoundedCornerShape(Wiom.radius.full))
-            .background(if (filled) Wiom.color.brand.primary else Wiom.color.border.default)
+            .background(if (filled) Wiom.bg.brand else Wiom.stroke.default)
         )
       }
     }
     counterLabel?.let {
-      Text(it, style = Wiom.type.labelMd, color = Wiom.color.text.secondary,
+      Text(it, style = Wiom.type.labelMd, color = Wiom.text.subtle,
            textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
     }
   }
@@ -267,12 +267,12 @@ fun WiomPaginationCounter(
   Row(verticalAlignment = Alignment.CenterVertically) {
     if (current > 1) IconButton(onClick = onPrev, modifier = Modifier.size(48.dp)) {
       Icon(painterResource(R.drawable.ic_chevron_left_line), null,
-           tint = Wiom.color.text.secondary, modifier = Modifier.size(Wiom.icon.md))
+           tint = Wiom.text.subtle, modifier = Modifier.size(Wiom.icon.md))
     }
-    Text("$current / $total", style = Wiom.type.labelMd, color = Wiom.color.text.primary)
+    Text("$current / $total", style = Wiom.type.labelMd, color = Wiom.text.default)
     if (current < total) IconButton(onClick = onNext, modifier = Modifier.size(48.dp)) {
       Icon(painterResource(R.drawable.ic_chevron_right_line), null,
-           tint = Wiom.color.text.secondary, modifier = Modifier.size(Wiom.icon.md))
+           tint = Wiom.text.subtle, modifier = Modifier.size(Wiom.icon.md))
     }
   }
 }
@@ -284,3 +284,12 @@ Drive thumb offset from `LazyListState.firstVisibleItemIndex` + `firstVisibleIte
 ---
 
 *Wiom Design System — Pagination skill. Pairs with `wiom-design-foundations` for token values.*
+
+---
+
+## See also
+
+- `wiom-design-foundations` — icon.action for chevrons, radius-full, bg.muted for inactive track
+- `wiom-compose-layout-rules` — Compose structural rules, Icons.Rounded.* enforcement
+- `wiom-stepper` — sibling component when steps have labels
+- `wiom-top-bar` — chevron / nav-button reference

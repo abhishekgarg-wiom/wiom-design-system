@@ -19,18 +19,18 @@ The approved navigation/filtering foundation for the Wiom app ecosystem (Android
 | Property | Value | Token |
 |----------|-------|-------|
 | Height | 40px (track) / 32px (pill) | — |
-| Track background | `color.surface.muted` #E8E4F0 | Color skill |
-| Track radius | 12px | `radius/medium` |
-| Track padding | 4px | `space/4` |
-| Pill radius | 8px | `radius/small` |
+| Track background | `bg.muted` #E8E4F0 | Color skill |
+| Track radius | 12px | `radius-medium` |
+| Track padding | 4px | `space-4` |
+| Pill radius | 8px | `radius-small` |
 | Active pill | White fill + `shadow.sm` | Shadow skill |
-| Active text | `color.brand.primary` #D9008D, SemiBold 600, 14sp | `type.label.m` |
-| Inactive text | `color.text.secondary` #5C5570, Regular 400, 14sp | `type.body.m` |
+| Active text | `bg.brand` #D9008D, SemiBold 600, 14sp | `type.label.md` |
+| Inactive text | `text.subtle` #5C5570, Regular 400, 14sp | `type.body.md` |
 | Disabled | 40% opacity | Color skill |
-| Badge (active) | `color.brand.primary` fill, white text, `radius/tiny` (4px) | — |
-| Badge (inactive) | `color.surface.muted` fill, secondary text, `radius/tiny` (4px) | — |
+| Badge (active) | `bg.brand` fill, white text, `radius-tiny` (4px) | — |
+| Badge (inactive) | `bg.muted` fill, secondary text, `radius-tiny` (4px) | — |
 | Item spacing | 0 (items fill equally) | — |
-| Tab gap (label-badge) | 4px | `space/4` |
+| Tab gap (label-badge) | 4px | `space-4` |
 | Variants | Count: 2 / 3 / 4 | — |
 | Max options | 4 | Beyond 4 = rethink IA |
 
@@ -53,22 +53,22 @@ The approved navigation/filtering foundation for the Wiom app ecosystem (Android
 
 | Property | Value | Token |
 |----------|-------|-------|
-| Height | 48px | `space/48` (touch target) |
-| Active indicator | 2px, `color.brand.primary`, pill ends | `stroke-medium`, `radius/full` |
-| Bottom divider | 1px, `color.border.default` | `stroke-small` |
-| Active text | `color.brand.primary` #D9008D, SemiBold 600, 14sp | `type.label.m` |
-| Inactive text | `color.text.secondary` #5C5570, Regular 400, 14sp | `type.body.m` |
+| Height | 48px | `space-48` (touch target) |
+| Active indicator | 2px, `bg.brand`, pill ends | `stroke-medium`, `radius-full` |
+| Bottom divider | 1px, `stroke.default` | `stroke-small` |
+| Active text | `bg.brand` #D9008D, SemiBold 600, 14sp | `type.label.md` |
+| Inactive text | `text.subtle` #5C5570, Regular 400, 14sp | `type.body.md` |
 | Disabled | 40% opacity | Color skill |
 | Shadow | `shadow.none` — filters are flat | Shadow skill |
 | Badge | Same as Pill Tab badges | — |
-| Label-badge gap | 4px | `space/4` |
+| Label-badge gap | 4px | `space-4` |
 | Variants | Count: 3 / 4, More: On / Off | — |
 | Fixed (3-4 filters) | Equal width, all visible | No scroll needed |
 | Scrollable (5-6 filters) | Hug content, horizontal scroll | Clips at 360px, peek indicates scroll |
 | Overflow (7+ filters) | 3-4 visible + More button | More → bottom sheet with Radio + CTA |
 
 **More Button (overflow):**
-- 48x48px touch target (`space/48`)
+- 48x48px touch target (`space-48`)
 - Placed at end of filter bar
 - Opens bottom sheet with remaining filters
 - Bottom sheet: list with Radio select + Primary CTA to apply
@@ -99,20 +99,20 @@ The approved navigation/filtering foundation for the Wiom app ecosystem (Android
 | Property | Value | Token |
 |----------|-------|-------|
 | Height | 36px | — |
-| Padding | 12px horizontal | `space/12` |
-| Gap (internal) | 4px | `space/4` |
-| Radius | 8px | `radius/small` |
-| Unselected | 1px border, `color.border.subtle` #E8E4F0 | `stroke-small` |
-| Unselected text | `color.text.primary`, Regular 400, 14sp | `type.body.m` |
-| Selected fill | `color.surface.selected` #FFE5F6 | Color skill |
-| Selected text | `color.brand.primary`, SemiBold 600, 14sp | `type.label.m` |
-| Selected border | NONE — filled state rule | Stroke skill |
-| Selected icons | ✕ trailing close only | — |
-| Disabled | 40% opacity | Color skill |
-| Shadow | `shadow.none` — chips are flat | Shadow skill |
-| Chip Row gap | 8px | `space/8` |
-| Chip Row padding | 16px horizontal | `space/16` |
-| Chip Row wrap | Supported, 8px vertical gap | `space/8` |
+| Padding | 12px horizontal | `space-12` |
+| Gap (internal) | 4px | `space-4` |
+| Radius | 8px | `radius-small` |
+| Unselected | 1px border, `stroke.subtle` #E8E4F0 | `stroke-small` |
+| Unselected text | `text.default`, Regular 400, 14sp | `type.body.md` |
+| Selected fill | `bg.selected` #FFCCED | `wiom-design-foundations` |
+| Selected text | `text.selected`, SemiBold 600, 14sp | `type.label.md` |
+| Selected border | NONE — filled-state rule | `wiom-design-foundations` |
+| Selected trailing icon | ✕ close only · `icon.brand` | — |
+| Disabled | 40% opacity on base color (foundations §10) | `wiom-design-foundations` |
+| Shadow | `shadow.none` — chips are flat | `wiom-design-foundations` |
+| Chip Row gap | 8px | `space-8` |
+| Chip Row padding | 16px horizontal | `space-16` |
+| Chip Row wrap | Supported, 8px vertical gap | `space-8` |
 
 **Use when:**
 - Multiple criteria can be combined — not pick one
@@ -281,3 +281,14 @@ Column {
 
 ### WHEN IN DOUBT
 Ask: "Can the user select multiple?" → Yes = Chips, No = "Does it change the dataset?" → Yes = Pill, No = Underline.
+
+---
+
+## See also
+
+- `wiom-design-foundations` — token values, selected-state tokens (`bg.selected`, `text.selected`)
+- `wiom-compose-layout-rules` — Compose structural rules
+- `wiom-badge` — badge-in-tab pattern
+- `wiom-bottomsheet` — the overflow "More" filter sheet
+- `wiom-selection-controls` — radio rows inside the overflow sheet
+- `wiom-cta` — Apply / Reset CTAs inside the overflow sheet

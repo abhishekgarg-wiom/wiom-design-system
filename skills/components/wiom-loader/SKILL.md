@@ -48,9 +48,9 @@ description: Wiom Loader component spec, usage patterns, and Figma node IDs. Use
 
 | Color | Indicator token | Track token | Canvas | Use |
 |---|---|---|---|---|
-| `brand` | `color/brand/primary` | `color/brand/primary-tint` | transparent | Default on light surfaces |
-| `neutral` | `color/text/secondary` | `color/border/subtle` | transparent | De-emphasized, non-branded contexts |
-| `onColor` | `color/white` | *(no track)* | transparent | Use ON brand-filled or dark surfaces |
+| `brand` | `bg.brand` | `bg.brand.subtle` | transparent | Default on light surfaces |
+| `neutral` | `text.subtle` | `stroke.subtle` | transparent | De-emphasized, non-branded contexts |
+| `onColor` | `icon.inverse` | *(no track)* | transparent | Use ON brand-filled or dark surfaces |
 
 **Background:** All variants have transparent fill — the spinner floats on whatever surface it's placed on. The `onColor` variant has no track ring (white-on-brand makes the track invisible).
 
@@ -95,9 +95,9 @@ Circular trace with outcome-aware state transitions. Use whenever a wait has a c
 
 | State | Ring color | Ring behavior | Glyph |
 |---|---|---|---|
-| `Wait` | `color/text/secondary` | Chase — 25% dash travels the ring at 1.3s linear loop | none |
-| `Success` | `#008043` (success/primary) | Ring fills from neutral to solid green over 450ms | Checkmark draws in over 300ms |
-| `Error` | `#d92130` (error/primary) | Ring fills from neutral to solid red over 450ms | Cross draws in over 300ms |
+| `Wait` | `icon.nonAction` (#898296) | Chase — 25% dash travels the ring at 1.3s linear loop | none |
+| `Success` | `bg.positive` (#008043) | Ring fills from neutral to solid green over 450ms | Checkmark draws in over 300ms, `icon.inverse` |
+| `Error` | `bg.critical` (#D92130) | Ring fills from neutral to solid red over 450ms | Cross draws in over 300ms, `icon.inverse` |
 
 ### Transition sequence
 
@@ -111,9 +111,9 @@ Circular trace with outcome-aware state transitions. Use whenever a wait has a c
 
 | Element | Wait | Success | Error |
 |---|---|---|---|
-| Ring stroke | `color/text/secondary` | `color/success/primary` (#008043) | `color/error/primary` (#d92130) |
-| Glyph stroke | — | `color/success/primary` | `color/error/primary` |
-| Message text | `color/text/secondary` | `color/success/primary` | `color/error/primary` |
+| Ring stroke | `icon.nonAction` | `bg.positive` (#008043) | `bg.critical` (#D92130) |
+| Glyph tint | — | `icon.inverse` (on filled ring) | `icon.inverse` |
+| Message text | `text.subtle` | `text.positive` | `text.critical` |
 
 ### Usage patterns
 
@@ -161,15 +161,15 @@ The current Success checkmark and Error cross glyphs are placeholders. They comm
 | Dot opacity | 1.0 (uniform) |
 | Bubble padding | 12h × 10v |
 | Bubble radius | 16/16/16/4 (top-left, top-right, bottom-right, bottom-left) |
-| Bubble fill | `color/surface/subtle` (brand/neutral) or `color/brand/primary` (onColor) |
+| Bubble fill | `bg.subtle` (brand/neutral) or `bg.brand` (onColor) |
 
 ### Color contexts
 
 | Color | Dot fill | Bubble fill | Use |
 |---|---|---|---|
-| `brand` | `color/brand/primary` | `color/surface/subtle` | Default — Wiom assistant typing |
-| `neutral` | `color/text/secondary` | `color/surface/subtle` | De-emphasized, peer typing |
-| `onColor` | `color/white` | `color/brand/primary` | On dark/brand surfaces |
+| `brand` | `bg.brand` | `bg.subtle` | Default — Wiom assistant typing |
+| `neutral` | `text.subtle` | `bg.subtle` | De-emphasized, peer typing |
+| `onColor` | `icon.inverse` | `bg.brand` | On dark/brand surfaces |
 
 ### Usage
 
@@ -223,11 +223,11 @@ Chat screens only. Place at the bottom of the message list when the other party 
 
 | Element | Fill | Radius |
 |---|---|---|
-| Placeholder blocks (text lines) | `color/surface/muted` | `radius/tiny` (4) |
-| Image placeholder | `color/surface/muted` | `radius/medium` (12) |
-| Avatar circle | `color/surface/muted` | `radius/full` (9999) |
-| Card container (Card type) | `color/surface/base` | `radius/large` (16) |
-| Card border | `color/border/default`, `stroke/small` (1px) | — |
+| Placeholder blocks (text lines) | `bg.muted` | `radius-tiny` (4) |
+| Image placeholder | `bg.muted` | `radius-medium` (12) |
+| Avatar circle | `bg.muted` | `radius-full` (9999) |
+| Card container (Card type) | `bg.default` | `radius-large` (16) |
+| Card border | `stroke.default`, `stroke-small` (1px) | — |
 
 ### Usage
 
@@ -263,9 +263,9 @@ Use skeletons when the layout is known before data arrives. They make waits feel
 ┌────────────────────┐
 │                    │   surface/base background
 │                    │
-│       Wiom         │   heading/xl, color/brand/primary
-│       ∞            │   Infinity icon 128×53, color/brand/primary
-│  Loading your      │   body/md, color/text/secondary
+│       Wiom         │   heading/xl, bg.brand
+│       ∞            │   Infinity icon 128×53, bg.brand
+│  Loading your      │   body/md, text.subtle
 │  dashboard…        │
 │                    │
 └────────────────────┘
@@ -276,9 +276,9 @@ Use skeletons when the layout is known before data arrives. They make waits feel
 ┌────────────────────┐
 │████████████████████│   brand/primary background
 │████████████████████│
-│███████Wiom█████████│   heading/xl, color/text/on-color
-│████████∞███████████│   Infinity icon 128×53, color/white
-│███Getting things███│   body/md, color/text/on-color
+│███████Wiom█████████│   heading/xl, text.onBrand
+│████████∞███████████│   Infinity icon 128×53, icon.inverse
+│███Getting things███│   body/md, text.onBrand
 │███████ready…███████│
 │████████████████████│
 └────────────────────┘
@@ -288,11 +288,11 @@ Use skeletons when the layout is known before data arrives. They make waits feel
 ```
 ┌────────────────────┐
 │▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│   Simulated content (top bar, 3 cards, bottom nav)
-│▒▒┌────────────┐▒▒▒│   underneath color/overlay/default backdrop
+│▒▒┌────────────┐▒▒▒│   underneath overlay.scrim backdrop
 │▒▒│░░░░░░░░░░░░│▒▒▒│   (rgba(22,16,33,0.50))
 │▒▒└────────────┘▒▒▒│
-│▒▒▒▒▒▒▒∞▒▒▒▒▒▒▒▒▒▒│   Infinity icon 128×53, color/white
-│▒▒Processing your▒▒│   body/md, color/text/on-color
+│▒▒▒▒▒▒▒∞▒▒▒▒▒▒▒▒▒▒│   Infinity icon 128×53, icon.inverse
+│▒▒Processing your▒▒│   body/md, text.onBrand
 │▒▒▒▒payment…▒▒▒▒▒▒▒│
 │▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│
 └────────────────────┘
@@ -363,3 +363,13 @@ A 25%-long segment of the stroke continuously travels the closed infinity path. 
 - **Button-embedded spinner:** Should CTA get a built-in loading boolean, or is instance-swap at render time sufficient?
 - **Pull-to-refresh:** Native Android SwipeRefreshLayout or custom styled indicator?
 - **Kotlin/Compose mapping:** To be authored once Lottie files are finalised
+
+---
+
+## See also
+
+- `wiom-design-foundations` — status token families, overlay.scrim, shadow.xl
+- `wiom-compose-layout-rules` — Compose structural rules
+- `wiom-progress-indicator` — sibling loading / progress component (determinate progress)
+- `wiom-cta` — Loading CTA state uses the Spinner size=sm
+- `wiom-dialog` — the Loading Dialog type composes this loader as its header

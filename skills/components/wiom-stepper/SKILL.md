@@ -166,49 +166,49 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 ### StepIndicator (atom)
 | Part | Token |
 |---|---|
-| Indicator size | 32 × 32 dp · `radius/full` |
-| Completed fill | `color/brand/primary` |
-| Completed icon | `check` (filled) · 20dp · `color/text/on-color` |
-| Active fill | `color/surface/base` |
-| Active stroke | 2dp · `color/brand/primary` |
-| Active number color | `color/brand/primary` · `type/label/md` (14sp SemiBold) |
-| Upcoming fill | `color/surface/base` |
-| Upcoming stroke | 1dp · `color/border/default` |
-| Upcoming number color | `color/text/secondary` · `type/label/md` |
-| Error fill | `color/negative/primary` |
-| Error icon | `priority_high` (filled) · 20dp · `color/text/on-color` |
+| Indicator size | 32 × 32 dp · `radius-full` |
+| Completed fill | `bg.brand` |
+| Completed icon | `check` (filled) · 20dp · `text.onBrand` |
+| Active fill | `bg.default` |
+| Active stroke | 2dp · `bg.brand` |
+| Active number color | `bg.brand` · `type.label.md` (14sp SemiBold) |
+| Upcoming fill | `bg.default` |
+| Upcoming stroke | 1dp · `stroke.default` |
+| Upcoming number color | `text.subtle` · `type.label.md` |
+| Error fill | `bg.critical` |
+| Error icon | `priority_high` (filled) · 20dp · `text.onBrand` |
 
 ### Connectors
 | Layout | Part | Token |
 |---|---|---|
-| Horizontal | Line height | 2dp · `radius/full` |
-| Vertical | Line width | 2dp · `radius/full` |
-| Both | Filled (after Completed step) | `color/brand/primary` |
-| Both | Default | `color/border/default` |
+| Horizontal | Line height | 2dp · `radius-full` |
+| Vertical | Line width | 2dp · `radius-full` |
+| Both | Filled (after Completed step) | `bg.brand` |
+| Both | Default | `stroke.default` |
 
 ### Stepper / Horizontal
 | Part | Token |
 |---|---|
 | Wrapper width | 360dp (FIXED) |
-| Step column gap (indicator → label) | `space/8` |
-| Label typography | `type/label/sm` (12sp SemiBold) |
-| Label color (Active / Completed) | `color/text/primary` |
-| Label color (Upcoming) | `color/text/secondary` |
+| Step column gap (indicator → label) | `space-8` |
+| Label typography | `type.label.sm` (12sp SemiBold) |
+| Label color (Active / Completed) | `text.default` |
+| Label color (Upcoming) | `text.subtle` |
 
 ### StepItem (Vertical)
 | Part | Token |
 |---|---|
-| Row gap (rail → content) | `space/12` |
+| Row gap (rail → content) | `space-12` |
 | Rail width | 32dp |
-| Rail gap (indicator → connector) | `space/4` |
-| Title typography | `type/label/md` (14sp SemiBold) |
-| Title color (Active / Completed / Error) | `color/text/primary` |
-| Title color (Upcoming) | `color/text/secondary` |
-| Title → Description gap | `space/8` (matches card recipe: title → subtitle = 8px) |
-| Description typography | `type/body/sm` (12sp Regular, 16 LH) |
-| Description color | `color/text/secondary` |
-| Description → Action gap (ActionWrap paddingTop) | `space/16` (matches card recipe: Content → CTA = 16px) |
-| Content bottom padding (gap to next step) | `space/24` (comfortable section gap) |
+| Rail gap (indicator → connector) | `space-4` |
+| Title typography | `type.label.md` (14sp SemiBold) |
+| Title color (Active / Completed / Error) | `text.default` |
+| Title color (Upcoming) | `text.subtle` |
+| Title → Description gap | `space-8` (matches card recipe: title → subtitle = 8px) |
+| Description typography | `type.body.sm` (12sp Regular, 16 LH) |
+| Description color | `text.subtle` |
+| Description → Action gap (ActionWrap paddingTop) | `space-16` (matches card recipe: Content → CTA = 16px) |
+| Content bottom padding (gap to next step) | `space-24` (comfortable section gap) |
 
 No shadows. No hardcoded hex. No fixed inner widths inside StepItem — content `FILL`s the row width minus rail; action `FILL`s content width.
 
@@ -262,16 +262,16 @@ fun StepIndicator(
       .clip(CircleShape)
       .background(
         when (state) {
-          StepState.Completed -> Wiom.color.brand.primary
-          StepState.Error     -> Wiom.color.negative.primary
-          else                -> Wiom.color.surface.base
+          StepState.Completed -> Wiom.bg.brand
+          StepState.Error     -> Wiom.bg.critical
+          else                -> Wiom.bg.default
         }
       )
       .border(
         width = if (state == StepState.Active) 2.dp else 1.dp,
         color = when (state) {
-          StepState.Active   -> Wiom.color.brand.primary
-          StepState.Upcoming -> Wiom.color.border.default
+          StepState.Active   -> Wiom.bg.brand
+          StepState.Upcoming -> Wiom.stroke.default
           else               -> Color.Transparent
         },
         shape = CircleShape
@@ -280,13 +280,13 @@ fun StepIndicator(
   ) {
     when (state) {
       StepState.Completed -> Icon(painterResource(R.drawable.ic_check_filled), null,
-                                   tint = Wiom.color.text.onColor, modifier = Modifier.size(20.dp))
+                                   tint = WiomColors.iconInverse, modifier = Modifier.size(20.dp))
       StepState.Error     -> Icon(painterResource(R.drawable.ic_priority_high_filled), null,
-                                   tint = Wiom.color.text.onColor, modifier = Modifier.size(20.dp))
+                                   tint = WiomColors.iconInverse, modifier = Modifier.size(20.dp))
       else -> Text(
         number.toString(),
         style = Wiom.type.labelMd,
-        color = if (state == StepState.Active) Wiom.color.brand.primary else Wiom.color.text.secondary,
+        color = if (state == StepState.Active) Wiom.bg.brand else Wiom.text.subtle,
       )
     }
   }
@@ -314,7 +314,7 @@ fun StepperHorizontal(
       ) {
         StepIndicator(state, idx + 1)
         Text(step.label, style = Wiom.type.labelSm,
-             color = if (idx + 1 <= currentStep) Wiom.color.text.primary else Wiom.color.text.secondary)
+             color = if (idx + 1 <= currentStep) Wiom.text.default else Wiom.text.subtle)
       }
       if (idx < steps.lastIndex) {
         Box(
@@ -323,7 +323,7 @@ fun StepperHorizontal(
             .height(32.dp)
             .padding(top = 15.dp)
             .height(2.dp)
-            .background(if (idx < currentStep - 1) Wiom.color.brand.primary else Wiom.color.border.default,
+            .background(if (idx < currentStep - 1) Wiom.bg.brand else Wiom.stroke.default,
                         shape = RoundedCornerShape(Wiom.radius.full))
         )
       }
@@ -352,7 +352,7 @@ fun StepperVertical(steps: List<VerticalStep>, currentStep: Int) {
             Box(
               Modifier
                 .width(2.dp).weight(1f)
-                .background(if (idx < currentStep - 1) Wiom.color.brand.primary else Wiom.color.border.default,
+                .background(if (idx < currentStep - 1) Wiom.bg.brand else Wiom.stroke.default,
                             shape = RoundedCornerShape(Wiom.radius.full))
             )
           }
@@ -361,9 +361,9 @@ fun StepperVertical(steps: List<VerticalStep>, currentStep: Int) {
         // Content
         Column(Modifier.weight(1f).padding(bottom = Wiom.space.s24)) {
           Text(step.title, style = Wiom.type.labelMd,
-               color = if (state == StepState.Upcoming) Wiom.color.text.secondary else Wiom.color.text.primary)
+               color = if (state == StepState.Upcoming) Wiom.text.subtle else Wiom.text.default)
           step.description?.let {
-            Text(it, style = Wiom.type.bodySm, color = Wiom.color.text.secondary)
+            Text(it, style = Wiom.type.bodySm, color = Wiom.text.subtle)
           }
           step.action?.let {
             Spacer(Modifier.height(Wiom.space.s8))
@@ -381,3 +381,13 @@ The Action slot in code is the same idea as in Figma — pass any composable. Do
 ---
 
 *Wiom Design System — Stepper skill. Pairs with `wiom-design-foundations` for token values, `wiom-cta` for the CTA component used in the Action slot, and `wiom-input-fields` for Input / OTP options.*
+
+---
+
+## See also
+
+- `wiom-design-foundations` — stroke.brand.focus for the Active ring, typography scale
+- `wiom-compose-layout-rules` — Compose structural rules
+- `wiom-cta` — Action-slot CTAs (Primary / Secondary / Tertiary)
+- `wiom-input-fields` — Action-slot input / OTP / textarea variants
+- `wiom-pagination` — sibling progress component when steps are unlabeled

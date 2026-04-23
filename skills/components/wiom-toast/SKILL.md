@@ -41,14 +41,14 @@ A passive, transient message shown at the **bottom of the screen** to provide qu
 
 ## 3. The 4 Types
 
-Each type changes the background tint and icon color. Text color stays `color.text.primary` per foundation rule.
+Each type changes the background tint, the icon, and (for Warning only) the text color. Body text defaults to `text.default` on Error / Info / Success surfaces. **Warning is the exception — it uses `text.onWarning` (#372902 olive) because the gold-tinted surface would fail AA with `text.default`.**
 
-| Type | Fill | Icon | Icon Color | Sample |
-|------|------|------|-----------|--------|
-| **Error** | `color.negative.tint` #FFE5E7 | `error` | `color.negative.primary` #D92130 | "Server ne request reject kiya" |
-| **Warning** | `color.warning.subtle` #FFF2BF | `warning` | `color.warning.primary` #B85C00 | "Offline — purana data dikh raha hai" |
-| **Info** | `color.surface.muted` #E8E4F0 | `info` | `color.text.secondary` #5C5570 | "Status update ho gayi" |
-| **Success** | `color.positive.tint` #E1FAED | `check_circle` | `color.positive.primary` #008043 | "Nikaasi safal rahi" |
+| Type | Fill | Icon | Icon tint | Text | Sample |
+|------|------|------|-----------|------|--------|
+| **Error** | `bg.critical.subtle` #FFE5E7 | `Icons.Rounded.Error` | `icon.critical` #D92130 | `text.default` | "Server ne request reject kiya" |
+| **Warning** | `bg.warning.subtle` #FFE9A1 | `Icons.Rounded.Warning` | `icon.warning` #E2B203 | `text.onWarning` #372902 | "Offline — purana data dikh raha hai" |
+| **Info** | `bg.muted` #E8E4F0 | `Icons.Rounded.Info` | `icon.nonAction` #898296 | `text.default` | "Status update ho gayi" |
+| **Success** | `bg.positive.subtle` #E1FAED | `Icons.Rounded.CheckCircle` | `icon.positive` #008043 | `text.default` | "Nikaasi safal rahi" |
 
 ---
 
@@ -62,20 +62,20 @@ Each type changes the background tint and icon color. Text color stays `color.te
 | Default height | 56px (single line) | — |
 | Max height | 72px (2 lines, truncate after) | — |
 | Height | Hug content, max 2 lines | — |
-| Radius | 8px | `radius/small` |
-| Horizontal padding | 16px | `space/16` |
-| Vertical padding | 16px | `space/16` |
-| Gap (icon-text) | 8px | `space/8` |
-| Gap (text-action) | 12px | `space/12` |
-| Shadow | `shadow/lg` | 0 4px 12px rgba(0,0,0,0.15) |
+| Radius | 8px | `radius-small` |
+| Horizontal padding | 16px | `space-16` |
+| Vertical padding | 16px | `space-16` |
+| Gap (icon-text) | 8px | `space-8` |
+| Gap (text-action) | 12px | `space-12` |
+| Shadow | `shadow.lg` | 0 4px 12px rgba(0,0,0,0.15) |
 | Position | Bottom, 8px margin each side, 8px above safe area | — |
 
 ### Typography
 
 | Element | Style | Token |
 |---------|-------|-------|
-| Message | Noto Sans Regular 400, 14sp, LH 20 | `type/body/md` |
-| Action CTA | Noto Sans SemiBold 600, 14sp, LH 20 | `type/label/md` |
+| Message | Noto Sans Regular 400, 14sp, LH 20 | `type.body.md` |
+| Action CTA | Noto Sans SemiBold 600, 14sp, LH 20 | `type.label.md` |
 
 ### Icon
 
@@ -300,9 +300,9 @@ Used Smart Animate in Figma prototype to match code behavior.
 
 ### DO
 - Use the decision tree to pick toast vs other feedback
-- Use `type/body/md` (14sp Regular) for message
-- Use `type/label/md` (14sp SemiBold) for action CTA
-- Use `shadow/lg` for the floating effect
+- Use `type.body.md` (14sp Regular) for message
+- Use `type.label.md` (14sp SemiBold) for action CTA
+- Use `shadow.lg` for the floating effect
 - Position at bottom, 8px margin each side
 - Auto-dismiss 2s (informational), 8s (actionable)
 - Use icons from Material Symbols Rounded (filled) library
@@ -321,3 +321,12 @@ Used Smart Animate in Figma prototype to match code behavior.
 
 ### WHEN IN DOUBT
 Ask: "Can the user fix this right now by tapping the same button again?" — if yes, toast is fine. If no, use something bigger.
+
+---
+
+## See also
+
+- `wiom-design-foundations` — color tokens, warning-family rules, patterns.md banner/toast tables
+- `wiom-compose-layout-rules` — Compose structural rules, Icons.Rounded.* enforcement
+- `wiom-badge` — related inline feedback surface (same token family)
+- `wiom-cta` — action CTAs inside Actionable toasts
