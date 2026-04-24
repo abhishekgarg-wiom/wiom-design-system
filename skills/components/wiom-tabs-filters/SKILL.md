@@ -23,12 +23,12 @@ The approved navigation/filtering foundation for the Wiom app ecosystem (Android
 | Track radius | 12px | `radius-medium` |
 | Track padding | 4px | `space-4` |
 | Pill radius | 8px | `radius-small` |
-| Active pill | White fill + `shadow.sm` | Shadow skill |
-| Active text | `bg.brand` #D9008D, SemiBold 600, 14sp | `type.label.md` |
-| Inactive text | `text.subtle` #5C5570, Regular 400, 14sp | `type.body.md` |
-| Disabled | 40% opacity | Color skill |
-| Badge (active) | `bg.brand` fill, white text, `radius-tiny` (4px) | — |
-| Badge (inactive) | `bg.muted` fill, secondary text, `radius-tiny` (4px) | — |
+| Active pill | `bg.default` #FAF9FC fill + `shadow.sm` | Shadow skill |
+| Active text | `text.selected` #D9008D, SemiBold 600, 14sp | `type.label.md` |
+| Inactive text | `text.subtle` #665E75, Regular 400, 14sp | `type.body.md` |
+| Disabled | `bg.disabled` + `text.disabled` (foundations §10 — never `opacity`) | Color skill |
+| Badge (active) | `bg.brand` fill, `text.onBrand`, `radius-full` | — |
+| Badge (inactive) | `bg.muted` fill, `text.subtle`, `radius-full` | — |
 | Item spacing | 0 (items fill equally) | — |
 | Tab gap (label-badge) | 4px | `space-4` |
 | Variants | Count: 2 / 3 / 4 | — |
@@ -55,10 +55,10 @@ The approved navigation/filtering foundation for the Wiom app ecosystem (Android
 |----------|-------|-------|
 | Height | 48px | `space-48` (touch target) |
 | Active indicator | 2px, `bg.brand`, pill ends | `stroke-medium`, `radius-full` |
-| Bottom divider | 1px, `stroke.default` | `stroke-small` |
-| Active text | `bg.brand` #D9008D, SemiBold 600, 14sp | `type.label.md` |
-| Inactive text | `text.subtle` #5C5570, Regular 400, 14sp | `type.body.md` |
-| Disabled | 40% opacity | Color skill |
+| Bottom divider | 1px, `stroke.subtle` #D7D3E0 | `stroke-small` |
+| Active text | `text.brand` #D9008D, SemiBold 600, 14sp | `type.label.md` |
+| Inactive text | `text.subtle` #665E75, SemiBold 600, 14sp | `type.label.md` |
+| Disabled | `bg.disabled` + `text.disabled` (foundations §10 — never `opacity`) | Color skill |
 | Shadow | `shadow.none` — filters are flat | Shadow skill |
 | Badge | Same as Pill Tab badges | — |
 | Label-badge gap | 4px | `space-4` |
@@ -102,13 +102,14 @@ The approved navigation/filtering foundation for the Wiom app ecosystem (Android
 | Padding | 12px horizontal | `space-12` |
 | Gap (internal) | 4px | `space-4` |
 | Radius | 8px | `radius-small` |
-| Unselected | 1px border, `stroke.subtle` #E8E4F0 | `stroke-small` |
+| Unselected | 1px border, `stroke.subtle` #D7D3E0 | `stroke-small` |
 | Unselected text | `text.default`, Regular 400, 14sp | `type.body.md` |
 | Selected fill | `bg.selected` #FFCCED | `wiom-design-foundations` |
 | Selected text | `text.selected`, SemiBold 600, 14sp | `type.label.md` |
 | Selected border | NONE — filled-state rule | `wiom-design-foundations` |
-| Selected trailing icon | ✕ close only · `icon.brand` | — |
-| Disabled | 40% opacity on base color (foundations §10) | `wiom-design-foundations` |
+| Selected leading icon (when Selection shown) | ✓ check · `icon.brand` | — |
+| Selected trailing icon (dismissible chip) | ✕ close · `icon.brand` | — |
+| Disabled | `bg.disabled` + `text.disabled` (foundations §10 — never `opacity`) | `wiom-design-foundations` |
 | Shadow | `shadow.none` — chips are flat | `wiom-design-foundations` |
 | Chip Row gap | 8px | `space-8` |
 | Chip Row padding | 16px horizontal | `space-16` |

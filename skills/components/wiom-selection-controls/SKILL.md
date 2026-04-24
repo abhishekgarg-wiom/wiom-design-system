@@ -66,7 +66,8 @@ and exist here for one-stop reference.
 
 | Rule | Value |
 |---|---|
-| Indicator grid (checkbox + radio) | 20 × 20 dp |
+| Checkbox / Radio — Figma component container | 24 × 24 dp |
+| Checkbox / Radio — visible indicator glyph | 20 × 20 dp (centered in the 24 dp cell) |
 | Switch track | 52 × 32 dp · thumb 24 × 24 dp · 4 dp inset all sides |
 | Unselected stroke width | `stroke-medium` (2 dp, inside) |
 | Unselected stroke color | `stroke.strong` (#473F55 Neutral_800) — small controls need the heavier weight |
@@ -88,7 +89,8 @@ toggles that require a submit, opt-in / opt-out.
 
 ### Anatomy
 
-20 × 20 dp rounded-square indicator, `radius-tiny` (4 dp). Content-state glyph
+24 × 24 dp bounding container (Figma component size); visible indicator is
+20 × 20 dp rounded-square, centered, `radius-tiny` (4 dp). Content-state glyph
 (check or dash) comes from `Icons.Rounded.*` and fills ~65% of the indicator.
 
 ### Variants — 3 selection × 3 state = 9
@@ -125,7 +127,8 @@ radio is not a valid pattern.
 
 ### Anatomy
 
-20 × 20 dp circular indicator (`radius-full`). Inner 10 × 10 dp dot visible only
+24 × 24 dp bounding container (Figma component size); visible indicator is
+20 × 20 dp circular (`radius-full`), centered. Inner 10 × 10 dp dot visible only
 when Selected.
 
 ### Variants — 2 selection × 3 state = 6
@@ -318,7 +321,8 @@ Shadow                         shadow.none (all controls, all states)
 Focus ring                     stroke-medium + stroke.brand.focus outside +2dp
 
 CHECKBOX
-Size                           20×20dp · radius-tiny (4dp)
+Container (Figma)              24×24dp
+Visible indicator              20×20dp centered · radius-tiny (4dp)
 Selected fill                  bg.brand (#D9008D) · no stroke
 Selected glyph                 Icons.Rounded.Check · icon.inverse
 Indeterminate glyph            Icons.Rounded.Remove · icon.inverse
@@ -326,7 +330,8 @@ Error + Selected fill          bg.critical (#D92130) · glyph icon.inverse
 Disabled Selected fill         bg.disabled · glyph icon.disabled
 
 RADIO
-Size                           20×20dp · radius-full
+Container (Figma)              24×24dp
+Visible indicator              20×20dp centered · radius-full
 Inner dot                      10×10dp · radius-full · icon.inverse
 Selected fill                  bg.brand (#D9008D) · no stroke
 Error + Selected fill          bg.critical (#D92130)

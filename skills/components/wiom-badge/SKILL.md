@@ -39,9 +39,9 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 
 | Property | Value | Token |
 |----------|-------|-------|
-| Min size | 18×18px | — |
+| Min size | 20×20px | — |
 | Radius | 9999px | `radius-full` |
-| Horizontal padding | 5px | — |
+| Horizontal padding | `space-4` | `space-4` |
 | Font | Noto Sans Regular 400 | `type.meta.xs` |
 | Font size | 10sp | `type.meta.xs` |
 | Line height | 16sp | `type.meta.xs` |
@@ -87,10 +87,10 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 
 ### Count Badge Colors
 
-| Variant | Fill | Text | Token (fill) |
-|---------|------|------|-------------|
-| Brand | #D9008D | #FFFFFF | `bg.brand` |
-| Negative | #D92130 | #FFFFFF | `bg.critical` |
+| Variant | Fill | Text | Token (fill) | Token (text) |
+|---------|------|------|-------------|-------------|
+| Brand | #D9008D | #FFFFFF | `bg.brand` | `text.onBrand` |
+| Negative | #D92130 | #FFFFFF | `bg.critical` | `text.onCritical` |
 
 ### Label Badge Colors — Filled (Default size only)
 
@@ -100,7 +100,7 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 | Warning | #E2B203 | #372902 | `bg.warning` | `text.onWarning` |
 | Negative | #D92130 | #FFFFFF | `bg.critical` | `text.onCritical` |
 | Info | #6D17CE | #FFFFFF | `bg.info` | `text.onInfo` |
-| Neutral | #E8E4F0 | #5C5570 | `bg.muted` | `text.subtle` |
+| Neutral | #E8E4F0 | #665E75 | `bg.muted` | `text.subtle` |
 
 **Warning-family note:** `bg.warning` is gold (#E2B203), not brown. The body label uses `text.onWarning` (#372902 olive) — white on gold would fail AA (1.98:1). Warning is the one family where the "on-surface" text color is dark.
 
@@ -112,7 +112,7 @@ The approved badge/indicator foundation for the Wiom app ecosystem (Android/Kotl
 | Warning | #FFE9A1 | #372902 | `bg.warning.subtle` | `text.onWarning` |
 | Negative | #FFE5E7 | #D92130 | `bg.critical.subtle` | `text.critical` |
 | Info | #F1E5FF | #6D17CE | `bg.info.subtle` | `text.info` |
-| Neutral | #F1EDF7 | #5C5570 | `bg.subtle` | `text.subtle` |
+| Neutral | #F1EDF7 | #665E75 | `bg.subtle` | `text.subtle` |
 
 ---
 
@@ -142,7 +142,7 @@ Need a visual indicator? Ask:
 
    3c. Color: "What does the status represent?"
        Success / confirmed / complete / eligible  → Positive (green)
-       Warning / pending / provisional / attention → Warning (orange)
+       Warning / pending / provisional / attention → Warning (gold)
        Error / failed / expired / revoked          → Negative (red)
        Active / in-progress / info                 → Info (purple)
        Default / proposed / neutral / inactive     → Neutral (grey)
