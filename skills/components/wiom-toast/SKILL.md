@@ -58,7 +58,7 @@ Each type changes the background tint, the icon, and (for Warning only) the text
 
 | Property | Value | Token |
 |----------|-------|-------|
-| Width | 328px (screen 360 − 16px × 2) | — |
+| Width | 344px (screen 360 − 8px × 2) | — |
 | Default height | 48px (single line: 12V pad × 2 + 24 LH) | — |
 | Max height | 72px (2 lines: 12V pad × 2 + 24 LH × 2) | — |
 | Height | Hug content, max 2 lines | — |
@@ -68,7 +68,7 @@ Each type changes the background tint, the icon, and (for Warning only) the text
 | Gap (icon-text) | 8px | `space-8` |
 | Gap (text-action) | 8px | `space-8` |
 | Shadow | `shadow.lg` | 0 4px 12px rgba(0,0,0,0.15) |
-| Position | Bottom, 16px margin each side, 8px above safe area | — |
+| Position | Bottom, 8px margin each side, 8px above safe area | — |
 
 ### Typography
 
@@ -184,7 +184,7 @@ Location: Sandbox - SAAD → Toast / Snackbar section
 
 1. **Max 1 toast visible at a time** — never stack. Queue if needed.
 2. **Bottom position only** — never top, never middle.
-3. **16px margin each side** (328px on 360px screen) — matches screen-gutter insets.
+3. **8px margin each side** (344px on 360px screen) — wider than the 16px screen gutter so the toast reads as a floating surface, not inline content.
 4. **No retry loops** — one attempt, revert state + toast, user re-taps manually.
 5. **Message max 2 lines** — target single line; 2 is tolerated for Hindi copy. Beyond 2, text truncates with ellipsis — that's a signal to rewrite shorter copy.
 6. **Hindi is primary** — English as fallback only.
@@ -251,7 +251,7 @@ Scaffold(
     snackbarHost = {
         WiomToastHost(
             hostState = toastHostState,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
         )
     }
 ) { /* content */ }
@@ -303,7 +303,7 @@ Used Smart Animate in Figma prototype to match code behavior.
 - Use `type.body.lg` (16sp Regular) for message
 - Use `type.label.lg` (16sp SemiBold) for action CTA
 - Use `shadow.lg` for the floating effect
-- Position at bottom, 16px margin each side
+- Position at bottom, 8px margin each side
 - Auto-dismiss 2s (informational), 8s (actionable)
 - Use icons from Material Symbols Rounded (filled) library
 - Queue toasts — never stack
