@@ -58,8 +58,8 @@ Exactly one item in the bar is `Selected` at any time. All others are `Default`.
 
 | State | Use when |
 |---|---|
-| `Default` | This is not the active destination. Icon outline, label in `text/secondary`, no pill fill. |
-| `Selected` | This is the current destination. Icon filled, sitting on a `brand/primary-tint` pill, label in `brand/primary`. |
+| `Default` | This is not the active destination. Icon outline in `icon.nonAction`, label in `text.subtle`, no pill fill. |
+| `Selected` | This is the current destination. Icon filled (`icon.brand`), sitting on a `bg.selected` pill, label in `text.selected`. |
 
 There is no `Disabled` state. A tab that can't be opened right now shouldn't be in the bar at all.
 
@@ -118,7 +118,7 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 | Part | Token |
 |---|---|
 | Bar background | `bg.default` |
-| Bar top border | `stroke-small` + `stroke.default` |
+| Bar top border | `stroke-small` + `stroke.subtle` |
 | Bar bottom padding | `space-12` (+ OS safe-area inset below that) |
 | Item container padding | `space-4` horizontal · `space-8` vertical |
 | Item gap (pill → label) | `space-4` |
@@ -127,11 +127,11 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 | IconPill fill (Default) | transparent |
 | IconPill fill (Selected) | `bg.selected` (#FFCCED Brand_200) |
 | Icon size | `icon.md` (24dp) · `Icons.Rounded.*` |
-| Icon color (Default) | **`icon.action`** (#352D42 — tappable chrome; NOT `text.subtle`) |
+| Icon color (Default) | **`icon.nonAction`** (#898296 — soft-unselected chrome; Nav Bar unselected icons use `icon.nonAction`, NOT `icon.action`) |
 | Icon color (Selected) | `icon.brand` (#D9008D) · FILL=1 |
 | Label typography | `type.label.sm` (12sp SemiBold, 16 line-height) |
 | Label color (Default) | `text.subtle` |
-| Label color (Selected) | `text.brand` |
+| Label color (Selected) | `text.selected` (#D9008D) |
 | Badge fill | `bg.critical` |
 | Badge size | 8dp · `radius-full` · positioned at top-right of IconSlot |
 
@@ -179,7 +179,7 @@ NavigationBar(
   tonalElevation = 0.dp,
   modifier = Modifier
     .fillMaxWidth()
-    .drawTopBorder(Wiom.stroke.small, Wiom.stroke.default)
+    .drawTopBorder(Wiom.stroke.small, Wiom.stroke.subtle)
     .windowInsetsPadding(WindowInsets.navigationBars)
     .padding(bottom = Wiom.space.s12)
 ) {
@@ -199,10 +199,10 @@ NavigationBar(
       label = { Text(dest.label, style = Wiom.type.labelSm) },
       alwaysShowLabel = true,
       colors = NavigationBarItemDefaults.colors(
-        selectedIconColor = Wiom.bg.brand,
-        selectedTextColor = Wiom.bg.brand,
-        indicatorColor = Wiom.bg.brandTint,
-        unselectedIconColor = Wiom.text.subtle,
+        selectedIconColor = Wiom.icon.brand,
+        selectedTextColor = Wiom.text.selected,
+        indicatorColor = Wiom.bg.selected,
+        unselectedIconColor = Wiom.icon.nonAction,
         unselectedTextColor = Wiom.text.subtle,
       )
     )
@@ -210,7 +210,7 @@ NavigationBar(
 }
 ```
 
-`alwaysShowLabel = true` is non-negotiable (see Rule 2). `indicatorColor` is the pill behind the selected icon — keep it `brand/primary-tint`, do not deepen it to `brand/primary`. The destinations list is the source of truth for tab count; at render time, a list of 3 items produces a 3-tab bar with no extra config needed.
+`alwaysShowLabel = true` is non-negotiable (see Rule 2). `indicatorColor` is the pill behind the selected icon — keep it `bg.selected`, do not deepen it to `bg.brand`. The destinations list is the source of truth for tab count; at render time, a list of 3 items produces a 3-tab bar with no extra config needed.
 
 ---
 

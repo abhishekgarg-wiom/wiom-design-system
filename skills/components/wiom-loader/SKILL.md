@@ -326,10 +326,10 @@ A 25%-long segment of the stroke continuously travels the closed infinity path. 
 
 | Element | Light | OnBrand | Overlay |
 |---|---|---|---|
-| Background | `surface/base` | `brand/primary` | `surface/base` + `overlay/default` |
-| Wordmark | `brand/primary` | `text/on-color` | *(none)* |
-| Infinity stroke | `brand/primary` | `white` | `white` |
-| Message text | `text/secondary` | `text/on-color` | `text/on-color` |
+| Background | `bg.default` | `bg.brand` | `bg.default` + `overlay.scrim` |
+| Wordmark | `text.brand` | `text.onBrand` | *(none)* |
+| Infinity stroke | `icon.brand` | `icon.inverse` | `icon.inverse` |
+| Message text | `text.subtle` | `text.onBrand` | `text.onBrand` |
 
 ### Use cases
 

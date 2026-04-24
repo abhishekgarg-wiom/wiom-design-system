@@ -141,7 +141,7 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 |---|---|
 | Label typography | `type.label.md` · `text.default` |
 | Chevron size | `icon.md` (24dp), outlined (line) |
-| Chevron color | `text.subtle` |
+| Chevron color | `icon.action` (tappable chrome per foundations rule, NOT `text.subtle`) |
 | Button padding | `space-12` all sides (→ 48dp touch target) |
 | Container gap | 0 |
 
@@ -267,12 +267,12 @@ fun WiomPaginationCounter(
   Row(verticalAlignment = Alignment.CenterVertically) {
     if (current > 1) IconButton(onClick = onPrev, modifier = Modifier.size(48.dp)) {
       Icon(painterResource(R.drawable.ic_chevron_left_line), null,
-           tint = Wiom.text.subtle, modifier = Modifier.size(Wiom.icon.md))
+           tint = Wiom.icon.action, modifier = Modifier.size(Wiom.icon.md))
     }
     Text("$current / $total", style = Wiom.type.labelMd, color = Wiom.text.default)
     if (current < total) IconButton(onClick = onNext, modifier = Modifier.size(48.dp)) {
       Icon(painterResource(R.drawable.ic_chevron_right_line), null,
-           tint = Wiom.text.subtle, modifier = Modifier.size(Wiom.icon.md))
+           tint = Wiom.icon.action, modifier = Modifier.size(Wiom.icon.md))
     }
   }
 }

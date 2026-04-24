@@ -56,10 +56,10 @@ Step 1 and Step 2 are always visible — they cannot be hidden. Beyond 6 steps y
 
 | State | Visual | Use when |
 |---|---|---|
-| `Completed` | Filled `brand/primary` circle + white check icon | Step the user has finished. |
-| `Active` | White fill + 2px `brand/primary` ring + brand-colored number | The current step. Exactly one per stepper. |
-| `Upcoming` | White fill + 1px `border/default` ring + secondary-text number | Step the user has not reached yet. |
-| `Error` | Filled `negative/primary` circle + white `!` icon | Step the user must go back to fix (rejected document, payment failed, expired OTP). |
+| `Completed` | Filled `bg.brand` circle + `icon.inverse` check | Step the user has finished. |
+| `Active` | `bg.default` fill + `stroke-medium` `stroke.brand.focus` ring + `text.brand` number | The current step. Exactly one per stepper. |
+| `Upcoming` | `bg.default` fill + `stroke-small` `stroke.subtle` ring + `text.subtle` number | Step the user has not reached yet. |
+| `Error` | Filled `bg.critical` circle + `icon.inverse` `!` | Step the user must go back to fix (rejected document, payment failed, expired OTP). |
 
 Skipped or optional states aren't supported as variants — fold the meaning into the description text on the step itself.
 
@@ -168,15 +168,16 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 |---|---|
 | Indicator size | 32 × 32 dp · `radius-full` |
 | Completed fill | `bg.brand` |
-| Completed icon | `check` (filled) · 20dp · `text.onBrand` |
+| Completed icon | `check` (filled) · 20dp · `icon.inverse` |
 | Active fill | `bg.default` |
-| Active stroke | 2dp · `bg.brand` |
-| Active number color | `bg.brand` · `type.label.md` (14sp SemiBold) |
+| Active stroke | `stroke-medium` (2dp) · `stroke.brand.focus` |
+| Active number color | `text.brand` · `type.label.md` (14sp SemiBold) |
 | Upcoming fill | `bg.default` |
-| Upcoming stroke | 1dp · `stroke.default` |
+| Upcoming stroke | `stroke-small` (1dp) · `stroke.subtle` |
 | Upcoming number color | `text.subtle` · `type.label.md` |
 | Error fill | `bg.critical` |
-| Error icon | `priority_high` (filled) · 20dp · `text.onBrand` |
+| Error stroke (focus ring) | `stroke-medium` · `stroke.critical.focus` (when in focus; otherwise none) |
+| Error icon | `priority_high` (filled) · 20dp · `icon.inverse` |
 
 ### Connectors
 | Layout | Part | Token |
@@ -184,7 +185,7 @@ Every part resolves to a Wiom foundation token. Full values live in `wiom-design
 | Horizontal | Line height | 2dp · `radius-full` |
 | Vertical | Line width | 2dp · `radius-full` |
 | Both | Filled (after Completed step) | `bg.brand` |
-| Both | Default | `stroke.default` |
+| Both | Default | `bg.muted` |
 
 ### Stepper / Horizontal
 | Part | Token |
@@ -270,8 +271,8 @@ fun StepIndicator(
       .border(
         width = if (state == StepState.Active) 2.dp else 1.dp,
         color = when (state) {
-          StepState.Active   -> Wiom.bg.brand
-          StepState.Upcoming -> Wiom.stroke.default
+          StepState.Active   -> Wiom.stroke.brand.focus
+          StepState.Upcoming -> Wiom.stroke.subtle
           else               -> Color.Transparent
         },
         shape = CircleShape
@@ -280,13 +281,13 @@ fun StepIndicator(
   ) {
     when (state) {
       StepState.Completed -> Icon(painterResource(R.drawable.ic_check_filled), null,
-                                   tint = WiomColors.iconInverse, modifier = Modifier.size(20.dp))
+                                   tint = Wiom.icon.inverse, modifier = Modifier.size(20.dp))
       StepState.Error     -> Icon(painterResource(R.drawable.ic_priority_high_filled), null,
-                                   tint = WiomColors.iconInverse, modifier = Modifier.size(20.dp))
+                                   tint = Wiom.icon.inverse, modifier = Modifier.size(20.dp))
       else -> Text(
         number.toString(),
         style = Wiom.type.labelMd,
-        color = if (state == StepState.Active) Wiom.bg.brand else Wiom.text.subtle,
+        color = if (state == StepState.Active) Wiom.text.brand else Wiom.text.subtle,
       )
     }
   }
@@ -323,7 +324,7 @@ fun StepperHorizontal(
             .height(32.dp)
             .padding(top = 15.dp)
             .height(2.dp)
-            .background(if (idx < currentStep - 1) Wiom.bg.brand else Wiom.stroke.default,
+            .background(if (idx < currentStep - 1) Wiom.bg.brand else Wiom.bg.muted,
                         shape = RoundedCornerShape(Wiom.radius.full))
         )
       }
@@ -352,7 +353,7 @@ fun StepperVertical(steps: List<VerticalStep>, currentStep: Int) {
             Box(
               Modifier
                 .width(2.dp).weight(1f)
-                .background(if (idx < currentStep - 1) Wiom.bg.brand else Wiom.stroke.default,
+                .background(if (idx < currentStep - 1) Wiom.bg.brand else Wiom.bg.muted,
                             shape = RoundedCornerShape(Wiom.radius.full))
             )
           }

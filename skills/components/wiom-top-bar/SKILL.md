@@ -65,7 +65,7 @@ Eight valid combinations. The four blank cells are intentional — the picker sh
 | `Show Trailing 3` | BOOL | true | Third action — usually overflow |
 | `Trailing Icon 3` | INSTANCE_SWAP | `more_vert` | Overflow menu icon |
 | `Show Trailing Text` | BOOL | true | Text CTA (e.g., "Save", "Done", "Cancel") instead of or next to icons |
-| `Trailing Text` | TEXT | "Save" | CTA label · `type.label.md` · `bg.brand` |
+| `Trailing Text` | TEXT | "Save" | CTA label · `type.label.md` · `text.brand` |
 | `Size` | VARIANT | Small | Small / Medium / Large |
 | `State` | VARIANT | Default | Default / Centered / Scrolled / Search |
 
@@ -127,7 +127,7 @@ Same props as Default, just swap `State=Default` → `State=Scrolled` when scrol
 | Title — Medium | `type.heading.lg` (24sp Bold 32lh) · `text.default` |
 | Title — Large | `type.heading.xl` (32sp Bold 44lh) · `text.default` |
 | Subtitle | `type.body.sm` (12sp Regular 16lh) · `text.subtle` |
-| Text CTA | `type.label.md` (14sp SemiBold 20lh) · `bg.brand` · `space-12` padding (44dp touch target) |
+| Text CTA | `type.label.md` (14sp SemiBold 20lh) · `text.brand` · `space-12` padding (44dp touch target) |
 | Icons | `icon.md` (24dp) · `Icons.Rounded.*` (FILL=1) · **`icon.action`** (#352D42 — tappable chrome icons, NOT `text.subtle`) |
 | Icon touch target | 48dp (Material standard) — via `space-12` padding + 24dp glyph |
 | Small horizontal padding | `space-4` outer (yields 16dp from glyph edge to screen edge) |

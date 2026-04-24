@@ -52,7 +52,7 @@ The previous version had **288 variants** across 3 sets (Content / Selection / T
 | `Type` | **Variant** | `Default` | Dropdown — Default (icon + chevron) · `icon with bg` (icon-badge + chevron) · Checkbox · Radio · Switch (icon + toggle) |
 | `Pressed` | Boolean | `false` | Toggles `surface/subtle` background overlay (tap feedback) |
 | `Selected` | Boolean | `false` | **(v3.1+)** Toggles `surface/selected` background overlay. In v3.2 the brand dot was removed — the bg overlay is the sole selection signal. Skipped for Switch type. |
-| `Disabled` | Boolean | `false` | Toggles `surface/base @ 62%` overlay on top — fades content to ~38% |
+| `Disabled` | Boolean | `false` | Swaps content tokens to the foundations §10 disabled set — primary/secondary text → `text.disabled`, leading/trailing icon → `icon.disabled`. No opacity overlay. |
 | `Has Leading` | Boolean | `true` | Show/hide the leading slot (default-type only — for Checkbox/Radio the leading IS the control) |
 | `Has Trailing Icon` | Boolean | `true` | **(v3.1)** Show/hide the trailing chevron (Default type only — Switch's trailing must stay visible). Set `false` for menu rows and status rows. |
 | `Has Secondary` | Boolean | `false` | Show/hide the secondary text line |
@@ -180,32 +180,32 @@ fun WiomListItem(
     onClick: (() -> Unit)? = null,
 ) {
     val bg = when {
-        pressed -> WiomColor.surfaceSubtle
+        pressed -> Wiom.bg.subtle
         else -> Color.Transparent
     }
-    val contentAlpha = if (disabled) 0.38f else 1f
+    // Disabled rows use foundations §10 triple tokens on content
+    // (text.disabled / icon.disabled) — not an alpha overlay.
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 48.dp)
             .background(bg)
             .then(if (onClick != null && !disabled) Modifier.clickable { onClick() } else Modifier)
-            .padding(horizontal = 16.dp, vertical = 16.dp)
-            .alpha(contentAlpha),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         leadingIcon?.let {
-            Icon(it, null, modifier = Modifier.size(WiomIcon.MD), tint = WiomColor.textSecondary)
+            Icon(it, null, modifier = Modifier.size(Wiom.icon.md), tint = Wiom.icon.nonAction)
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(primary, style = WiomType.bodyL, color = WiomColor.textPrimary)
-            secondary?.let { Text(it, style = WiomType.bodyS, color = WiomColor.textSecondary) }
+            Text(primary, style = Wiom.type.bodyLg, color = Wiom.text.default)
+            secondary?.let { Text(it, style = Wiom.type.bodySm, color = Wiom.text.subtle) }
         }
         if (trailingMeta != null || trailingIcon != null) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                trailingMeta?.let { Text(it, style = WiomType.bodyS, color = WiomColor.textSecondary) }
-                trailingIcon?.let { Icon(it, null, modifier = Modifier.size(20.dp), tint = WiomColor.textSecondary) }
+                trailingMeta?.let { Text(it, style = Wiom.type.bodySm, color = Wiom.text.subtle) }
+                trailingIcon?.let { Icon(it, null, modifier = Modifier.size(20.dp), tint = Wiom.icon.nonAction) }
             }
         }
     }
@@ -225,7 +225,9 @@ fun WiomListItem(
 | Primary text | `type.body.lg` + `text.default` | 16/24 Regular, #161021 |
 | Secondary text | `type.body.sm` + `text.subtle` | 12/16 Regular, #5C5570 |
 | Pressed bg | `bg.subtle` | #F1EDF7 |
-| Disabled overlay | `bg.default @ 62%` | #FAF9FC at 0.62 |
+| Disabled primary text | `text.disabled` | #A7A1B2 (foundations §10) |
+| Disabled secondary text | `text.disabled` | #A7A1B2 (foundations §10) |
+| Disabled leading / trailing icon | `icon.disabled` | #A7A1B2 (foundations §10) |
 
 ## Composition rules (when to use, when not to)
 
