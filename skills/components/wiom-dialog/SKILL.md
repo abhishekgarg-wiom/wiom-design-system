@@ -192,8 +192,10 @@ shadow-xl with scrim; never add a stroke.
 └────────────────────────────────────┘
 ```
 
-- Spinner is an instance of `wiom-loader` (Type=Spinner, size=md, color=brand).
-  Container frame is 40 dp with the 20 dp spinner centered.
+- Spinner is an instance of `wiom-loader` (Type=Spinner, **size=sm**, color=brand).
+  Container frame is 40 dp with the 20 dp spinner centered. (Figma V2 Loading
+  dialog uses the 20 dp `sm` spinner — earlier drafts referenced `md`; that was
+  wrong.)
 - Text alignment: **center**.
 - Button group: **Tertiary "Cancel" only**, and it is **optional**. If the
   operation cannot be cancelled, omit the button group entirely. Never use
@@ -210,11 +212,19 @@ Dialogs embed `wiom-cta` via a button-group surface. Rules:
 
 - **Layout:** always **stacked**, never side-by-side. The 312 dp width doesn't
   leave enough room for two readable side-by-side CTAs.
+- **Stacked alignment is centered.** The button-group Column uses
+  `horizontalAlignment = Alignment.CenterHorizontally` and
+  `verticalArrangement = Arrangement.spacedBy(12.dp)`. Figma spec: `flex-col
+  items-center justify-center gap-[12px]`. Do NOT align CTAs to `Start` or
+  `SpaceBetween` — they must anchor to the dialog's horizontal center.
 - **Max 2 CTAs.** Primary + Tertiary is the default. Primary + Destructive is
   NOT a valid pair — Destructive replaces Primary as the primary of the group.
 - **Button-group gap:** 12 dp between CTAs.
 - **Full width** — each CTA fills the dialog's internal width (312 − 2×24 = 264
-  dp content width).
+  dp content width) via `Modifier.fillMaxWidth()`. Without `fillMaxWidth()`, the
+  CTA hugs its label and the centered Column makes it look "off" despite being
+  technically centered — always set `fillMaxWidth()` on each CTA inside a
+  dialog.
 - **Loading type is the exception** — 0 or 1 CTA only.
 
 Canonical patterns:
@@ -337,7 +347,10 @@ Notes:
 - `content` slot receives a `wiom-input-fields` (Input) or a column of
   `wiom-list-item` rows with `Type=Radio` (Selection). Leave `null` for Alert,
   Illustration, and Loading.
-- `buttons` slot receives 0–2 `wiom-cta` instances. Always stacked, gap 12 dp.
+- `buttons` slot receives 0–2 `wiom-cta` instances. Internally rendered in a
+  `Column` with `horizontalAlignment = Alignment.CenterHorizontally` and
+  `verticalArrangement = Arrangement.spacedBy(12.dp)`. Each CTA inside the slot
+  must call `.fillMaxWidth()` on its `Modifier`.
 - **Alignment per type is handled internally by the dialog**, keyed off `type`
   (left for Alert/Input/Selection; center for Illustration/Loading).
 
@@ -364,6 +377,11 @@ dialog has one width and one radius.
 - [ ] Loading dialog with no error fallback path
 - [ ] `type.heading.lg` (24 Bold) for the title (should be `type.heading.md`
       20 Bold — dialog-specific override of the general page-title default)
+- [ ] Button-group Column aligned to `Start` or `SpaceBetween` instead of
+      `CenterHorizontally` — CTAs in a Dialog are **always** center-anchored
+      per Figma spec
+- [ ] CTA inside button-group Column without `Modifier.fillMaxWidth()` — the
+      hugged CTA looks off-center even though the Column itself is centered
 - [ ] Non-centered alignment for Illustration or Loading (both are center)
 - [ ] Non-left alignment for Alert, Input, or Selection
 - [ ] Adding Hover or Focused states to the dialog surface itself (it isn't

@@ -320,8 +320,12 @@ Row(horizontalArrangement = Arrangement.spacedBy(WiomSpacing.m)) {   // 12dp
     )
 }
 
-// Stacked pair
-Column(verticalArrangement = Arrangement.spacedBy(WiomSpacing.m)) {  // 12dp
+// Stacked pair (dialog and bottom-sheet defaults — CTAs center-anchored,
+// each filling the container's internal width)
+Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(WiomSpacing.m),  // 12dp
+) {
     WiomButton(
         text = "भुगतान करें",
         type = WiomButtonType.Primary,
@@ -336,6 +340,13 @@ Column(verticalArrangement = Arrangement.spacedBy(WiomSpacing.m)) {  // 12dp
     )
 }
 ```
+
+**Why `CenterHorizontally` + `fillMaxWidth()` on every stacked CTA.** Without
+`fillMaxWidth()`, each CTA hugs its label width; Figma's button-group spec
+(`flex-col items-center justify-center gap-[12px]`) anchors the group to the
+container's horizontal center, so a hugged CTA would render centered — but
+visually off-center vs a sibling CTA with different label length. Always pair
+the two Modifiers together.
 
 Do not set `Modifier.height(...)` — buttons hug to 48 dp via padding +
 line-height. Do not hardcode width — use `weight(...)` inside a Row or
