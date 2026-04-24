@@ -47,7 +47,7 @@ Each type changes the background tint, the icon, and (for Warning only) the text
 |------|------|------|-----------|------|--------|
 | **Error** | `bg.critical.subtle` #FFE5E7 | `Icons.Rounded.Error` | `icon.critical` #D92130 | `text.default` | "Server ne request reject kiya" |
 | **Warning** | `bg.warning.subtle` #FFE9A1 | `Icons.Rounded.Warning` | `icon.warning` #E2B203 | `text.onWarning` #372902 | "Offline — purana data dikh raha hai" |
-| **Info** | `bg.muted` #E8E4F0 | `Icons.Rounded.Info` | `icon.nonAction` #898296 | `text.default` | "Status update ho gayi" |
+| **Info** | `bg.info.subtle` #F1E5FF | `Icons.Rounded.Info` | `icon.info` #6D17CE | `text.default` | "Status update ho gayi" |
 | **Success** | `bg.positive.subtle` #E1FAED | `Icons.Rounded.CheckCircle` | `icon.positive` #008043 | `text.default` | "Nikaasi safal rahi" |
 
 ---
@@ -58,24 +58,24 @@ Each type changes the background tint, the icon, and (for Warning only) the text
 
 | Property | Value | Token |
 |----------|-------|-------|
-| Width | 344px (screen - 8px × 2) | — |
-| Default height | 56px (single line) | — |
-| Max height | 72px (2 lines, truncate after) | — |
+| Width | 328px (screen 360 − 16px × 2) | — |
+| Default height | 48px (single line: 12V pad × 2 + 24 LH) | — |
+| Max height | 72px (2 lines: 12V pad × 2 + 24 LH × 2) | — |
 | Height | Hug content, max 2 lines | — |
 | Radius | 8px | `radius-small` |
 | Horizontal padding | 16px | `space-16` |
-| Vertical padding | 16px | `space-16` |
+| Vertical padding | 12px | `space-12` |
 | Gap (icon-text) | 8px | `space-8` |
-| Gap (text-action) | 12px | `space-12` |
+| Gap (text-action) | 8px | `space-8` |
 | Shadow | `shadow.lg` | 0 4px 12px rgba(0,0,0,0.15) |
-| Position | Bottom, 8px margin each side, 8px above safe area | — |
+| Position | Bottom, 16px margin each side, 8px above safe area | — |
 
 ### Typography
 
 | Element | Style | Token |
 |---------|-------|-------|
-| Message | Noto Sans Regular 400, 14sp, LH 20 | `type.body.md` |
-| Action CTA | Noto Sans SemiBold 600, 14sp, LH 20 | `type.label.md` |
+| Message | Noto Sans Regular 400, 16sp, LH 24 | `type.body.lg` |
+| Action CTA | Noto Sans SemiBold 600, 16sp, LH 24 | `type.label.lg` |
 
 ### Icon
 
@@ -184,7 +184,7 @@ Location: Sandbox - SAAD → Toast / Snackbar section
 
 1. **Max 1 toast visible at a time** — never stack. Queue if needed.
 2. **Bottom position only** — never top, never middle.
-3. **8px margin each side** (344px on 360px screen) — wider than content to feel floating.
+3. **16px margin each side** (328px on 360px screen) — matches screen-gutter insets.
 4. **No retry loops** — one attempt, revert state + toast, user re-taps manually.
 5. **Message max 2 lines** — target single line; 2 is tolerated for Hindi copy. Beyond 2, text truncates with ellipsis — that's a signal to rewrite shorter copy.
 6. **Hindi is primary** — English as fallback only.
@@ -251,7 +251,7 @@ Scaffold(
     snackbarHost = {
         WiomToastHost(
             hostState = toastHostState,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
     }
 ) { /* content */ }
@@ -300,10 +300,10 @@ Used Smart Animate in Figma prototype to match code behavior.
 
 ### DO
 - Use the decision tree to pick toast vs other feedback
-- Use `type.body.md` (14sp Regular) for message
-- Use `type.label.md` (14sp SemiBold) for action CTA
+- Use `type.body.lg` (16sp Regular) for message
+- Use `type.label.lg` (16sp SemiBold) for action CTA
 - Use `shadow.lg` for the floating effect
-- Position at bottom, 8px margin each side
+- Position at bottom, 16px margin each side
 - Auto-dismiss 2s (informational), 8s (actionable)
 - Use icons from Material Symbols Rounded (filled) library
 - Queue toasts — never stack
