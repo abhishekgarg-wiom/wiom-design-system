@@ -13,8 +13,46 @@ description: >
 # Wiom CTA System
 
 The approved button foundation for the Wiom Android apps.
-**6 types · up to 5 states each · Button Group (1–3 CTAs) · placement rules · copy discipline.**
+**6 types · 4 states each (3 for Acknowledge) · Button Group (1–3 CTAs) · placement rules · copy discipline.**
 Figma reference: CTA `2038:116`, Button Group `2982:357` (frame `1043:658`).
+
+---
+
+## 0. Sizing and surface contract
+
+**The CTA is end-to-end on its surface.** It never owns a left/right screen
+gutter. Its own pill padding (16 dp horizontal / 12 dp vertical, *inside* the
+pill, around the label) is all the horizontal space the component controls.
+Everything outside the pill is owned by the parent surface.
+
+This applies universally to every Wiom component that sits on a surface —
+top bar, bottom nav, filter bar, bottom app bar, bottom sheet, dialog, screen
+content. **Surfaces own the screen gutter. Components fill.**
+
+```
+❌ WRONG (component owns the gutter)              ✅ RIGHT (surface owns the gutter)
+┌────────── 360 screen ─────────┐                ┌────────── 360 screen ─────────┐
+│  ┌──── CTA w=328, m=16 ───┐  │                │ 16 │── CTA fillMaxWidth ──│ 16│
+│  │       Button           │  │                │    │      Button          │   │
+│  └────────────────────────┘  │                │    └──────────────────────┘   │
+└───────────────────────────────┘                └───────────────────────────────┘
+```
+
+### Surface padding contract
+
+| CTA placement | Surface owns (H) | Surface owns (V) | CTA does |
+|---|---|---|---|
+| Screen content (inline) | `space-16` via screen padding | own | `fillMaxWidth()` |
+| Sticky bottom bar | `space-16` start / end | `space-16` top, `space-12` bottom + safe-area inset | `fillMaxWidth()` |
+| Dialog | `space-24` via dialog padding (264 dp content) | owned by dialog | `fillMaxWidth()` |
+| Bottom sheet | `space-16` via sheet content padding | owned by sheet | `fillMaxWidth()` |
+| Top bar trailing text CTA | owned by top bar slot | owned by top bar | hugs (not this component — see `wiom-top-bar`) |
+
+Figma shows CTAs as `328 wide` because preview frames are 360 wide with 16 dp
+surface padding already applied. The CTA component itself is `FILL` / `w-full`
+in every Figma instance — confirmed by `get_design_context` on `2038:2`
+(Primary Default) and `2982:305` (Button Group Count=2 Stacked). **Do not port
+the 328 literal into code.**
 
 ---
 
@@ -46,8 +84,11 @@ All states below are Figma variants; use element-first tokens.
 
 | Property | Value | Token |
 |---|---|---|
-| Height | 48 dp (hugs; padding + line-height) | `space-12` V / `space-16` H + 24 LH |
+| Width | Fills parent (`fillMaxWidth()` / Row `weight(1f)`). No hard width. | — |
+| Height | 48 dp (hugs; padding + line-height: 12 + 24 + 12) | `space-12` V / `space-16` H + 24 LH |
 | Radius | 16 dp | `radius-large` |
+| Internal padding — horizontal | 16 dp (inside the pill, around the label) | `space-16` |
+| Internal padding — vertical | 12 dp | `space-12` |
 | Label | 16sp SemiBold 600 / 24 LH | `type.label.lg` |
 | Icon size | 20 dp | `icon.sm` |
 | Icon-to-label gap | 8 dp | `space-8` |
@@ -109,9 +150,12 @@ fails AA (2.5:1). Dark `text.onBrandAccent` lands at 7.07:1.
 | Checked | `bg.brand` fill, no stroke, `Icons.Rounded.Check` `icon.inverse` | `text.default` | Enabled (full Primary tokens) |
 | Disabled | 40% opacity on checkbox | `text.disabled` | Disabled |
 
-Compound height = 80 dp (row ≈ 32 dp + `space-8` gap + Primary CTA 48 dp). In
-Figma, Acknowledge ships as a single compound variant; in code, it's two
-composables (`WiomAcknowledgeRow` + `WiomButton`) wired through shared state.
+Compound height = 88 dp (checkbox row 32 dp + `space-8` gap + Primary CTA
+48 dp). Figma confirms: `2144:2` / `2144:8` / `2144:15` all ship at frame
+height 88. In Figma, Acknowledge ships as a single compound variant; in
+code, it's two composables (`WiomAcknowledgeRow` + `WiomButton`) wired
+through shared state. The compound fills parent horizontally — no surface
+padding.
 
 ### States deliberately NOT in V2
 
@@ -157,8 +201,18 @@ is only for losing data.
 
 ## 4. Button Group — pairing 1, 2, or 3 CTAs
 
-Figma component `Button Group` (`2982:357`). Width 328 dp, gap 12 dp
-(`space-12`), no padding of its own — the parent owns screen insets.
+Figma component `Button Group` (`2982:357`). Per the Figma component
+description: **"Width: 328 · Gap: 12 · Padding: 0 · Each slot fills
+horizontally."** The `328` there is the preview width (360 screen − 16 × 2
+gutter). In code the group's own width is `fillMaxWidth()` — the parent
+surface provides the gutter.
+
+| Property | Value |
+|---|---|
+| Width | Fills parent (no padding on the group itself) |
+| Padding | 0 |
+| Gap between CTAs | 12 dp (`space-12`) |
+| Each CTA slot | Fills — Side-by-side splits evenly (`weight(1f)`); Stacked `fillMaxWidth()` |
 
 | Count | Default types | Layout choices |
 |---|---|---|
@@ -173,7 +227,8 @@ Rules enforced by the Button Group:
   that group. Acceptable pairs: Destructive + Secondary / Destructive +
   Tertiary.
 - Use Secondary/Tertiary for Dismiss/Skip/Cancel/Close — never Destructive.
-- Side-by-side with 3 CTAs is tight on mobile (≈101 dp each) — prefer Stacked.
+- Side-by-side with 3 CTAs is tight on mobile (≈101 dp each at 328 parent
+  width) — prefer Stacked for Count=3.
 
 ### Delta-based layout choice
 
@@ -222,9 +277,12 @@ side-by-side CTAs. All dialog button groups are stacked. See `wiom-dialog`.
 7. **CTA copy reflects the destination**, not the current screen. "Recharge"
    on plan selection, not "Continue".
 8. **Acknowledge uses 1st person** — "मैंने…" / "I've…", never "कस्टमर ने…".
-9. **Sticky-bottom CTA bar has `stroke-small` (1 dp) + `stroke.subtle`
-   top border, `shadow.none`.** Never a drop shadow, never elevation. Flat
-   border-top only.
+9. **Sticky-bottom CTA bar is a surface — it owns the gutter; the CTA fills.**
+   Bar contract: `bg.default`, `stroke-small` (1 dp) `stroke.subtle` top
+   border, `shadow.none`. Bar padding: `space-16` start / `space-16` end /
+   `space-16` top / `space-12` bottom + OS safe-area inset. CTA (or Button
+   Group) inside the bar uses `fillMaxWidth()` — never sets its own left /
+   right margin. Never a drop shadow, never elevation. Flat border-top only.
 10. **CTA text never wraps, truncates, or shrinks.** If text overflows,
     rewrite shorter. No ellipsis, no multi-line, no font-size reduction.
 11. **Equal-weight CTAs: try side-by-side first.** Switch to stacked only if
@@ -258,6 +316,12 @@ side-by-side CTAs. All dialog button groups are stacked. See `wiom-dialog`.
 
 ## 7. Anti-patterns
 
+- ❌ `Modifier.width(328.dp)` / hardcoded width on a CTA (should be
+     `fillMaxWidth()` or Row `weight(1f)`; the parent surface owns the gutter)
+- ❌ `Modifier.padding(horizontal = 16.dp)` on a CTA or Button Group
+     (that gutter belongs to the surface, not the component)
+- ❌ A Button Group with its own `horizontal` / `start` / `end` padding
+     (Figma spec: "Padding: 0")
 - ❌ Primary + Primary (no hierarchy)
 - ❌ Primary + Destructive (Destructive replaces Primary)
 - ❌ Four+ CTAs at the same level
@@ -304,7 +368,10 @@ fun WiomAcknowledgeRow(
 ```
 
 ```kotlin
-// Side-by-side pair in a bottom sheet button group
+// Side-by-side pair in a bottom sheet button group.
+// The Row is placed by the sheet (surface) which owns the 16dp start/end
+// gutter. The Row itself has no width / horizontal padding — it just
+// fills whatever the parent gave it, and each CTA splits via weight(1f).
 Row(horizontalArrangement = Arrangement.spacedBy(WiomSpacing.m)) {   // 12dp
     WiomButton(
         text = "Cancel",
@@ -348,6 +415,32 @@ container's horizontal center, so a hugged CTA would render centered — but
 visually off-center vs a sibling CTA with different label length. Always pair
 the two Modifiers together.
 
+```kotlin
+// Sticky-bottom CTA bar — the bar is the surface; it owns the gutter.
+// The CTA inside is end-to-end.
+Surface(
+    color = Wiom.bg.default,
+    modifier = Modifier
+        .fillMaxWidth()
+        .drawTopBorder(Wiom.stroke.small, Wiom.stroke.subtle),   // 1dp top border
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Wiom.space.s16)     // surface owns the gutter
+            .padding(top = Wiom.space.s16, bottom = Wiom.space.s12)
+            .navigationBarsPadding(),                  // safe-area inset
+    ) {
+        WiomButton(
+            text = "Recharge now",
+            type = WiomButtonType.Primary,
+            modifier = Modifier.fillMaxWidth(),        // CTA fills end-to-end
+            onClick = { },
+        )
+    }
+}
+```
+
 Do not set `Modifier.height(...)` — buttons hug to 48 dp via padding +
 line-height. Do not hardcode width — use `weight(...)` inside a Row or
 `fillMaxWidth()` in a Column. See `wiom-compose-layout-rules`.
@@ -380,14 +473,17 @@ from the standard Primary CTA in the same flow.
 
 ```
 ALL CTAs
+Width                   fillMaxWidth() — parent surface owns gutter
+Height                  48dp (hugs from 12+24LH+12)
 Radius                  radius-large (16dp)
-Padding                 space-12 vertical / space-16 horizontal
+Internal pill padding   space-12 vertical / space-16 horizontal (inside the pill)
 Icon                    20dp · icon.sm · Icons.Rounded.* · tint from icon.*
 Label                   type.label.lg (16sp SemiBold 600 / 24 LH)
 Gap icon-to-label       space-8 (8dp)
-Button-group gap        space-12 (12dp)
+Button-group gap        space-12 (12dp)  · group padding 0
 Shadow                  shadow.none
-Sticky bar top border   stroke-small + stroke.subtle (#D7D3E0)
+Sticky bar surface      bg.default · stroke-small + stroke.subtle top border
+                        padding: 16 H / 16 T / 12 B + safe-area inset
 
 PRIMARY            bg.brand → bg.brand.pressed → bg.disabled    text.onBrand    icon.inverse
 SECONDARY          — (transparent; stroke.brand.focus border)   text.brand      icon.brand
@@ -397,6 +493,23 @@ PRE-BOOKING        bg.brand.accent → bg.brand.accent.pressed    text.onBrandAc
 DISABLED (all)     bg.disabled · text.disabled · icon.disabled · stroke.subtle (Sec)
 FOCUS RING         stroke.brand.focus (brand CTAs) · stroke.critical.focus (Destructive)
 ```
+
+---
+
+## Figma traceability (V2)
+
+| Node | What | Confirmed from |
+|---|---|---|
+| `1043:658` | CTAs section | metadata |
+| `2038:116` | CTA component set — 28 variants | metadata |
+| `2038:2` | Primary Default reference (padding / gap / radius tokens) | get_design_context |
+| `2982:357` | Button Group — Count × Layout matrix | metadata |
+| `2982:305` | Count=2 Stacked reference (each slot `w-full`) | get_design_context |
+| `2144:2 / 2144:8 / 2144:15` | Acknowledge Unchecked / Checked / Disabled (328 × 88) | metadata |
+| `2804:310–342` | Pre-booking — 4 states | metadata |
+
+Every spec in this skill was verified against `get_variable_defs` on the
+CTA frame. Last audit: 2026-04-24.
 
 ---
 
