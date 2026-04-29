@@ -1,266 +1,719 @@
 ---
 name: wiom-input-fields
-description: Input, Textarea, and OTP for Wiom DS. Use when writing forms, entry flows, OTP verification, search UIs, or any field that captures user text. Tells you which component to pick, which State variant + boolean/text/swap properties to set, and which Wiom tokens back each part. Pairs with the wiom-design-foundations skill for token values.
+description: >
+  Wiom Input / Textarea / OTP — three text-entry components. 3
+  components, 20 ship variants. Reference for generating Jetpack
+  Compose code with WiomInput / WiomTextarea / WiomOtp and for
+  instancing the Figma component sets (Field/Input `1422:112`,
+  Field/Textarea `1426:47`, Field/OTP `1790:740`) via MCP. Use this
+  skill EVERY TIME you write, edit, or review any form, OTP entry,
+  search bar, dropdown trigger, address field, or any field that
+  captures user text in the Wiom Partner or Customer Android app, or
+  when assembling Figma frames with text fields. Trigger on: Input,
+  TextField, TextInput, OutlinedTextField, Textarea, multiline,
+  search bar, OTP, verification code, mobile number, password,
+  currency / amount, dropdown trigger, "+91", "₹", placeholder, helper
+  text, counter, label, validation, error, focused, read-only.
 ---
 
 # Wiom Input Fields
 
-Three components cover every form entry in Wiom: **Input** (single-line), **Textarea** (multi-line), and **OTP** (boxed code entry). **Search bar** is a configuration of Input, not a separate component.
+Built from Figma file `ZPErh7YU7omdbyy2o268Qo` (Wiom DS V2), component
+sets `1422:112` (Input), `1426:47` (Textarea), `1790:740` (OTP), and
+the `wiom-design-foundations` token set.
 
-Always use these components for text entry. Do not draw custom fields — they will not be token-bound and will drift from the system.
+**3 components · 20 ship variants · element-first tokens.**
 
----
-
-## Pick the right component
-
-| Need | Use | Key signal |
+| Component | States | Variants |
 |---|---|---|
-| Single-line text, number, email, password, phone, amount, code | **Input** | One row of text |
-| Address, comment, description, reason, feedback | **Textarea** | Multiple lines, grows with content |
-| OTP / verification code entry (4 or 6 digits) | **OTP** | Boxed digits with auto-advance focus and timer |
-| Search across a list or screen | **Input** with leading `search` icon, trailing `cancel` | Filters/queries something |
+| Field / Input | 8 | Default · Focused · Filled · Error · Success · Warning · Disabled · Read-only |
+| Field / Textarea | 6 | Default · Focused · Filled · Error · Success · Disabled (no Warning, no Read-only) |
+| Field / OTP | 6 | Default · Focused · Filled · Error · Success · Disabled (no Warning, no Read-only) |
+
+> **Search bar is Input**, not a separate component — it's a
+> configuration (leading `search` + trailing `cancel`). **Dropdown
+> trigger is Input** in `Read-only` state with a chevron + a
+> bottom-sheet on tap. The deprecated `wiom-dropdown` skill is gone;
+> its trigger anatomy lives here, its menu UX in `wiom-bottomsheet`.
 
 ---
 
-## State — pick one per context
+## 1. Figma — instancing the components
 
-Every instance carries a `State` variant. Pick based on the field's current UX moment, not visual preference.
+Each component set is independently instanceable. Strings are
+**case-sensitive**. The 16 / 8 / 6 properties below combine the State
+variant with booleans + text + instance-swap to cover every shipping
+permutation.
 
-| State | Use when |
-|---|---|
-| `Default` | Empty, unfocused. **Label is highlighted** (text/primary) to pull attention. |
-| `Focused` | User has tapped in. Border upgrades to 2px brand/primary. Label softens to text/secondary. |
-| `Filled` | Content present, not focused. Label stays soft — the value speaks for itself. |
-| `Error` | Validation failed. Red border + error icon + red helper. Helper text **must** explain what's wrong. |
-| `Success` | Validated OK (e.g., OTP matched, mobile confirmed). Green border + check icon. Use sparingly. |
-| `Warning` | Value is valid but risky or unusual. Orange border + warning icon. Don't use for errors. |
-| `Disabled` | Field is truly inactive — user cannot edit AND cannot copy. Everything dims. |
-| `Read-only` | Display value user can read/copy but not edit (Customer ID, policy number, account number). Text stays text/primary. **Not the same as Disabled.** |
-
-State coverage per component:
-- **Input** — all 8 states.
-- **Textarea** — 6 states. No `Warning`, no `Read-only`.
-- **OTP** — 6 states. No `Warning`, no `Read-only`.
-
----
-
-## Input — properties (instance overrides)
-
-16 props total. Booleans toggle slot visibility; text props set content; swap props pick an icon.
+### Field / Input — `1422:112` (16 props)
 
 | Property | Type | Default | Purpose |
 |---|---|---|---|
-| `Title` | TEXT | "Label" | Field label above the input |
-| `Show Title` | BOOL | true | Hide only when externally labelled by a parent section |
-| `Body` | TEXT | "Enter your value" | Value or placeholder text inside the field |
-| `Show Leading Icon` | BOOL | false | Reveal the leading icon slot |
-| `Leading Icon` | INSTANCE_SWAP | search | Swap to any Material Symbols Rounded icon component |
-| `Show Prefix` | BOOL | false | Reveal prefix text (e.g., `+91`, `₹`) |
-| `Prefix` | TEXT | "+91" | Affix before the value, text/secondary |
-| `Show Suffix` | BOOL | false | Reveal suffix text (e.g., `.00`, `kg`) |
-| `Suffix` | TEXT | ".00" | Affix after the value, text/secondary |
-| `Show Trailing Icon` | BOOL | false | Reveal trailing icon slot |
-| `Trailing Icon` | INSTANCE_SWAP | cancel | Action/indicator icon |
-| `Show Helper` | BOOL | true | Reveal the helper row below the field |
-| `Helper` | TEXT | "Helper text" | Supporting description / validation message |
-| `Show Counter` | BOOL | false | Reveal character counter at the right of helper row |
-| `Counter` | TEXT | "0 / 100" | Character count text |
-| `State` | VARIANT | Default | 8 values listed above |
+| `State` | Variant | `Default` | `Default` · `Focused` · `Filled` · `Error` · `Success` · `Warning` · `Disabled` · `Read-only` |
+| `Title`, `Show Title` | Text, Boolean | `"Label"`, `true` | Field label above the wrap. Hide only when externally labelled by a parent section. |
+| `Body` | Text | `"Enter your value"` | Value or placeholder text inside the wrap |
+| `Show Leading Icon`, `Leading Icon` | Boolean, Instance swap | `false`, `search` | Reveal + pick a 20 dp Material Symbols Rounded icon |
+| `Show Prefix`, `Prefix` | Boolean, Text | `false`, `"+91"` | Affix before the value (e.g. `+91`, `₹`) — `text.subtle` |
+| `Show Suffix`, `Suffix` | Boolean, Text | `false`, `".00"` | Affix after the value (e.g. `.00`, `kg`) — `text.subtle` |
+| `Show Trailing Icon`, `Trailing Icon` | Boolean, Instance swap | `false`, `cancel` | Reveal + pick a 20 dp icon. **Hardcoded for status states** — Error/Success/Warning win over user-set trailing icon. |
+| `Show Helper`, `Helper` | Boolean, Text | `true`, `"Helper text"` | Helper / validation message under the wrap |
+| `Show Counter`, `Counter` | Boolean, Text | `false`, `"0 / 100"` | Right-aligned char count in the helper row |
 
-Status icons (Error/Success/Warning) are **hardcoded per variant** — you do not toggle them. They always appear when State matches and they win over any user-set trailing icon.
-
-## Textarea — properties
-
-8 props. Same behavior as Input's shared props.
-
-| Property | Type | Default |
-|---|---|---|
-| `Title`, `Show Title` | TEXT, BOOL | "Label", true |
-| `Body` | TEXT | "Placeholder text..." |
-| `Show Helper`, `Helper` | BOOL, TEXT | true, "Helper text" |
-| `Show Counter`, `Counter` | BOOL, TEXT | false, "0 / 200" |
-| `State` | VARIANT | Default (6 values) |
-
-No icon slots. No prefix/suffix.
-
-## OTP — properties
-
-Boxed code entry with auto-advance focus, hardcoded timer, and a digit-count toggle. Use for verification codes — don't fake it with a single Input.
+### Field / Textarea — `1426:47` (8 props)
 
 | Property | Type | Default | Purpose |
 |---|---|---|---|
-| `Title` | TEXT | "Enter OTP" | Label above the boxes |
-| `Show Title` | BOOL | true | Same rule as Input |
-| `6-digit` | BOOL | true | `true` = 6 boxes (48dp each). `false` = 4 boxes (76dp each). Container stays 328dp wide. |
-| `Show Helper` | BOOL | true | Reveal helper row |
-| `Helper` | TEXT | "Didn't get the code? Resend in 00:24" | Helper / resend prompt |
-| `State` | VARIANT | Default (6 values) | Default, Focused, Filled, Error, Success, Disabled |
+| `State` | Variant | `Default` | 6 values (no Warning, no Read-only) |
+| `Title`, `Show Title` | Text, Boolean | `"Label"`, `true` | Same rule as Input |
+| `Body` | Text | `"Placeholder text…"` | Multi-line value / placeholder |
+| `Show Helper`, `Helper` | Boolean, Text | `true`, `"Helper text"` | Helper row |
+| `Show Counter`, `Counter` | Boolean, Text | `false`, `"0 / 200"` | Char count |
 
-Hardcoded per-state:
-- **Focused** variant ships with a visible **timer `00:24`** inside the field — you don't toggle or theme it. The timer lives inside the component; treat it as part of the Focused appearance.
-- **Error / Success** status icons are hardcoded, same rule as Input.
+No icon slots, no prefix/suffix.
 
-No prefix/suffix, no icon swap slots. No `Warning`, no `Read-only`.
+### Field / OTP — `1790:740` (6 props)
+
+| Property | Type | Default | Purpose |
+|---|---|---|---|
+| `State` | Variant | `Default` | 6 values (no Warning, no Read-only) |
+| `6-digit` | Boolean | `false` (4 boxes default) | `true` = 6 boxes (~48 dp each); `false` = 4 boxes (~76 dp each). Container stays 328 dp wide; boxes split via `weight(1f)`. |
+| `Title`, `Show Title` | Text, Boolean | `"Enter OTP"`, `true` | Same rule |
+| `Show Helper`, `Helper` | Boolean, Text | `true`, e.g. `"Sent to +91 98765 43210"` | Helper / resend prompt |
+
+> **Focused-state timer is hardcoded.** The Focused variant ships with
+> a visible **timer (e.g. `00:24`)** at the right of the helper row.
+> You don't toggle or theme it — it's part of the Focused appearance.
+> Don't recreate it as a separate counter / chip on top of the field.
+
+### Code enum ↔ Figma variant string
+
+| `FieldState` (Kotlin) | Figma `State` value | Available on |
+|---|---|---|
+| `Default` | `Default` | Input · Textarea · OTP |
+| `Focused` | `Focused` | Input · Textarea · OTP |
+| `Filled` | `Filled` | Input · Textarea · OTP |
+| `Error` | `Error` | Input · Textarea · OTP |
+| `Success` | `Success` | Input · Textarea · OTP |
+| `Warning` | `Warning` | Input only |
+| `Disabled` | `Disabled` | Input · Textarea · OTP |
+| `ReadOnly` | `Read-only` (with hyphen) | Input only |
 
 ---
 
-## Configuration patterns
+## 2. Anatomy
 
-Quick configs for the most common fields. All values are property overrides on an Input instance.
+All three components share the same outer column structure: **Title →
+wrap → Helper row**, gap `space-8` (8 dp) between rows.
 
-### Mobile number (+91)
-`Title=Mobile number` · `Show Prefix=true` · `Prefix=+91` · `Helper="We'll send an OTP"`
+### Input
 
-### OTP entry
-Use the dedicated **OTP** component, not Input. `Title=Enter OTP` · `6-digit=true` (or `false` for 4-digit) · `State=Focused` while awaiting input · `Helper="Didn't get the code? Resend in 00:24"`. The timer inside the boxes is part of the Focused variant — don't recreate it.
+```
+Title (type.label.lg, optional via Show Title)
+   ↓ space-8
+┌─── wrap (radius-medium, padding 16H/12V, border per state) ────┐
+│  ●Lead    Prefix    Body / placeholder   Suffix    ●Trail      │
+│  20dp                                                20dp       │
+└──── gap between every adjacent slot: space-12 ─────────────────┘
+   ↓ space-8
+┌─── helper row ────────────────────────────────────────────────┐
+│ Helper text (type.body.md)                          0 / 100  │
+└────────────── helper ↔ counter gap: space-12 ────────────────┘
+```
 
-### Search bar
-`Show Leading Icon=true` · `Leading Icon=search` · `Show Trailing Icon=true` (only while there's a query) · `Trailing Icon=cancel` · `Helper="Try Wiom Pro"`
+| Slot | Value | Token |
+|---|---|---|
+| Container width | Derived — `fillMaxWidth()` (host owns the gutter) | — |
+| Container height | Derived — Title 24 LH + space-8 + wrap (12 V + 24 LH + 12 V) + space-8 + helper 20 LH | — |
+| Wrap radius | 12 dp | `radius-medium` |
+| Wrap horizontal padding | 16 dp | `space-16` |
+| Wrap vertical padding | 12 dp | `space-12` |
+| Wrap inner gap (slot ↔ slot) | 12 dp | `space-12` |
+| Vertical stack gap (Title ↔ wrap ↔ helper) | 8 dp | `space-8` |
+| Title style | Noto Sans SemiBold 16 / 24 LH | `type.label.lg` |
+| Body / Prefix / Suffix style | Noto Sans Regular 16 / 24 LH | `type.body.lg` |
+| Helper / Counter style | Noto Sans Regular 14 / 20 LH | `type.body.md` |
+| Icon size (leading / trailing) | 20 dp | `icon.sm` |
 
-### Password
-`Title=Password` · `Body=••••••••••••` · `Show Trailing Icon=true` · `Trailing Icon=visibility` (toggle to `visibility_off` on reveal)
+### Textarea
 
-### Currency amount
-`Title=Recharge amount` · `Show Prefix=true` · `Prefix=₹` · `Show Suffix=true` · `Suffix=.00` · `Helper="Includes 18% GST"`
+Same as Input minus icon / prefix / suffix slots. The wrap accepts
+multiple lines; height grows with content. **Inner Row uses
+`verticalAlignment = Alignment.Top`** (not `Center`) so the placeholder
+sits at the top of the multi-line area, not floating to the vertical
+middle of a tall field.
 
-### Dropdown field (replaces the deprecated `wiom-dropdown` trigger)
+### OTP
 
-**The Input component IS the dropdown trigger.** The old `wiom-dropdown` skill is deleted; its field anatomy lives here, and its menu UX lives in `wiom-bottomsheet` (picker patterns).
+```
+Title (type.label.lg)
+   ↓ space-8
+┌─── Boxes row (gap space-8 between boxes, fillMaxWidth) ────────┐
+│  ┌──┐  ┌──┐  ┌──┐  ┌──┐                  ← 4-digit (default)  │
+│  │ 0│  │ 0│  │ 0│  │ 0│                                        │
+│  └──┘  └──┘  └──┘  └──┘                                        │
+│       OR                                                        │
+│  ┌─┐  ┌─┐  ┌─┐  ┌─┐  ┌─┐  ┌─┐            ← 6-digit             │
+│  └─┘  └─┘  └─┘  └─┘  └─┘  └─┘                                  │
+└─── each box: weight(1f), radius-medium, 12 V/H pad ────────────┘
+   ↓ space-8
+┌─── helper row ────────────────────────────────────────────────┐
+│ Sent to +91 98765 43210                              00:24   │  ← timer (Focused only)
+└───────────────────────────────────────────────────────────────┘
+```
 
-Configure an Input as a dropdown trigger:
+Each box is a square-ish container (height = 12 V + 24 LH + 12 V =
+48 dp) that fills width via `weight(1f)`. Boxes don't have fixed
+widths — the container's width and the count split it.
 
-- `State=Read-only` — the user cannot type into a dropdown field
-- `Show Trailing Icon=true` · `Trailing Icon=expand_more` (keyboard_arrow_down) · icon tint `icon.action`
-- `Body=` selected option text (placeholder when empty, e.g., "Select an option")
-- `onClick` opens a `wiom-bottomsheet` containing the options — never a popover / anchored menu
-- For **single-select**, the sheet closes on pick
-- For **multi-select**, the Body shows up to N selected values (e.g., "Push, SMS (+1)") and the sheet has a Primary CTA "Done" that commits the selection
-- Label stays `text.default` (Read-only isn't Disabled; copy/paste is allowed; the field is actively awaiting a selection)
+**No fixed dimensions** on any of the three components. Wrap heights
+hug from padding + line-height. Container width = parent surface
+margin (`fillMaxWidth()`).
+
+---
+
+## 3. Pick the right component
+
+```
+Need to capture user text? Ask:
+
+Single line — text / number / email / password / phone / amount?
+   → Input (with optional prefix/suffix/leading/trailing slots)
+
+Search across a list or screen?
+   → Input · Show Leading Icon=true · Leading Icon=search
+            · Show Trailing Icon=true (only when query present) · Trailing Icon=cancel
+
+Multi-line — address / comment / description / reason / feedback?
+   → Textarea (height grows with content)
+
+Verification code (4 or 6 digits)?
+   → OTP (boxed digits with auto-advance focus + Focused-state timer)
+
+Single-/Multi-select picker?
+   → Input · State=Read-only · Show Trailing Icon=true · Trailing Icon=expand_more
+            · onClick opens wiom-bottomsheet picker
+```
+
+**Search bar, dropdown trigger, password reveal — all configurations of
+Input.** Don't draw custom fields; tokens won't bind.
+
+---
+
+## 4. States
+
+| State | Visual signal | Use when |
+|---|---|---|
+| **Default** | 1 dp `stroke.subtle` border, Title `text.default` (highlighted) | Empty, unfocused. Pull attention to the Title. |
+| **Focused** | 2 dp `stroke.brand.focus` border, Title `text.subtle` | User has tapped in. Title softens — the input bar carries the focus. |
+| **Filled** | 1 dp `stroke.subtle` border, Title `text.subtle`, Body `text.default` | Content present, not focused. The value speaks for itself. |
+| **Error** | 2 dp `stroke.critical.focus` border, error icon (trailing), helper `text.critical` | Validation failed. Helper **must** explain what's wrong. |
+| **Success** | 2 dp `stroke.positive.focus` border, check icon (trailing), helper `text.positive` | Validated OK (e.g., OTP matched, mobile confirmed). Use sparingly. |
+| **Warning** (Input only) | 2 dp `stroke.warning` border, warning icon (trailing), helper `text.onWarning` | Value is valid but risky / unusual. **Not** a substitute for Error. |
+| **Disabled** | 1 dp `stroke.subtle`, fill `bg.disabled`, all text `text.disabled` | Field is truly inactive — user cannot edit AND cannot copy. |
+| **Read-only** (Input only) | 1 dp `stroke.subtle`, fill `bg.subtle`, Body `text.default`, Title `text.default` | Value is displayable + copyable but not editable (Customer ID, account number, dropdown trigger value). **Not the same as Disabled.** |
+
+---
+
+## 5. Tokens per state
+
+All tokens are **element-first**. Always reference tokens, never hex.
+
+| State | Wrap fill | Border (width · color) | Title color | Body color | Helper color | Trailing icon |
+|---|---|---|---|---|---|---|
+| Default | `bg.default` | 1 dp `stroke.subtle` | `text.default` | `text.disabled` (placeholder) | `text.subtle` | user-set |
+| Focused | `bg.default` | 2 dp `stroke.brand.focus` | `text.subtle` | `text.default` | `text.subtle` | user-set |
+| Filled | `bg.default` | 1 dp `stroke.subtle` | `text.subtle` | `text.default` | `text.subtle` | user-set |
+| Error | `bg.default` | 2 dp `stroke.critical.focus` | `text.subtle` | `text.default` | `text.critical` | hardcoded `error` · `icon.critical` |
+| Success | `bg.default` | 2 dp `stroke.positive.focus` | `text.subtle` | `text.default` | `text.positive` | hardcoded `check_circle` · `icon.positive` |
+| Warning | `bg.default` | 2 dp `stroke.warning` | `text.subtle` | `text.default` | `text.onWarning` | hardcoded `warning` · `icon.warning` |
+| Disabled | `bg.disabled` | 1 dp `stroke.subtle` | `text.disabled` | `text.disabled` | `text.disabled` | dimmed |
+| Read-only | `bg.subtle` | 1 dp `stroke.subtle` | `text.default` | `text.default` | `text.subtle` | typically `expand_more` for dropdown |
+
+> **Warning is special.** White-on-`bg.warning` fails AA, but Warning's
+> message text in this skill sits on `bg.default` (not `bg.warning`).
+> Helper text uses `text.onWarning` (#372902 olive, **not** a
+> nonexistent `text.warning`). Foundations rule: `text.onWarning` is
+> the only text token paired with the warning family on every surface
+> (`bg.warning`, `bg.warning.subtle`, `bg.default` — all pass AA).
+
+> **Status icons are hardcoded.** When State = Error / Success /
+> Warning, the trailing slot renders the matching status icon and
+> overrides any user-set `Trailing Icon`. This is a Figma constraint;
+> don't fight it.
+
+---
+
+## 6. Surface contract
+
+| Placement | What the surface (parent) owns | What the field does |
+|---|---|---|
+| Inside screen content | `space-16` start / end gutter via screen padding | `fillMaxWidth()` — width emerges as 328 dp on a 360 dp screen |
+| Inside dialog | `space-24` via dialog padding | `fillMaxWidth()` |
+| Inside bottom sheet | `space-16` via sheet padding | `fillMaxWidth()` |
+| Inside a stepper step | `space-16` via step content padding | `fillMaxWidth()` |
+
+**No fixed dimensions** on any field component.
+
+- ❌ `Modifier.width(...)` / `Modifier.height(...)` / `heightIn(...)` /
+  `widthIn(...)` / `Modifier.size(...)` on the field container or the
+  wrap. Width = `fillMaxWidth()`; height = derived from padding +
+  line-height (Textarea grows with content).
+
+---
+
+## 7. Universal rules
+
+1. **Label-emphasis ramp is fixed.** Default = `text.default`
+   (highlighted). All other active states = `text.subtle`. Disabled =
+   `text.disabled`. Don't override per-instance.
+2. **Error helper must be actionable.** Don't ship `Helper="Helper
+   text"` in production — specify what's wrong and how to fix it.
+3. **Affixes go in the Prefix / Suffix slot.** Never type `+91 ` or
+   `₹` into Body — it breaks validation, copy/paste, and semantic
+   meaning.
+4. **Read-only ≠ Disabled.** Read-only displays values the user can
+   read and copy (text stays `text.default`). Disabled is for truly
+   inactive fields (`text.disabled`, `bg.disabled`).
+5. **One trailing icon at a time.** Status icons (Error / Success /
+   Warning) take over the trailing slot. Don't stack.
+6. **Keep Title visible by default.** Hide only when a parent section
+   header already labels the field.
+7. **No fixed dimensions.** Width = `fillMaxWidth()`; height = derived
+   from padding + line-height. Textarea grows with content.
+8. **Textarea alignment is `Alignment.Top`, not `Center`.** Inner Row
+   `verticalAlignment = Alignment.Top` so placeholder sits at the top
+   of the multi-line area; placeholder/value Box uses
+   `Alignment.TopStart`.
+9. **Counter only where it aids the user.** Char limits on textareas,
+   chat drafts. Don't show on short free-text fields. OTP has its own
+   built-in timer — never stack a counter on top.
+10. **OTP is its own component.** Don't fake 4/6-digit entry with a
+    single Input + spaces in Body — OTP has correct per-digit focus,
+    box sizing, and timer.
+11. **Status icons are hardcoded.** Don't pass a custom `Trailing
+    Icon` for Error / Success / Warning states.
+12. **Tokens only — element-first.** No raw hex, no legacy
+    `color.brand.primary` / `color.text.primary`.
+
+---
+
+## 8. Compose API + code
+
+### Public API
 
 ```kotlin
-// Dropdown field = Input with Read-only state + chevron + bottom-sheet on tap
-WiomInput(
-    state = FieldState.ReadOnly,
-    title = "Language",
-    body = selectedLanguage?.label ?: "Select language",
-    trailingIcon = Icons.Rounded.KeyboardArrowDown,
-    onClick = { showPickerSheet = true },
+enum class FieldState {
+    Default, Focused, Filled, Error, Success, Warning, Disabled, ReadOnly,
+}
+
+@Composable
+fun WiomInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    title: String,
+    state: FieldState = FieldState.Default,            // Focused is auto-derived if you also provide a focusRequester; pass explicit only for non-interactive previews
+    placeholder: String? = null,
+    helper: String? = null,
+    counter: String? = null,                           // pass when char limit is meaningful
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,                 // ignored for Error/Success/Warning (hardcoded)
+    prefix: String? = null,
+    suffix: String? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,  // password etc.
+    onClick: (() -> Unit)? = null,                     // set for Read-only dropdown trigger
+    modifier: Modifier = Modifier,
 )
-if (showPickerSheet) {
-    WiomBottomSheet(size = BottomSheetSize.Half, onDismiss = { showPickerSheet = false }) {
-        // wiom-bottomsheet "Single-select picker" pattern — List Item rows with Type=Radio
-        // See wiom-bottomsheet for full anatomy.
+
+@Composable
+fun WiomTextarea(
+    value: String,
+    onValueChange: (String) -> Unit,
+    title: String,
+    state: FieldState = FieldState.Default,            // 6 states (no Warning, no ReadOnly)
+    placeholder: String? = null,
+    helper: String? = null,
+    counter: String? = null,
+    minLines: Int = 3,
+    maxLines: Int = Int.MAX_VALUE,
+    modifier: Modifier = Modifier,
+)
+
+@Composable
+fun WiomOtp(
+    value: String,
+    onValueChange: (String) -> Unit,                   // length-clamped to digits
+    title: String = "Enter OTP",
+    state: FieldState = FieldState.Default,            // 6 states
+    sixDigit: Boolean = false,                         // false = 4 boxes; true = 6 boxes
+    helper: String? = null,                            // e.g. "Sent to +91 98765 43210" or resend prompt
+    timer: String? = null,                             // e.g. "00:24" — shown right of helper in Focused
+    modifier: Modifier = Modifier,
+)
+```
+
+### Token resolver
+
+```kotlin
+@Composable
+private fun rememberFieldColors(state: FieldState): FieldColors = when (state) {
+    FieldState.Default  -> FieldColors(Wiom.bg.default,  border(1.dp, Wiom.stroke.subtle),         Wiom.text.default,  Wiom.text.disabled,   Wiom.text.subtle)
+    FieldState.Focused  -> FieldColors(Wiom.bg.default,  border(2.dp, Wiom.stroke.brand.focus),    Wiom.text.subtle,   Wiom.text.default,    Wiom.text.subtle)
+    FieldState.Filled   -> FieldColors(Wiom.bg.default,  border(1.dp, Wiom.stroke.subtle),         Wiom.text.subtle,   Wiom.text.default,    Wiom.text.subtle)
+    FieldState.Error    -> FieldColors(Wiom.bg.default,  border(2.dp, Wiom.stroke.critical.focus), Wiom.text.subtle,   Wiom.text.default,    Wiom.text.critical)
+    FieldState.Success  -> FieldColors(Wiom.bg.default,  border(2.dp, Wiom.stroke.positive.focus), Wiom.text.subtle,   Wiom.text.default,    Wiom.text.positive)
+    FieldState.Warning  -> FieldColors(Wiom.bg.default,  border(2.dp, Wiom.stroke.warning),        Wiom.text.subtle,   Wiom.text.default,    Wiom.text.onWarning)
+    FieldState.Disabled -> FieldColors(Wiom.bg.disabled, border(1.dp, Wiom.stroke.subtle),         Wiom.text.disabled, Wiom.text.disabled,   Wiom.text.disabled)
+    FieldState.ReadOnly -> FieldColors(Wiom.bg.subtle,   border(1.dp, Wiom.stroke.subtle),         Wiom.text.default,  Wiom.text.default,    Wiom.text.subtle)
+}
+
+@Composable
+private fun rememberStatusIcon(state: FieldState): Pair<ImageVector, Color>? = when (state) {
+    FieldState.Error   -> Icons.Rounded.Error       to Wiom.icon.critical
+    FieldState.Success -> Icons.Rounded.CheckCircle to Wiom.icon.positive
+    FieldState.Warning -> Icons.Rounded.Warning     to Wiom.icon.warning
+    else -> null
+}
+
+private data class FieldColors(
+    val container: Color,
+    val border: BorderStroke,
+    val title: Color,
+    val body: Color,
+    val helper: Color,
+)
+```
+
+### `WiomInput` implementation
+
+```kotlin
+@Composable
+fun WiomInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    title: String,
+    state: FieldState,
+    placeholder: String?,
+    helper: String?,
+    counter: String?,
+    leadingIcon: ImageVector?,
+    trailingIcon: ImageVector?,
+    prefix: String?,
+    suffix: String?,
+    keyboardOptions: KeyboardOptions,
+    keyboardActions: KeyboardActions,
+    visualTransformation: VisualTransformation,
+    onClick: (() -> Unit)?,
+    modifier: Modifier,
+) {
+    val colors = rememberFieldColors(state)
+    val statusIcon = rememberStatusIcon(state)
+    val effectiveTrailing = statusIcon?.first ?: trailingIcon
+    val effectiveTrailingTint = statusIcon?.second ?: Wiom.icon.action
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Wiom.space.s8),
+    ) {
+        Text(title, style = Wiom.type.label.lg, color = colors.title)
+
+        // Wrap
+        Surface(
+            color = colors.container,
+            shape = RoundedCornerShape(Wiom.radius.medium),
+            border = colors.border,
+            modifier = Modifier
+                .fillMaxWidth()
+                .let { if (state == FieldState.ReadOnly && onClick != null) it.clickable { onClick() } else it },
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = Wiom.space.s16, vertical = Wiom.space.s12),
+                horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                leadingIcon?.let {
+                    Icon(it, contentDescription = null,
+                         tint = if (state == FieldState.Disabled) Wiom.icon.disabled else Wiom.icon.action,
+                         modifier = Modifier.size(20.dp))
+                }
+                prefix?.let {
+                    Text(it, style = Wiom.type.body.lg, color = Wiom.text.subtle, maxLines = 1)
+                }
+                BasicTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    enabled = state != FieldState.Disabled && onClick == null,
+                    readOnly = state == FieldState.ReadOnly,
+                    singleLine = true,
+                    textStyle = Wiom.type.body.lg.copy(color = colors.body),
+                    cursorBrush = SolidColor(Wiom.text.default),
+                    keyboardOptions = keyboardOptions,
+                    keyboardActions = keyboardActions,
+                    visualTransformation = visualTransformation,
+                    decorationBox = { inner ->
+                        if (value.isEmpty() && placeholder != null) {
+                            Text(placeholder, style = Wiom.type.body.lg, color = Wiom.text.disabled, maxLines = 1)
+                        }
+                        inner()
+                    },
+                    modifier = Modifier.weight(1f),
+                )
+                suffix?.let {
+                    Text(it, style = Wiom.type.body.lg, color = Wiom.text.subtle, maxLines = 1)
+                }
+                effectiveTrailing?.let {
+                    Icon(it, contentDescription = null,
+                         tint = effectiveTrailingTint, modifier = Modifier.size(20.dp))
+                }
+            }
+        }
+
+        // Helper row
+        if (helper != null || counter != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                helper?.let {
+                    Text(it, style = Wiom.type.body.md, color = colors.helper, modifier = Modifier.weight(1f))
+                }
+                counter?.let {
+                    Text(it, style = Wiom.type.body.md, color = Wiom.text.subtle, maxLines = 1)
+                }
+            }
+        }
     }
 }
 ```
 
-### Search bar (alternative trailing to clear)
-`Show Leading Icon=true` · `Leading Icon=search` · `Show Trailing Icon=true` (only while there's a query) · `Trailing Icon=cancel`
+`WiomTextarea` is the same shape with `singleLine = false`,
+`verticalAlignment = Alignment.Top`, and the placeholder Box using
+`contentAlignment = Alignment.TopStart`. `WiomOtp` is a `Row` of 4 or
+6 `weight(1f)` boxes; the active digit's box uses 2 dp
+`stroke.brand.focus` and the rest use 1 dp `stroke.subtle`.
 
-### Clearable search / text
-`Show Trailing Icon=true` · `Trailing Icon=cancel` — hide the clear icon in Default (empty) and Disabled states.
-
-### Address (Textarea)
-`Title=Installation address` · `Body=` full address · `Show Counter=true` · `Counter=60 / 200`
-
----
-
-## Token bindings (summary)
-
-Every property on every variant resolves to a Wiom foundation token. Full values live in `wiom-design-foundations`.
-
-| Part | Token |
-|---|---|
-| Container fill (rest) | `bg.default` |
-| Container fill (disabled) | `bg.disabled` |
-| Container fill (read-only) | `bg.subtle` |
-| Border (rest) | `stroke-small` + `stroke.subtle` |
-| Border (focused) | `stroke-medium` + **`stroke.brand.focus`** (#D9008D — saturated) |
-| Border (error) | `stroke-medium` + **`stroke.critical.focus`** (#D92130) |
-| Border (success) | `stroke-medium` + `stroke.positive.focus` (#008043) |
-| Border (warning) | `stroke-medium` + `stroke.warning` (#E2B203) |
-| Border (disabled) | `stroke-medium` + `stroke.subtle` |
-| Border (read-only) | `stroke-small` + `stroke.subtle` |
-| Container radius | `radius-medium` (12dp) |
-| Padding | `space-16` H · `space-12` V |
-| Internal gap (between slots) | `space-12` |
-| Vertical gap (label → wrap → helper) | `space-8` |
-| Label | `type.label.lg` (16sp SemiBold) · `text.default` on Default, `text.subtle` on all other active states, `text.disabled` on Disabled |
-| Value / Prefix / Suffix | `type.body.lg` (16sp) · `text.default` (`text.disabled` when Disabled; `text.disabled` for placeholder in empty Default) |
-| Helper (default) | `type.body.md` (14sp) · `text.subtle` |
-| Helper (error) | `type.body.md` + `text.critical` (#D92130) |
-| Helper (warning) | `type.body.md` + **`text.onWarning`** (#372902 — **not** a nonexistent `text.warning`; foundations uses `text.onWarning` on `bg.default` at 14.18:1 AAA) |
-| Helper (success) | `type.body.md` + `text.positive` |
-| Counter | `type.body.sm` · `text.subtle` always |
-| Inline icons | `icon.sm` (20dp) · `Icons.Rounded.*` (FILL=1) · `icon.action` when tappable (clear, reveal password, dropdown chevron), `icon.nonAction` when purely decorative, status `icon.*` when State is Error/Success/Warning |
-
-No shadow. No hardcoded hex. No fixed height anywhere — height hugs from padding + line-height.
-
----
-
-## Rules
-
-1. **Label-emphasis ramp is fixed.** Default = text/primary (highlighted). All other active states = text/secondary. Disabled = text/disabled. Do not override these per-instance.
-2. **Error helper must be actionable.** Don't ship `Helper="Helper text"` in production — specify what's wrong and how to fix it.
-3. **Affixes go in the Prefix/Suffix slot.** Never type `+91 ` or `₹` into the Body — it breaks validation, copy/paste, and semantic meaning.
-4. **Read-only ≠ Disabled.** Use Read-only to display values the user can read and copy (text stays text/primary). Use Disabled only when the field is truly inactive and not relevant for now.
-5. **One trailing icon at a time.** Status icons (Error/Success/Warning) take over the trailing slot. Don't stack multiple icons side-by-side — the field becomes noisy and touch targets crowd.
-6. **Keep Title visible by default.** Don't rely on placeholder-only — once the user starts typing, the context disappears. Hide Title only when a parent section header already labels the field.
-7. **Heights hug.** Wrap height = V padding + line-height. Textarea grows with content. Never set a fixed height on the wrap.
-8. **Textarea alignment is top, not center.** When `singleLine = false` (Textarea), the placeholder/value Box must use `Alignment.TopStart` — not `CenterStart` — so the hint sits at the top of the multi-line area instead of floating to the vertical center. Likewise, the inner Row's `verticalAlignment` must switch to `Alignment.Top` so leading/trailing icons align to the first line, not the vertical middle of a tall field.
-9. **Width on mobile = fill container** (usually 16px side margins). 328 is the reference width on a 360-wide screen.
-10. **Icons swap, they don't stack.** Use `Leading Icon` / `Trailing Icon` INSTANCE_SWAP to pick the right glyph from Material Symbols Rounded. Do not draw a second icon on top.
-11. **Counter only where it aids the user.** Character limits on textareas, chat drafts. Don't show it on short free-text fields. OTP has its own built-in timer — don't stack a counter on top.
-12. **OTP is its own component.** Use `Field / OTP` for verification codes. Don't fake a 4/6-digit flow with a single Input + spaces in Body.
-
----
-
-## Anti-patterns
-
-- Drawing a custom input with manual rectangles + text — always use the component.
-- Using `Disabled` to show non-editable but still-meaningful values — that's `Read-only`.
-- Using `Error` state without updating the `Helper` prop.
-- Putting the affix into `Body` (`+91 9876543210`) — use the `Prefix` slot.
-- Piling icons: leading + prefix + trailing action + status = visual clutter. Pick the minimum set.
-- Hiding Title with `Show Title=false` just to save vertical space — accessibility suffers.
-- Setting a fixed height on a wrap override — defeats the hug layout.
-- Using `CenterStart` / `CenterVertically` alignment on Textarea — placeholder drifts to the middle of the multi-line box. Use `TopStart` and `Alignment.Top`.
-- Recoloring the label per instance — the state-driven color ramp exists for a reason.
-- Building OTP as an Input with "4 3 8" spaced digits in `Body` — there's a dedicated OTP component with correct per-digit focus, box sizing, and timer.
-- Redrawing the OTP timer on top of the Focused variant — it's already baked in.
-
----
-
-## Implementation hint (Jetpack Compose)
-
-Bind 1:1 to the Compose equivalent of the tokens above. Skeleton:
+### Common mistake → fix
 
 ```kotlin
-OutlinedTextField(
-  value = state.body,
-  onValueChange = { state.body = it },
-  label = { Text(state.title, style = Wiom.type.labelMd, color = labelColorFor(state.state)) },
-  placeholder = { Text(state.placeholder, color = Wiom.text.disabled) },
-  leadingIcon = state.leadingIcon?.let { { WiomIcon(it, size = Wiom.icon.sm) } },
-  trailingIcon = state.trailingIcon?.let { { WiomIcon(it, size = Wiom.icon.sm) } },
-  isError = state.state == FieldState.Error,
-  enabled = state.state != FieldState.Disabled,
-  readOnly = state.state == FieldState.ReadOnly,
-  shape = RoundedCornerShape(Wiom.radius.medium),
-  colors = wiomFieldColors(state.state),
-  supportingText = { Text(state.helper, style = Wiom.type.bodySm, color = helperColorFor(state.state)) }
+// ❌ WRONG — affix typed into the value, fixed height, error without helper, body.sm counter
+WiomInput(
+    value = "+91 9876543210",                          // affix in body breaks validation
+    onValueChange = { ... },
+    title = "Mobile",
+    state = FieldState.Error,
+    helper = null,                                     // Error must explain what's wrong
+    counter = "10 / 10",
+    modifier = Modifier.height(56.dp),                 // never hardcode height
+)
+
+// ✅ RIGHT — prefix slot, helper explains, height derived
+WiomInput(
+    value = phoneDigits,
+    onValueChange = { phoneDigits = it.filter(Char::isDigit).take(10) },
+    title = "Mobile number",
+    state = if (phoneDigits.length < 10) FieldState.Error else FieldState.Filled,
+    prefix = "+91",
+    helper = if (phoneDigits.length < 10) "Enter 10 digits" else "We'll send an OTP",
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+    modifier = Modifier.fillMaxWidth(),
 )
 ```
 
-`labelColorFor`, `helperColorFor`, and `wiomFieldColors` encode the state table. Prefix/Suffix use Compose's `prefix` / `suffix` slots (Material3 ≥ 1.1). Min-height comes from `body/lg` line-height + 12px vertical padding — do not pin a fixed height.
+---
+
+## 9. Configuration patterns
+
+Quick recipes — all property overrides on the right component.
+
+### Mobile number (+91)
+
+```kotlin
+WiomInput(
+    value = phone, onValueChange = { phone = it.filter(Char::isDigit).take(10) },
+    title = "Mobile number",
+    prefix = "+91",
+    helper = "We'll send an OTP",
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+### OTP entry (use the dedicated component, not Input)
+
+```kotlin
+WiomOtp(
+    value = otp, onValueChange = { otp = it.filter(Char::isDigit).take(6) },
+    title = "Enter OTP",
+    sixDigit = true,
+    state = FieldState.Focused,
+    helper = "Sent to +91 98765 43210",
+    timer = "00:24",                                   // Focused state shows timer at the right
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+### Search bar
+
+```kotlin
+WiomInput(
+    value = query, onValueChange = { query = it },
+    title = "",                                        // bare search; Show Title=false in Figma
+    placeholder = "Search…",
+    leadingIcon = Icons.Rounded.Search,
+    trailingIcon = if (query.isNotEmpty()) Icons.Rounded.Close else null,
+    helper = null,
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+### Password (toggle reveal)
+
+```kotlin
+var revealed by remember { mutableStateOf(false) }
+WiomInput(
+    value = password, onValueChange = { password = it },
+    title = "Password",
+    placeholder = "••••••••",
+    trailingIcon = if (revealed) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+    visualTransformation = if (revealed) VisualTransformation.None else PasswordVisualTransformation(),
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+### Currency amount (₹ … .00)
+
+```kotlin
+WiomInput(
+    value = amount, onValueChange = { amount = it.filter { ch -> ch.isDigit() } },
+    title = "Recharge amount",
+    prefix = "₹",
+    suffix = ".00",
+    helper = "Includes 18% GST",
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+### Dropdown trigger (Read-only Input + bottom-sheet picker)
+
+```kotlin
+var showSheet by remember { mutableStateOf(false) }
+WiomInput(
+    value = selectedLanguage?.label ?: "",
+    onValueChange = {},                                // Read-only
+    title = "Language",
+    placeholder = "Select language",
+    state = FieldState.ReadOnly,
+    trailingIcon = Icons.Rounded.KeyboardArrowDown,
+    onClick = { showSheet = true },
+    modifier = Modifier.fillMaxWidth(),
+)
+if (showSheet) {
+    WiomBottomSheet(size = BottomSheetSize.Half, onDismiss = { showSheet = false }) {
+        // Single-select picker: WiomListItem rows with Type=Radio.
+        // For multi-select, sheet has a Primary "Done" CTA that commits the selection
+        // and Body shows up to N selected values (e.g., "Push, SMS (+1)").
+    }
+}
+```
+
+### Address (Textarea)
+
+```kotlin
+WiomTextarea(
+    value = address, onValueChange = { address = it.take(200) },
+    title = "Installation address",
+    placeholder = "House / floor / landmark…",
+    counter = "${address.length} / 200",
+    minLines = 3,
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+---
+
+## 10. Anti-patterns
+
+(Universal rules in §7 cover the bans. Listed here are extras that
+aren't already a numbered rule.)
+
+- ❌ Drawing a custom field with `Box` + `BasicTextField` + manual
+  border / padding instead of using the component.
+- ❌ Building OTP as an Input with `"4 3 8 1"` spaced digits in
+  `Body` — there's a dedicated component with auto-advance focus,
+  per-digit boxing, and the Focused-state timer.
+- ❌ Redrawing the OTP Focused-state timer on top — it's already
+  baked into the variant.
+- ❌ Using `CenterStart` / `CenterVertically` alignment on Textarea —
+  placeholder drifts to the middle of a multi-line box. Use
+  `TopStart` and `Alignment.Top`.
+- ❌ Using `text.warning` token — it doesn't exist. Warning helper
+  uses `text.onWarning` (the dark olive that doubles as warning text
+  on every surface, per foundations).
+- ❌ Setting `state = FieldState.Error` without setting `helper` — the
+  user is left guessing what's wrong.
+- ❌ Recoloring the Title per instance — the state-driven ramp exists
+  for a reason.
+- ❌ Hiding `Title` to save vertical space — once the user starts
+  typing, the placeholder disappears and the field loses its label.
+
+---
+
+## 11. Figma traceability
+
+File: `ZPErh7YU7omdbyy2o268Qo`. Input Fields canvas: `3069:5441`.
+Re-pull `get_variable_defs` on `3069:5441` if foundations token names
+ever change.
+
+| Node | Component / variant |
+|---|---|
+| `1422:112` | Field / Input — 8 state variants |
+| `1422:2` · `1422:15` · `1422:28` | Input Default · Focused · Filled |
+| `1422:41` · `1422:56` · `1422:71` | Input Error · Success · Warning |
+| `1422:86` · `1422:99` | Input Disabled · Read-only |
+| `1426:47` | Field / Textarea — 6 state variants |
+| `1426:5` · `1426:12` · `1426:19` · `1426:26` · `1426:33` · `1469:21` | Textarea Default · Focused · Filled · Error · Success · Disabled |
+| `1790:740` | Field / OTP — 6 state variants + `6-digit` boolean |
+| `1790:637` · `1790:654` · `1790:672` · `1790:689` · `1790:706` · `1790:723` | OTP Default · Focused · Filled · Error · Success · Disabled |
+
+**Description-vs-ship discrepancies** — if a stale doc says otherwise,
+trust ship values:
+
+- The Figma **page header** in this canvas reads "2 components · 14
+  state variants". The actual ship is **3 components × 20 state
+  variants** (Input 8 + Textarea 6 + OTP 6). Page header is outdated;
+  the component sets are the source of truth.
+- The Read-only state was previously documented as part of "8 states
+  total". Confirmed in ship: only Input has `Read-only`; Textarea and
+  OTP do not.
+- `Counter` typography is `type.body.md` (14 sp Regular, same as
+  helper), not `type.body.sm` — earlier docs said `body.sm`. Figma
+  ships the whole helper row at one size.
+- OTP boxes split width via `weight(1f)`, not fixed 76 / 48 dp. The
+  76 / 48 numbers earlier docs cited are derived from `(328 − 3 × 8)
+  ÷ 4` and `(328 − 5 × 8) ÷ 6`, but the boxes are flex children — if
+  the bar gets wider/narrower, they scale.
+- Border colors: all four status / focus borders use the saturated
+  `*.focus` / `*.warning` family (`stroke.brand.focus`,
+  `stroke.critical.focus`, `stroke.positive.focus`, `stroke.warning`)
+  — not their `*.default` siblings.
 
 ---
 
 ## See also
 
-- `wiom-design-foundations` → Component Quick-Build Reference → Input Field (full state table, focus-ring tokens, warning text rule)
-- `wiom-compose-layout-rules` — Modifier discipline, `Icons.Rounded.*` enforcement, no fixed heights
-- `wiom-bottomsheet` — the picker sheet a Dropdown Input opens (single-select / multi-select patterns, replaces the deprecated dropdown-menu UX)
-- `wiom-selection-controls` — Radio / Checkbox rows inside the picker sheet
-- `wiom-cta` — "Done" CTA inside the multi-select picker sheet
-- `wiom-stepper` — steps with `Type=Input + CTA` or `Type=OTP` embed these fields
+- `wiom-design-foundations` — token source. Especially the
+  warning-family rule (`text.onWarning` works on `bg.warning`,
+  `bg.warning.subtle`, AND `bg.default`).
+- `wiom-bottomsheet` — the picker sheet that a Read-only Input opens
+  for dropdowns / single- and multi-select pickers.
+- `wiom-selection-controls` — Radio / Checkbox rows inside the picker
+  sheet.
+- `wiom-cta` — the Primary "Done" CTA inside multi-select picker
+  sheets.
+- `wiom-list-item` — list-row anatomy that hosts each picker option.
+- `wiom-stepper` — multi-step flows that embed Input / OTP per step.
+- `wiom-compose-layout-rules` — Modifier discipline; no fixed heights;
+  `Icons.Rounded.*` enforcement.

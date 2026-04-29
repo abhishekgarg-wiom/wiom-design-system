@@ -1,523 +1,743 @@
 ---
 name: wiom-cta
 description: >
-  Wiom CTA / Button system — 6 types, 4–5 states each, the Button Group rules
-  for pairing 1–3 CTAs, copy discipline, sticky-vs-inline placement, and token
-  mappings. Use this skill EVERY TIME you create, edit, or review any screen,
-  dialog, bottom sheet, card, or component that contains a button or CTA for
-  the Wiom Partner or Customer app. Trigger when you see Button, CTA, TextButton,
-  OutlinedButton, FilledButton, Recharge, Pay, Submit, Delete, Acknowledge,
-  Pre-booking, onClick, or any interactive action element.
+  Wiom CTA / Button system — 6 types, 23 variants. Reference for
+  generating Jetpack Compose code with WiomButton and for instancing
+  the existing Figma CTA component (set 2038:116) via MCP. Use this
+  skill EVERY TIME you write, edit, or review any screen / dialog /
+  sheet / card containing a button or CTA in the Wiom Partner or
+  Customer Android app, or when assembling Figma frames that include
+  CTAs. Trigger on: Button, CTA, WiomButton, TextButton,
+  OutlinedButton, FilledButton, Recharge, Pay, Submit, Delete,
+  Acknowledge, Pre-booking, onClick, instance of 2038:116, Button
+  Group, sticky bottom bar.
 ---
 
 # Wiom CTA System
 
-The approved button foundation for the Wiom Android apps.
-**6 types · 4 states each (3 for Acknowledge) · Button Group (1–3 CTAs) · placement rules · copy discipline.**
-Figma reference: CTA `2038:116`, Button Group `2982:357` (frame `1043:658`).
+Built from Figma file `ZPErh7YU7omdbyy2o268Qo` (Wiom DS V2), component
+set `2038:116`, and the `wiom-design-foundations` token set.
+**6 types · 23 variants · element-first tokens.**
+
+The 5 standard types ship 4 states each (Default / Pressed / Disabled /
+Loading). Acknowledge has its own 3-state model (Unchecked / Checked /
+Disabled). Focus is a stroke ring, not a fill variant.
 
 ---
 
-## 0. Sizing and surface contract
+## 1. Figma — instancing the component
 
-**The CTA is end-to-end on its surface.** It never owns a left/right screen
-gutter. Its own pill padding (16 dp horizontal / 12 dp vertical, *inside* the
-pill, around the label) is all the horizontal space the component controls.
-Everything outside the pill is owned by the parent surface.
+When assembling a Figma frame via MCP, instance the component set
+`2038:116` and set the variant properties below. Strings are
+**case-sensitive** (note the hyphen in `Pre-booking`).
 
-This applies universally to every Wiom component that sits on a surface —
-top bar, bottom nav, filter bar, bottom app bar, bottom sheet, dialog, screen
-content. **Surfaces own the screen gutter. Components fill.**
-
-```
-❌ WRONG (component owns the gutter)              ✅ RIGHT (surface owns the gutter)
-┌────────── 360 screen ─────────┐                ┌────────── 360 screen ─────────┐
-│  ┌──── CTA w=328, m=16 ───┐  │                │ 16 │── CTA fillMaxWidth ──│ 16│
-│  │       Button           │  │                │    │      Button          │   │
-│  └────────────────────────┘  │                │    └──────────────────────┘   │
-└───────────────────────────────┘                └───────────────────────────────┘
-```
-
-### Surface padding contract
-
-| CTA placement | Surface owns (H) | Surface owns (V) | CTA does |
+| Property | Type | Default | Accepted values |
 |---|---|---|---|
-| Screen content (inline) | `space-16` via screen padding | own | `fillMaxWidth()` |
-| Sticky bottom bar | `space-16` start / end | `space-16` top, `space-12` bottom + safe-area inset | `fillMaxWidth()` |
-| Dialog | `space-24` via dialog padding (264 dp content) | owned by dialog | `fillMaxWidth()` |
-| Bottom sheet | `space-16` via sheet content padding | owned by sheet | `fillMaxWidth()` |
-| Top bar trailing text CTA | owned by top bar slot | owned by top bar | hugs (not this component — see `wiom-top-bar`) |
+| `Type` | Variant | `Primary` | `Primary` · `Secondary` · `Tertiary` · `Destructive` · `Pre-booking` · `Acknowledge` |
+| `State` | Variant | `Default` | Standard 5 types: `Default` · `Pressed` · `Disabled` · `Loading`. Acknowledge: `Unchecked` · `Checked` · `Disabled` |
+| `Show Leading Icon` | Boolean | `true` | Hides leading icon when `false`. N/A for Acknowledge / Loading. |
+| `Show Trailing Icon` | Boolean | `false` | N/A for Acknowledge / Loading. |
+| `Leading Icon` | Instance swap | default chevron | Any icon from `Foundation/icons` (renders at 20 dp) |
+| `Trailing Icon` | Instance swap | default chevron | Same library, 20 dp |
 
-Figma shows CTAs as `328 wide` because preview frames are 360 wide with 16 dp
-surface padding already applied. The CTA component itself is `FILL` / `w-full`
-in every Figma instance — confirmed by `get_design_context` on `2038:2`
-(Primary Default) and `2982:305` (Button Group Count=2 Stacked). **Do not port
-the 328 literal into code.**
+Each instance is `w-full` / fills its container. Figma renders it at
+328 wide because the preview frame is 360 wide with 16 dp surface
+margin. **The surface owns the gutter, not the CTA.**
+
+Button Group is a layout helper (`2982:357`), not a separate component
+— it places 1–3 instances of `2038:116` in a row or column with gap
+12 dp, padding 0.
+
+### Code enum ↔ Figma variant string
+
+When generating both code and Figma in the same task, map them like so:
+
+| `WiomButtonType` (Kotlin) | Figma `Type` value |
+|---|---|
+| `Primary` | `Primary` |
+| `Secondary` | `Secondary` |
+| `Tertiary` | `Tertiary` |
+| `Destructive` | `Destructive` |
+| `PreBooking` | `Pre-booking` (with hyphen) |
+| `Acknowledge` | `Acknowledge` (compound — usually built in code as `WiomAcknowledgeRow` + `WiomButton`) |
+
+| `WiomButtonState` (Kotlin) | Figma `State` value |
+|---|---|
+| `Default` | `Default` |
+| `Disabled` | `Disabled` |
+| `Loading` | `Loading` |
+| (auto via `interactionSource`) | `Pressed` |
 
 ---
 
-## 1. The 6 CTA types
+## 2. Anatomy
 
-| Type | Purpose | Example copy |
+| Slot | Value | Token |
 |---|---|---|
-| **Primary** | Main action on a screen. Filled brand. Max 1 per screen. | "Recharge now", "भुगतान करें" |
-| **Secondary** | Alternate / prominent but not-the-main action. Outlined brand. | "Change plan", "Learn more" |
-| **Tertiary** | Lightweight inline dismiss or soft action. Text-only. | "Maybe later", "Edit" |
-| **Destructive** | Irreversible destruction of data. Filled critical. Max 1 per screen. | "Delete plan", "Remove partner" |
-| **Acknowledge** | Compound — a checkbox row + paired Primary CTA that's disabled until checked. For 1st-person verification before irreversible actions. | checkbox + "मैंने सभी जानकारी सही दी है" + paired "रिचार्ज करें" |
-| **Pre-booking** | Customer-app only. Bright-pink accent fill with dark label — distinguishes pre-booking flows from generic Primary CTAs on the same screen. | "Pre-book now" |
+| Container width | Derived — `fillMaxWidth()` or `weight(1f)` | — |
+| Container height | Derived — top pad + content + bottom pad (lands at 48 dp) | — |
+| Container radius | 16 dp | `radius-large` |
+| Container shadow | none | `shadow.none` |
+| Horizontal padding | 16 dp | `space-16` |
+| Vertical padding | 12 dp | `space-12` |
+| Inner row | Centered both axes, 8 dp gap | `space-8` |
+| Icon (leading / trailing) | 20 dp | `icon.sm` |
+| Label | Noto Sans SemiBold 16 / 24 LH | `type.label.lg` |
+| Loading spinner | 24 dp (replaces icon + label) | — |
 
-### Leading / trailing icon (Primary / Secondary / Tertiary / Destructive / Pre-booking)
-
-Figma booleans `Show Leading Icon` / `Show Trailing Icon` (defaults: leading ON,
-trailing OFF). Icon is a 20 dp `icon.sm` instance, swappable. Loading state
-hides the icon and shows a spinner instead. Acknowledge does not carry its own
-leading/trailing icon — the checkbox IS its leading element.
+**No fixed dimensions on the CTA — ever.** No `width(...)`,
+`height(...)`, `heightIn`, `widthIn`, `size(...)`. The CTA defines
+padding and content; dimensions emerge.
 
 ---
 
-## 2. States per type
+## 3. The 6 types
 
-All states below are Figma variants; use element-first tokens.
-
-### Shared spec (all types except Acknowledge)
-
-| Property | Value | Token |
-|---|---|---|
-| Width | Fills parent (`fillMaxWidth()` / Row `weight(1f)`). No hard width. | — |
-| Height | 48 dp (hugs; padding + line-height: 12 + 24 + 12) | `space-12` V / `space-16` H + 24 LH |
-| Radius | 16 dp | `radius-large` |
-| Internal padding — horizontal | 16 dp (inside the pill, around the label) | `space-16` |
-| Internal padding — vertical | 12 dp | `space-12` |
-| Label | 16sp SemiBold 600 / 24 LH | `type.label.lg` |
-| Icon size | 20 dp | `icon.sm` |
-| Icon-to-label gap | 8 dp | `space-8` |
-| Shadow | none | `shadow.none` |
-
-### Primary — 4 states
-
-| State | Fill | Label | Icon |
-|---|---|---|---|
-| Default | `bg.brand` (#D9008D) | `text.onBrand` (#FFFFFF) | `icon.inverse` (#FAF9FC) |
-| Pressed | `bg.brand.pressed` (#A30070) | `text.onBrand` | `icon.inverse` |
-| Disabled | `bg.disabled` (#D7D3E0) | `text.disabled` (#A7A1B2) | `icon.disabled` (#A7A1B2) |
-| Loading | `bg.brand` (unchanged) | hidden | spinner `icon.inverse` |
-
-### Secondary — 4 states (outlined)
-
-| State | Fill | Border | Label | Icon |
+| Type | Purpose | Where it sits | Don't use for | Sample copy |
 |---|---|---|---|---|
-| Default | transparent | `stroke-medium` + `stroke.brand.focus` (#D9008D) | `text.brand` (#D9008D) | `icon.brand` (#D9008D) |
-| Pressed | `bg.brand.subtle` (#FFE5F6) | `stroke-medium` + `stroke.brand.focus` | `text.brand` | `icon.brand` |
-| Disabled | transparent | `stroke-medium` + `stroke.subtle` (#D7D3E0) | `text.disabled` | `icon.disabled` |
-| Loading | transparent | `stroke.brand.focus` (unchanged) | hidden | spinner `icon.brand` |
+| **Primary** | Main action on a screen. Filled brand. Max 1 per screen. | Sticky bottom bar (most common); inline in cards / sheets / dialogs when it's the dominant action. | Cancel / Skip / Dismiss / Maybe later / generic "Continue". | "Recharge now", "भुगतान करें", "Verify OTP" |
+| **Secondary** | Alternate prominent action alongside Primary. Outlined brand. | Side-by-side with Primary in bottom sheets; stacked under Primary in dialogs; rarely standalone. | Destructive actions; throwaway dismiss; the screen's main action. | "Cancel", "Change plan", "वापस जाएं" |
+| **Tertiary** | Lightweight inline dismiss / soft action. Text-only. | Stacked under Primary; centered alone in dialogs for plain "OK"; inline in cards / list rows. | Destructive actions; the screen's main action; side-by-side next to Primary. | "बाद में", "Maybe later", "Skip", "Edit", "ठीक है" |
+| **Destructive** | Irreversible loss of data. Filled critical. **Never alone.** | Confirmation bottom sheets, confirmation dialogs — always with an escape (Secondary or Tertiary). | "Cancel" (form close), "Skip", "Go back" — those don't destroy data. Red is for losing data. | "Delete plan", "Remove partner", "Deactivate account" |
+| **Pre-booking** | Customer app only. The Primary of the **pre-booking journey** — every forward-action CTA from app-land through payment-success. Multiple per journey expected. | Sticky bar / sheets / dialogs / inline cards on every customer-app pre-booking screen until payment-success. **Auth screens reached via the journey still use standard Primary, not Pre-booking** — auth is a horizontal concern. | Login / signup / OTP. Post-payment-success screens. Partner app. Any non-pre-booking customer flow. | "Pre-book now", "Continue to plan", "Pay ₹X to pre-book" |
+| **Acknowledge** | Compound — checkbox row + paired Primary CTA, disabled until checked. 1st-person verification before irreversible actions. | Sticky bottom or inline above the gated Primary action, just before submission. | Generic confirmations (use Primary); multi-checkbox forms; 3rd-person narration. | "मैंने सभी जानकारी सही दी है", "मैंने T&C पढ़ लिए हैं" |
 
-### Tertiary — 4 states (text-only, no border)
+---
 
-| State | Fill | Label | Icon |
+## 4. Tokens per type × state
+
+All tokens are **element-first** — `bg.*` / `text.*` / `icon.*` /
+`stroke.*`. Always reference tokens, never hex.
+
+### 4.1 Primary
+
+| State | Container | Border | Label | Icon |
+|---|---|---|---|---|
+| Default | `bg.brand` | none | `text.onBrand` | `icon.inverse` |
+| Pressed | `bg.brand.pressed` | none | `text.onBrand` | `icon.inverse` |
+| Disabled | `bg.disabled` | none | `text.disabled` | `icon.disabled` |
+| Loading | `bg.brand` | none | hidden | spinner — `icon.inverse` 24 dp |
+
+### 4.2 Secondary (2 dp border in all states)
+
+| State | Container | Border | Label | Icon |
+|---|---|---|---|---|
+| Default | transparent | `stroke.brand.focus` | `text.brand` | `icon.brand` |
+| Pressed | `bg.brand.subtle` | `stroke.brand.focus` | `text.brand` | `icon.brand` |
+| Disabled | transparent | `stroke.subtle` | `text.disabled` | `icon.disabled` |
+| Loading | transparent | `stroke.brand.focus` | hidden | spinner — `icon.brand` 24 dp |
+
+### 4.3 Tertiary
+
+| State | Container | Label | Icon |
 |---|---|---|---|
 | Default | transparent | `text.brand` | `icon.brand` |
 | Pressed | `bg.brand.subtle` | `text.brand` | `icon.brand` |
 | Disabled | transparent | `text.disabled` | `icon.disabled` |
-| Loading | transparent | hidden | spinner `icon.brand` |
+| Loading | transparent | hidden | spinner — `icon.brand` 24 dp |
 
-### Destructive — 4 states (filled critical)
+### 4.4 Destructive
 
-| State | Fill | Label | Icon |
+| State | Container | Label | Icon |
 |---|---|---|---|
-| Default | `bg.critical` (#D92130) | `text.onCritical` (#FFFFFF) | `icon.inverse` |
-| Pressed | `bg.critical.pressed` (#A31824) | `text.onCritical` | `icon.inverse` |
+| Default | `bg.critical` | `text.onCritical` | `icon.inverse` |
+| Pressed | `bg.critical.pressed` | `text.onCritical` | `icon.inverse` |
 | Disabled | `bg.disabled` | `text.disabled` | `icon.disabled` |
-| Loading | `bg.critical` | hidden | spinner `icon.inverse` |
+| Loading | `bg.critical` | hidden | spinner — `icon.inverse` 24 dp |
 
-### Pre-booking — 4 states (bright accent)
+### 4.5 Pre-booking (dark label — `bg.brand.accent` is light pink, white-on-pink fails AA)
 
-| State | Fill | Label | Icon |
+| State | Container | Label | Icon |
 |---|---|---|---|
-| Default | `bg.brand.accent` (#FF66C9) | `text.onBrandAccent` (#161021 — **dark**) | `icon.action` (#352D42) |
-| Pressed | `bg.brand.accent.pressed` (#EA5DB8) | `text.onBrandAccent` | `icon.action` |
+| Default | `bg.brand.accent` | `text.onBrandAccent` | `icon.action` |
+| Pressed | `bg.brand.accent.pressed` | `text.onBrandAccent` | `icon.action` |
 | Disabled | `bg.disabled` | `text.disabled` | `icon.disabled` |
-| Loading | `bg.brand.accent` | hidden | spinner `icon.action` |
+| Loading | `bg.brand.accent` | hidden | spinner — `icon.action` 24 dp |
 
-**Why dark label:** `bg.brand.accent` (#FF66C9) is a light pink; white label
-fails AA (2.5:1). Dark `text.onBrandAccent` lands at 7.07:1.
+### 4.6 Acknowledge (compound — checkbox row + paired Primary CTA)
 
-### Acknowledge — 3 states (compound: checkbox row + paired Primary CTA)
+`space-16` between checkbox row and CTA. `space-12` between checkbox
+glyph and label (Figma drift: 10 px → normalize to 12 dp for the
+4 dp grid). Compound height = 24 + 16 + 48 = **88 dp**.
 
-| State | Checkbox | Row label | Paired Primary CTA |
+| State | Checkbox | Row label | Inner CTA |
 |---|---|---|---|
-| Unchecked | `stroke.strong` (#473F55), 2 dp, transparent fill | `text.default` (#161021), `type.body.md` | Disabled (`bg.disabled` / `text.disabled` / `icon.disabled`) |
-| Checked | `bg.brand` fill, no stroke, `Icons.Rounded.Check` `icon.inverse` | `text.default` | Enabled (full Primary tokens) |
-| Disabled | 40% opacity on checkbox | `text.disabled` | Disabled |
+| Unchecked | Outlined 24 dp, `stroke.brand.focus` 2 dp | `text.default` | Primary Disabled tokens |
+| Checked | Filled `bg.brand`, white check (`icon.inverse`) | `text.default` | Primary Default tokens |
+| Disabled | Outlined 24 dp, `stroke.subtle` 2 dp | `text.default` | Primary Disabled tokens |
 
-Compound height = 88 dp (checkbox row 32 dp + `space-8` gap + Primary CTA
-48 dp). Figma confirms: `2144:2` / `2144:8` / `2144:15` all ship at frame
-height 88. In Figma, Acknowledge ships as a single compound variant; in
-code, it's two composables (`WiomAcknowledgeRow` + `WiomButton`) wired
-through shared state. The compound fills parent horizontally — no surface
-padding.
+Acknowledge copy is **always 1st person** ("मैंने…" / "I have…"),
+never 3rd person ("कस्टमर ने…").
 
-### States deliberately NOT in V2
+### Focus ring (all CTAs)
 
-**Focus** — was in V1, removed in V2. Keyboard focus surfaces via
-`stroke.brand.focus` / `stroke.critical.focus` ring (accessibility only on
-Android — TalkBack / external keyboard), **not** as a separate visual fill
-variant. Rule: destructive elements get the red focus ring
-(`stroke.critical.focus`), everything else gets the brand pink ring
-(`stroke.brand.focus`).
-
-**Hover** — never in V1 and never in V2. Wiom is touch-first Android; there's
-no pointer to hover.
+`stroke.brand.focus` on most types, `stroke.critical.focus` on
+Destructive. Applied on keyboard / TalkBack focus only — not a fill
+variant.
 
 ---
 
-## 3. Decision logic — which CTA
+## 5. Surface contract
 
-```
-Is this the one main action on the screen?
-  → Primary
+| Surface | H margin (surface owns) | V margin (surface owns) | CTA does |
+|---|---|---|---|
+| Inline screen content | `space-16` via screen padding | own | `fillMaxWidth()` |
+| Sticky bottom bar | `space-16` start / end | `space-16` top, `space-12` bottom + safe-area inset | `fillMaxWidth()` |
+| Dialog | `space-24` via dialog padding | own | `fillMaxWidth()` |
+| Bottom sheet | `space-16` via sheet padding | own | `fillMaxWidth()` |
 
-Is this a customer-app pre-booking flow action?
-  → Pre-booking (never outside pre-booking flows)
+**Sticky bar fill:** `bg.default`, 1 dp top border in `stroke.subtle`,
+`shadow.none`.
 
-Is this an alternate prominent action alongside Primary?
-  → Secondary
-
-Is this a lightweight dismiss / soft action / inline "Edit" / "Skip"?
-  → Tertiary
-
-Does this action delete, remove, cancel-plan, or can't be undone?
-  → Destructive
-
-Must the user explicitly confirm they've verified something before proceeding?
-  → Acknowledge (checkbox) + Primary (disabled until checked)
-```
-
-Never Destructive for: Skip, Cancel (form close), No thanks, Maybe later,
-Go back, Close, Dismiss, Not interested. Those are Secondary or Tertiary. Red
-is only for losing data.
+**Sticky vs inline placement:** if removing the CTA would mean the user
+has no way to complete the screen's purpose → sticky-bottom. Otherwise
+inline.
 
 ---
 
-## 4. Button Group — pairing 1, 2, or 3 CTAs
+## 6. Pairing (Button Group)
 
-Figma component `Button Group` (`2982:357`). Per the Figma component
-description: **"Width: 328 · Gap: 12 · Padding: 0 · Each slot fills
-horizontally."** The `328` there is the preview width (360 screen − 16 × 2
-gutter). In code the group's own width is `fillMaxWidth()` — the parent
-surface provides the gutter.
+Master table — pick the row matching intent, read across.
 
-| Property | Value |
-|---|---|
-| Width | Fills parent (no padding on the group itself) |
-| Padding | 0 |
-| Gap between CTAs | 12 dp (`space-12`) |
-| Each CTA slot | Fills — Side-by-side splits evenly (`weight(1f)`); Stacked `fillMaxWidth()` |
+| Surface | Scenario | Layout | CTAs |
+|---|---|---|---|
+| **Bottom sheet** | 1 dominant action | full-width | Primary |
+| | Dominant + weighty dismiss | side-by-side | Secondary (left) + Primary (right) |
+| | Dominant + soft dismiss | stacked | Primary (top) + Tertiary |
+| | Equal weight, short copy¹ | side-by-side | Secondary + Secondary |
+| | Equal weight, copy can't shorten | stacked | Secondary + Secondary |
+| | Destructive confirmation | side-by-side | Secondary (left) + Destructive (right) |
+| | 3 actions | stacked | Primary + Secondary + Tertiary |
+| **Dialog** (always stacked — 312 dp too narrow side-by-side) | Simple acknowledgment | single | Tertiary ("ठीक है") |
+| | Confirmation | stacked | Primary + Secondary |
+| | Destructive confirmation | stacked | Destructive + Secondary |
+| | Celebration / success | full-width | Primary |
+| **Sticky bottom bar** | Reason-for-being action | full-width | Primary |
+| | Acknowledge gate | stacked compound | Acknowledge + Primary |
+| | Two-action terminal step (rare) | side-by-side | Secondary (left) + Primary (right) |
+| **Inline (cards / list rows)** | Single inline action | hugs, end-aligned | Tertiary |
+| | Card primary action | full-width inside card | Primary |
+| | Edit / Delete on a row | side-by-side | Tertiary + Tertiary |
 
-| Count | Default types | Layout choices |
-|---|---|---|
-| 1 | Primary | Side-by-side or Stacked (identical result) |
-| 2 | Primary + Secondary | Side-by-side (Primary on right) OR Stacked (Primary on top) |
-| 3 | Primary + Secondary + Tertiary | Stacked recommended (Primary on top); side-by-side only if each CTA fits with short copy |
+¹ ≤14 Hindi chars or ≤18 English chars per slot.
 
-Rules enforced by the Button Group:
+**Right side = preferred** (side-by-side). **Top = preferred** (stacked).
 
-- Max **1 Primary** and **1 Destructive** per screen.
-- Never pair Destructive with Primary — **Destructive IS the primary** in
-  that group. Acceptable pairs: Destructive + Secondary / Destructive +
-  Tertiary.
-- Use Secondary/Tertiary for Dismiss/Skip/Cancel/Close — never Destructive.
-- Side-by-side with 3 CTAs is tight on mobile (≈101 dp each at 328 parent
-  width) — prefer Stacked for Count=3.
+---
 
-### Delta-based layout choice
+## 7. Universal rules
 
-The "delta" is the importance gap between the two CTAs.
+1. **No fixed dimensions on the CTA.** Width = `fillMaxWidth()` or
+   `weight(1f)`. Height emerges from padding + content. No
+   `width(...)`, `height(...)`, `heightIn`, `widthIn`, `size(...)`.
+2. **Max 1 Primary, max 1 Destructive** per screen / sheet / dialog.
+   Never pair Primary + Destructive — Destructive replaces Primary.
+3. **Tertiary never side-by-side with Primary** — stacked only.
+4. **Destructive never alone** — always paired with Secondary or
+   Tertiary as escape.
+5. **Pre-booking is the Primary of the pre-booking journey.** Inside
+   the journey (customer-app, app-land through payment-success), every
+   forward-action CTA is Pre-booking. Outside (auth, post-payment,
+   Partner app, other flows) → standard Primary.
+6. **CTA copy reflects the destination** — "Recharge", not "Continue".
+   Acknowledge copy is always 1st person.
+7. **CTA text never wraps, truncates, or shrinks.** Rewrite shorter.
+8. **Surfaces own the gutter; CTA fills.**
+9. **Icons** come from `Icons.Rounded.*` or
+   `painterResource(R.drawable.ic_wiom_* / ic_partner_*)`. Never
+   `Icons.Default / Filled / Outlined / Sharp / TwoTone`. Set
+   `Icon(tint = …)` explicitly with the `icon.*` token for the type.
+   Use `contentDescription = "<action verb>"` for icons that convey
+   meaning beyond the label; `null` when the label fully describes the
+   action.
+10. **Inner Row centered both axes** —
+    `Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)` +
+    `Alignment.CenterVertically`. Never `Arrangement.Start` /
+    `SpaceBetween`.
+11. **Tokens only — no raw hex, no role-first legacy tokens** like
+    `color.brand.primary`. Element-first only (`bg.*`, `text.*`,
+    `stroke.*`, `icon.*`).
+12. **Flat surfaces** — `shadow.none` on CTA and sticky bar.
+
+---
+
+## 8. Decision logic
+
+### Type
 
 ```
+One main action on this screen?                     → Primary
+Customer-app pre-booking flow?                      → Pre-booking
+Alternate prominent action alongside Primary?       → Secondary
+Lightweight dismiss / soft action / Edit / Skip?    → Tertiary
+Destroys / removes / cancels-plan?                  → Destructive
+Must explicitly confirm before proceeding?          → Acknowledge + Primary
+```
+
+### Layout (delta = importance gap between two CTAs)
+
+```
+Sequential gate (Acknowledge before action)?
+  → stacked compound
+
 HIGH DELTA (one dominant + one dismiss)
-  Dismiss carries visual weight (Cancel/Back)     → Side-by-side: Secondary + Primary
-  Dismiss is throwaway ("later", "not now")       → Stacked: Primary + Tertiary
-  Dominant is destructive                         → Side-by-side: Secondary + Destructive
+  Weighty dismiss (Cancel / Back)
+    → side-by-side · Secondary (left) + Primary (right)
+  Throwaway dismiss ("बाद में" / "Later")
+    → stacked · Primary (top) + Tertiary
+  Dominant is destructive
+    → side-by-side · Secondary (left) + Destructive (right)
 
-LOW / ZERO DELTA (equal-weight choices)
-  Both fit in ≈14 Hindi / ≈18 English characters  → Side-by-side: Secondary + Secondary
-  Text can be shortened without losing meaning    → Shorten → Side-by-side
-  Shortening would lose critical context          → Stacked: Secondary + Secondary
-
-ACKNOWLEDGE + Primary
-  Not a parallel choice — sequential verification → Always stacked
+LOW / ZERO DELTA (equal weight)
+  Both fit ≤14 Hindi / ≤18 English chars per slot
+    → side-by-side · Secondary + Secondary
+  Can be shortened
+    → SHORTEN → side-by-side
+  Shortening loses meaning
+    → stacked · Secondary + Secondary
 ```
 
-### Context-specific defaults
-
-| Context | Layout | Typical pairing |
-|---|---|---|
-| Bottom sheet — 1 action | Full-width | Primary only |
-| Bottom sheet — confirm/cancel | Side-by-side | Secondary + Primary |
-| Bottom sheet — soft dismiss | Stacked | Primary + Tertiary |
-| Bottom sheet — destructive | Side-by-side | Secondary + Destructive |
-| Dialog (all types) | **Stacked only** — dialog width forbids side-by-side | per `wiom-dialog` |
-| Success / celebration | Full-width or Stacked | Primary only, or Primary + Tertiary |
-
-**Dialog exception.** Dialogs are 312 dp wide, which doesn't fit two readable
-side-by-side CTAs. All dialog button groups are stacked. See `wiom-dialog`.
-
 ---
 
-## 5. Universal rules
+## 9. Compose API + code
 
-1. **Max 1 Primary** per screen / sheet / dialog.
-2. **Max 1 Destructive** per screen. No Primary + Destructive pair.
-3. **Right = preferred action** in side-by-side layout (Primary on the right).
-4. **Top = preferred action** in stacked layout.
-5. **Tertiary only in stacked pairs** — never side-by-side next to Primary
-   (borderless next to filled looks broken horizontally).
-6. **Destructive never alone** — pair with Secondary or Tertiary as escape.
-7. **CTA copy reflects the destination**, not the current screen. "Recharge"
-   on plan selection, not "Continue".
-8. **Acknowledge uses 1st person** — "मैंने…" / "I've…", never "कस्टमर ने…".
-9. **Sticky-bottom CTA bar is a surface — it owns the gutter; the CTA fills.**
-   Bar contract: `bg.default`, `stroke-small` (1 dp) `stroke.subtle` top
-   border, `shadow.none`. Bar padding: `space-16` start / `space-16` end /
-   `space-16` top / `space-12` bottom + OS safe-area inset. CTA (or Button
-   Group) inside the bar uses `fillMaxWidth()` — never sets its own left /
-   right margin. Never a drop shadow, never elevation. Flat border-top only.
-10. **CTA text never wraps, truncates, or shrinks.** If text overflows,
-    rewrite shorter. No ellipsis, no multi-line, no font-size reduction.
-11. **Equal-weight CTAs: try side-by-side first.** Switch to stacked only if
-    shortening would lose meaning.
-12. **Sticky vs inline placement**:
-    - **Sticky-bottom** — the reason-for-being of the screen (Recharge, Submit,
-      Pay, Confirm). Pinned above the nav bar.
-    - **Inline** — CTAs inside cards, dialogs, sheets. Move with the content.
-13. **Icons come from `Icons.Rounded.*`** or `painterResource(R.drawable.ic_wiom_*)`
-    / `ic_partner_*`. Never `Icons.Default/Filled/Outlined/Sharp/TwoTone`.
-14. **Icon tint** always uses the `icon.*` token for the CTA's type (see
-    tables above), not `text.on*`. Set `tint` explicitly on Compose `Icon(...)` —
-    `Button(contentColor)` would otherwise overwrite the carefully calibrated
-    hex.
-
----
-
-## 6. Decision validation matrix
-
-| Pairing | Delta | Default layout | Rule check |
-|---|---|---|---|
-| Secondary + Primary | Medium | Side-by-side | Rules 1, 3 |
-| Primary + Tertiary | High | Stacked | Rules 4, 5 |
-| Secondary + Secondary (short) | Zero | Side-by-side | Rule 11 |
-| Secondary + Secondary (long, irreducible) | Zero | Stacked | Rules 10, 11 |
-| Secondary + Destructive | Medium | Side-by-side | Rules 2, 3, 6 |
-| Tertiary + Destructive | High | Stacked | Rules 2, 5, 6 |
-| Acknowledge + Primary | N/A | Stacked always | Rule 8 |
-
----
-
-## 7. Anti-patterns
-
-- ❌ `Modifier.width(328.dp)` / hardcoded width on a CTA (should be
-     `fillMaxWidth()` or Row `weight(1f)`; the parent surface owns the gutter)
-- ❌ `Modifier.padding(horizontal = 16.dp)` on a CTA or Button Group
-     (that gutter belongs to the surface, not the component)
-- ❌ A Button Group with its own `horizontal` / `start` / `end` padding
-     (Figma spec: "Padding: 0")
-- ❌ Primary + Primary (no hierarchy)
-- ❌ Primary + Destructive (Destructive replaces Primary)
-- ❌ Four+ CTAs at the same level
-- ❌ Tertiary side-by-side with Primary
-- ❌ Destructive alone (no escape)
-- ❌ "Continue" / "Submit" / "Next" / "आगे बढ़ें" (contextless copy)
-- ❌ "कस्टमर ने…" on Acknowledge (must be 1st person)
-- ❌ Any `color.brand.primary`, `color.negative.primary`, `color.text.on-color`,
-     `color.surface.muted`, `color.text.disabled`, `color.border.default`,
-     `color.border.strong` (all legacy — migrate to element-first)
-- ❌ Raw hex (`#D9008D`, `#FFFFFF`, …) in code
-- ❌ `shadow.md` / `shadow.lg` on a CTA container (flat + border-top only)
-- ❌ CTA text wrap / truncate / ellipsis
-- ❌ Focus state as a fill variant (use focus ring via `stroke.brand.focus`)
-- ❌ Hover state (never existed in Wiom)
-- ❌ Side-by-side inside a dialog (stacked only)
-- ❌ Icons from `Icons.Default/Filled/Outlined/Sharp/TwoTone`
-- ❌ Pre-booking CTA outside customer-app pre-booking flows
-
----
-
-## 8. Minimal Compose shape
+### Public API
 
 ```kotlin
+enum class WiomButtonType { Primary, Secondary, Tertiary, Destructive, PreBooking }
+enum class WiomButtonState { Default, Disabled, Loading }
+// Pressed is not a value — handled automatically via interactionSource.
+
 @Composable
 fun WiomButton(
     text: String,
-    type: WiomButtonType,              // Primary, Secondary, Tertiary, Destructive, PreBooking
-    state: WiomButtonState = WiomButtonState.Default,   // Default, Pressed (auto), Disabled, Loading
+    type: WiomButtonType,
+    state: WiomButtonState = WiomButtonState.Default,
     leadingIcon: ImageVector? = null,
     trailingIcon: ImageVector? = null,
+    iconContentDescription: String? = null,        // null when label describes the action
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 )
 
-// Acknowledge is two composables sharing state
 @Composable
 fun WiomAcknowledgeRow(
     text: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier,
+)
+
+// Lives in wiom-selection-controls; signature shown for code-gen context.
+@Composable
+fun WiomCheckbox(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
 )
 ```
 
+### Token resolver (drives container / label / icon / border per state)
+
 ```kotlin
-// Side-by-side pair in a bottom sheet button group.
-// The Row is placed by the sheet (surface) which owns the 16dp start/end
-// gutter. The Row itself has no width / horizontal padding — it just
-// fills whatever the parent gave it, and each CTA splits via weight(1f).
-Row(horizontalArrangement = Arrangement.spacedBy(WiomSpacing.m)) {   // 12dp
-    WiomButton(
-        text = "Cancel",
-        type = WiomButtonType.Secondary,
-        modifier = Modifier.weight(1f),
-        onClick = { },
-    )
-    WiomButton(
-        text = "Confirm",
-        type = WiomButtonType.Primary,
-        modifier = Modifier.weight(1f),
-        onClick = { },
-    )
+@Composable
+private fun rememberCtaColors(
+    type: WiomButtonType,
+    state: WiomButtonState,
+    pressed: Boolean,
+): CtaColors {
+    // "effective" state collapses Pressed-from-interaction into the state machine
+    val effective = when {
+        state == WiomButtonState.Disabled -> Effective.Disabled
+        state == WiomButtonState.Loading -> Effective.Loading
+        pressed -> Effective.Pressed
+        else -> Effective.Default
+    }
+    return when (type) {
+        WiomButtonType.Primary -> when (effective) {
+            Effective.Default  -> CtaColors(Wiom.bg.brand,         null,                       Wiom.text.onBrand,   Wiom.icon.inverse)
+            Effective.Pressed  -> CtaColors(Wiom.bg.brand.pressed, null,                       Wiom.text.onBrand,   Wiom.icon.inverse)
+            Effective.Disabled -> CtaColors(Wiom.bg.disabled,      null,                       Wiom.text.disabled,  Wiom.icon.disabled)
+            Effective.Loading  -> CtaColors(Wiom.bg.brand,         null,                       Color.Transparent,   Wiom.icon.inverse)
+        }
+        WiomButtonType.Secondary -> when (effective) {
+            Effective.Default  -> CtaColors(Color.Transparent,            Wiom.stroke.brand.focus,    Wiom.text.brand,         Wiom.icon.brand)
+            Effective.Pressed  -> CtaColors(Wiom.bg.brand.subtle,         Wiom.stroke.brand.focus,    Wiom.text.brand,         Wiom.icon.brand)
+            Effective.Disabled -> CtaColors(Color.Transparent,            Wiom.stroke.subtle,         Wiom.text.disabled,      Wiom.icon.disabled)
+            Effective.Loading  -> CtaColors(Color.Transparent,            Wiom.stroke.brand.focus,    Color.Transparent,       Wiom.icon.brand)
+        }
+        WiomButtonType.Tertiary -> when (effective) {
+            Effective.Default  -> CtaColors(Color.Transparent,            null,                       Wiom.text.brand,         Wiom.icon.brand)
+            Effective.Pressed  -> CtaColors(Wiom.bg.brand.subtle,         null,                       Wiom.text.brand,         Wiom.icon.brand)
+            Effective.Disabled -> CtaColors(Color.Transparent,            null,                       Wiom.text.disabled,      Wiom.icon.disabled)
+            Effective.Loading  -> CtaColors(Color.Transparent,            null,                       Color.Transparent,       Wiom.icon.brand)
+        }
+        WiomButtonType.Destructive -> when (effective) {
+            Effective.Default  -> CtaColors(Wiom.bg.critical,             null,                       Wiom.text.onCritical,    Wiom.icon.inverse)
+            Effective.Pressed  -> CtaColors(Wiom.bg.critical.pressed,     null,                       Wiom.text.onCritical,    Wiom.icon.inverse)
+            Effective.Disabled -> CtaColors(Wiom.bg.disabled,             null,                       Wiom.text.disabled,      Wiom.icon.disabled)
+            Effective.Loading  -> CtaColors(Wiom.bg.critical,             null,                       Color.Transparent,       Wiom.icon.inverse)
+        }
+        WiomButtonType.PreBooking -> when (effective) {
+            Effective.Default  -> CtaColors(Wiom.bg.brand.accent,         null,                       Wiom.text.onBrandAccent, Wiom.icon.action)
+            Effective.Pressed  -> CtaColors(Wiom.bg.brand.accent.pressed, null,                       Wiom.text.onBrandAccent, Wiom.icon.action)
+            Effective.Disabled -> CtaColors(Wiom.bg.disabled,             null,                       Wiom.text.disabled,      Wiom.icon.disabled)
+            Effective.Loading  -> CtaColors(Wiom.bg.brand.accent,         null,                       Color.Transparent,       Wiom.icon.action)
+        }
+    }
 }
 
-// Stacked pair (dialog and bottom-sheet defaults — CTAs center-anchored,
-// each filling the container's internal width)
-Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(WiomSpacing.m),  // 12dp
+private enum class Effective { Default, Pressed, Disabled, Loading }
+
+private data class CtaColors(
+    val container: Color,
+    val border: Color?,             // 2dp when non-null (Secondary)
+    val label: Color,
+    val icon: Color,                // also used as spinner tint
+)
+```
+
+### Inner row (decides label alignment; uses the resolver above)
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+val pressed by interactionSource.collectIsPressedAsState()
+val colors = rememberCtaColors(type, state, pressed)
+
+Surface(
+    color = colors.container,
+    shape = RoundedCornerShape(Wiom.radius.large),     // 16dp
+    border = colors.border?.let { BorderStroke(2.dp, it) },
+    modifier = modifier                                // no height, no width
+        .clip(RoundedCornerShape(Wiom.radius.large))
+        .clickable(
+            enabled = state == WiomButtonState.Default,
+            interactionSource = interactionSource,
+            indication = LocalIndication.current,
+            onClick = onClick,
+        ),
 ) {
+    Row(
+        modifier = Modifier.padding(
+            horizontal = Wiom.space.s16,
+            vertical = Wiom.space.s12,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(
+            Wiom.space.s8,
+            Alignment.CenterHorizontally,
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (state == WiomButtonState.Loading) {
+            CircularProgressIndicator(
+                color = colors.icon,
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(24.dp),
+            )
+        } else {
+            leadingIcon?.let {
+                Icon(it, contentDescription = iconContentDescription,
+                    tint = colors.icon, modifier = Modifier.size(20.dp))
+            }
+            Text(
+                text = text,
+                style = Wiom.type.label.lg,
+                color = colors.label,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+            )
+            trailingIcon?.let {
+                Icon(it, contentDescription = null,
+                    tint = colors.icon, modifier = Modifier.size(20.dp))
+            }
+        }
+    }
+}
+```
+
+### Common mistake → fix
+
+```kotlin
+// ❌ WRONG — fixed height, hardcoded width, hex color, Material default icon
+WiomButton(
+    text = "Recharge",
+    type = WiomButtonType.Primary,
+    leadingIcon = Icons.Default.Bolt,                  // wrong icon family
+    modifier = Modifier
+        .width(328.dp)                                 // never hardcode width
+        .height(48.dp),                                // never hardcode height
+    onClick = { },
+)
+
+// ✅ RIGHT — surface owns gutter, CTA fills, height emerges from padding
+Box(modifier = Modifier.padding(horizontal = Wiom.space.s16)) {  // surface owns gutter
     WiomButton(
-        text = "भुगतान करें",
+        text = "Recharge now",                                   // contextual copy
         type = WiomButtonType.Primary,
-        modifier = Modifier.fillMaxWidth(),
-        onClick = { },
-    )
-    WiomButton(
-        text = "बाद में",
-        type = WiomButtonType.Tertiary,
+        leadingIcon = Icons.Rounded.Bolt,                        // Rounded family only
         modifier = Modifier.fillMaxWidth(),
         onClick = { },
     )
 }
 ```
 
-**Why `CenterHorizontally` + `fillMaxWidth()` on every stacked CTA.** Without
-`fillMaxWidth()`, each CTA hugs its label width; Figma's button-group spec
-(`flex-col items-center justify-center gap-[12px]`) anchors the group to the
-container's horizontal center, so a hugged CTA would render centered — but
-visually off-center vs a sibling CTA with different label length. Always pair
-the two Modifiers together.
+### Button Group
 
 ```kotlin
-// Sticky-bottom CTA bar — the bar is the surface; it owns the gutter.
-// The CTA inside is end-to-end.
-Surface(
-    color = Wiom.bg.default,
-    modifier = Modifier
-        .fillMaxWidth()
-        .drawTopBorder(Wiom.stroke.small, Wiom.stroke.subtle),   // 1dp top border
+// Side by side
+Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12),
 ) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Wiom.space.s16)     // surface owns the gutter
-            .padding(top = Wiom.space.s16, bottom = Wiom.space.s12)
-            .navigationBarsPadding(),                  // safe-area inset
+    WiomButton("Cancel",  type = WiomButtonType.Secondary, modifier = Modifier.weight(1f), onClick = { })
+    WiomButton("Confirm", type = WiomButtonType.Primary,   modifier = Modifier.weight(1f), onClick = { })
+}
+
+// Stacked — both horizontalAlignment AND fillMaxWidth on every child;
+// without fillMaxWidth, short labels hug and render visually off-center.
+Column(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(Wiom.space.s12),
+) {
+    WiomButton("भुगतान करें", type = WiomButtonType.Primary,  modifier = Modifier.fillMaxWidth(), onClick = { })
+    WiomButton("बाद में",    type = WiomButtonType.Tertiary, modifier = Modifier.fillMaxWidth(), onClick = { })
+}
+```
+
+### Acknowledge
+
+```kotlin
+Column(
+    modifier = Modifier.fillMaxWidth(),
+    verticalArrangement = Arrangement.spacedBy(Wiom.space.s16),
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12),
+        verticalAlignment = Alignment.Top,
     ) {
+        WiomCheckbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            enabled = !disabled,
+        )
+        Text(
+            text = ackCopy,
+            style = Wiom.type.label.lg,
+            color = Wiom.text.default,
+            modifier = Modifier.weight(1f),
+        )
+    }
+    WiomButton(
+        text = primaryCopy,
+        type = WiomButtonType.Primary,
+        state = if (!checked || disabled) WiomButtonState.Disabled
+                else WiomButtonState.Default,
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onConfirm,
+    )
+}
+```
+
+### Sticky bottom bar — `StickyCtaBar` (canonical helper)
+
+Define once and reuse across screen recipes. The bar **is** the surface
+— it owns the gutter, top border, and safe-area inset. Children fill
+end-to-end.
+
+```kotlin
+@Composable
+fun StickyCtaBar(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Surface(
+        color = Wiom.bg.default,
+        modifier = modifier
+            .fillMaxWidth()
+            .drawBehind {                               // 1dp top border, no custom helper
+                drawLine(
+                    color = Wiom.stroke.subtle,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 1.dp.toPx(),
+                )
+            },
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Wiom.space.s16)   // surface owns gutter
+                .padding(top = Wiom.space.s16, bottom = Wiom.space.s12)
+                .navigationBarsPadding(),               // safe-area inset
+            horizontalAlignment = Alignment.CenterHorizontally,
+            content = content,
+        )
+    }
+}
+
+// Usage:
+StickyCtaBar {
+    WiomButton(
+        text = "Recharge now",
+        type = WiomButtonType.Primary,
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { },
+    )
+}
+```
+
+---
+
+## 10. Screen-level recipes
+
+End-to-end assembly examples. Use these as templates — pick the
+matching one for the user's intent, then swap copy and tokens.
+
+### Recharge screen (sticky-bottom Primary, the most common pattern)
+
+```kotlin
+Scaffold(
+    bottomBar = {
+        // Sticky bottom bar from §9
+        StickyCtaBar {
+            WiomButton(
+                text = "Recharge now",
+                type = WiomButtonType.Primary,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onRecharge,
+            )
+        }
+    }
+) { padding ->
+    // Screen content scrolls underneath; bar stays put.
+    Column(modifier = Modifier.padding(padding).padding(horizontal = Wiom.space.s16)) { /* ... */ }
+}
+```
+
+### Delete confirmation dialog (Destructive + Secondary, stacked)
+
+```kotlin
+// Inside the dialog body — dialog itself owns space-24 padding
+Column(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(Wiom.space.s12),
+) {
+    WiomButton(
+        text = "Delete plan",
+        type = WiomButtonType.Destructive,
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onDelete,
+    )
+    WiomButton(
+        text = "Cancel",
+        type = WiomButtonType.Secondary,
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onDismiss,
+    )
+}
+```
+
+### Pre-booking step (sticky-bottom Pre-booking)
+
+```kotlin
+// Same shape as Recharge — only the type changes.
+StickyCtaBar {
+    WiomButton(
+        text = "Continue to plan",
+        type = WiomButtonType.PreBooking,        // Pre-booking, not Primary
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onContinue,
+    )
+}
+```
+
+### T&C acknowledgment before submission (Acknowledge + Primary, sticky)
+
+```kotlin
+StickyCtaBar {
+    var checked by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Wiom.space.s16),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12),
+            verticalAlignment = Alignment.Top,
+        ) {
+            WiomCheckbox(checked = checked, onCheckedChange = { checked = it })
+            Text(
+                "मैंने सभी जानकारी सही दी है",
+                style = Wiom.type.label.lg,
+                color = Wiom.text.default,
+                modifier = Modifier.weight(1f),
+            )
+        }
         WiomButton(
-            text = "Recharge now",
+            text = "जमा करें",
             type = WiomButtonType.Primary,
-            modifier = Modifier.fillMaxWidth(),        // CTA fills end-to-end
-            onClick = { },
+            state = if (checked) WiomButtonState.Default else WiomButtonState.Disabled,
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onSubmit,
         )
     }
 }
 ```
 
-Do not set `Modifier.height(...)` — buttons hug to 48 dp via padding +
-line-height. Do not hardcode width — use `weight(...)` inside a Row or
-`fillMaxWidth()` in a Column. See `wiom-compose-layout-rules`.
+### Bottom sheet with two actions (Secondary + Primary, side-by-side)
 
----
-
-## 9. Acknowledge use cases
-
-1st-person verification copy before an irreversible action.
-
-| Scenario | Copy | Behavior |
-|---|---|---|
-| Before submitting verified data | "मैंने सभी जानकारी सही दी है" | Unchecked → Primary disabled |
-| Before an irreversible action | "मैं इस रिचार्ज को confirm करता/करती हूँ" | Forces active acknowledgment |
-| Accepting terms / policy | "मैंने Terms & Conditions पढ़ लिए हैं" | Blocks submission until acknowledged |
-| Confirming task completion | "मैंने यह काम पूरा कर लिया है" | Partner confirms work done |
-| Handing over credentials | "मैंने कस्टमर को credentials दे दिए हैं" | Accountability before closing |
-
----
-
-## 10. Pre-booking use cases
-
-Customer-app only. Never for Partner-app buttons, never for generic "Book"
-/ "Buy" / "Order" / "Pay". Bright pink is reserved to distinguish pre-booking
-from the standard Primary CTA in the same flow.
-
----
-
-## Quick token lookup
-
-```
-ALL CTAs
-Width                   fillMaxWidth() — parent surface owns gutter
-Height                  48dp (hugs from 12+24LH+12)
-Radius                  radius-large (16dp)
-Internal pill padding   space-12 vertical / space-16 horizontal (inside the pill)
-Icon                    20dp · icon.sm · Icons.Rounded.* · tint from icon.*
-Label                   type.label.lg (16sp SemiBold 600 / 24 LH)
-Gap icon-to-label       space-8 (8dp)
-Button-group gap        space-12 (12dp)  · group padding 0
-Shadow                  shadow.none
-Sticky bar surface      bg.default · stroke-small + stroke.subtle top border
-                        padding: 16 H / 16 T / 12 B + safe-area inset
-
-PRIMARY            bg.brand → bg.brand.pressed → bg.disabled    text.onBrand    icon.inverse
-SECONDARY          — (transparent; stroke.brand.focus border)   text.brand      icon.brand
-TERTIARY           — (transparent; no border)                   text.brand      icon.brand
-DESTRUCTIVE        bg.critical → bg.critical.pressed            text.onCritical icon.inverse
-PRE-BOOKING        bg.brand.accent → bg.brand.accent.pressed    text.onBrandAccent icon.action
-DISABLED (all)     bg.disabled · text.disabled · icon.disabled · stroke.subtle (Sec)
-FOCUS RING         stroke.brand.focus (brand CTAs) · stroke.critical.focus (Destructive)
+```kotlin
+ModalBottomSheet(onDismissRequest = onDismiss) {
+    Column(modifier = Modifier.padding(horizontal = Wiom.space.s16)) {
+        // ...sheet content...
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12),
+        ) {
+            WiomButton("Change plan", type = WiomButtonType.Secondary,
+                modifier = Modifier.weight(1f), onClick = onChange)
+            WiomButton("Confirm",     type = WiomButtonType.Primary,
+                modifier = Modifier.weight(1f), onClick = onConfirm)
+        }
+    }
+}
 ```
 
 ---
 
-## Figma traceability (V2)
+## 11. Figma traceability
 
-| Node | What | Confirmed from |
-|---|---|---|
-| `1043:658` | CTAs section | metadata |
-| `2038:116` | CTA component set — 28 variants | metadata |
-| `2038:2` | Primary Default reference (padding / gap / radius tokens) | get_design_context |
-| `2982:357` | Button Group — Count × Layout matrix | metadata |
-| `2982:305` | Count=2 Stacked reference (each slot `w-full`) | get_design_context |
-| `2144:2 / 2144:8 / 2144:15` | Acknowledge Unchecked / Checked / Disabled (328 × 88) | metadata |
-| `2804:310–342` | Pre-booking — 4 states | metadata |
+File: `ZPErh7YU7omdbyy2o268Qo`. CTAs section: `1043:658`. Re-pull
+`get_variable_defs` on `2038:116` if foundations token names ever
+change — those are the only values that should drift.
 
-Every spec in this skill was verified against `get_variable_defs` on the
-CTA frame. Last audit: 2026-04-24.
+| Node | Component / variant |
+|---|---|
+| `2038:116` | CTA component set — 23 ship variants |
+| `2038:2` · `2038:14` · `2038:26` | Primary Default · Disabled · Loading |
+| `2038:28` | Secondary Default (2 dp `stroke.brand.focus`) |
+| `2804:310` | Pre-booking Default (`bg.brand.accent` + `text.onBrandAccent`) |
+| `2144:2` · `2144:8` · `2144:15` | Acknowledge Unchecked · Checked · Disabled (88 dp compound) |
+| `2982:357` · `2982:305` | Button Group set · Count=2 Stacked (each slot `w-full`) |
+
+**Description-vs-ship discrepancies** — Figma's published component
+description claims 28 variants and 5 states (incl. `Focused`); the
+component **ships 23 variants and 4 states**. Focus is a stroke ring,
+not a fill variant. Trust ship values.
 
 ---
 
 ## See also
 
-- `wiom-design-foundations` → Color tables (actions.md), Component Quick-Build
-  Reference (Primary / Secondary / Tertiary / Destructive / Pre-booking)
-- `wiom-dialog` — button group pairing inside dialogs (stacked, max 2)
-- `wiom-bottomsheet` — button group pairing inside sheets (side-by-side allowed)
-- `wiom-selection-controls` — the checkbox used inside Acknowledge
-- `wiom-compose-layout-rules` — Modifier discipline, no explicit height on CTAs
+- `wiom-design-foundations` — token source (`bg.*`, `text.*`, `icon.*`,
+  `stroke.*`, `space-*`, `radius-*`, `type.*`).
+- `wiom-compose-layout-rules` — Modifier discipline; no explicit height
+  on hugging components; `Icons.Rounded` enforcement.
+- `wiom-dialog` — button group inside dialogs (stacked only, max 2).
+- `wiom-bottomsheet` — button group inside sheets (side-by-side allowed).
+- `wiom-selection-controls` — `WiomCheckbox` used inside Acknowledge.

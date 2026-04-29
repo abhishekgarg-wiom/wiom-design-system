@@ -1,332 +1,659 @@
 ---
 name: wiom-toast
 description: >
-  Wiom Toast / Snackbar component system — transient feedback messages shown at the bottom of the screen.
-  Use this skill EVERY TIME you need to show quick feedback after a user action, API response, or system event
-  in the Wiom Partner or Customer app. Trigger when you see Toast, Snackbar, Notification (in-app),
-  feedback message, "action failed", "action succeeded", "offline", "retry", "undo", or any transient bottom-of-screen
-  message pattern. Also trigger when deciding between toast, banner, inline error, empty state, or result screen.
+  Wiom Toast / Snackbar system — passive transient feedback at the
+  bottom of the screen. 4 types × 3 behavior modes. Reference for
+  generating Jetpack Compose code with WiomToast / WiomToastHost and
+  for instancing the existing Figma Toast component (set 2222:478) via
+  MCP. Use this skill EVERY TIME you show quick feedback after a user
+  action, API response, or system event in the Wiom Partner or Customer
+  Android app, or when assembling Figma frames with toasts. Trigger on:
+  Toast, Snackbar, Notification (in-app), feedback message, action
+  failed, action succeeded, offline, retry, undo, instance of 2222:478,
+  bottom-of-screen transient message. Also trigger when deciding
+  between toast, banner, inline error, empty state, or result screen.
 ---
 
 # Wiom Toast / Snackbar System
 
-The approved transient feedback foundation for the Wiom app ecosystem (Android/Kotlin/Compose).
-**4 types · 3 behaviors · Smart properties · 1 component set**
+Built from Figma file `ZPErh7YU7omdbyy2o268Qo` (Wiom DS V2), component
+set `2222:478`, and the `wiom-design-foundations` token set.
+
+**4 types · 3 behavior modes · 1 component set.**
+
+A passive, transient message shown at the **bottom of the screen** after
+a user action or system event. Auto-dismisses or — if Persistent —
+requires an explicit close. Toast is a feedback layer, not a content
+layer; it's not a replacement for inline errors, banners, or result
+screens (see §6 Decision logic).
 
 ---
 
-## 1. What Is a Toast?
+## 1. Figma — instancing the component
 
-A passive, transient message shown at the **bottom of the screen** to provide quick feedback about a user action or system event. Auto-dismisses or requires minimal interaction.
+When assembling a Figma frame via MCP, instance the component set
+`2222:478` and set the variant + booleans below. Strings are
+**case-sensitive**.
 
-**Key characteristics:**
-- Appears from bottom, slides up
-- Floats above screen content with shadow
-- Short message, single line preferred
-- Optional action or close button
-- Max 1 visible at a time (no stacking)
-- **Not** a replacement for inline errors, banners, or result screens
+| Property | Type | Default | Accepted values |
+|---|---|---|---|
+| `Type` | Variant | `Error` | `Error` · `Warning` · `Info` · `Success` |
+| `Show Icon` | Boolean | `true` | Toggles the leading 24 dp icon. Almost always `true` (icon is the type's main signifier). |
+| `Show Action` | Boolean | `false` | Toggles the trailing brand-pink action label. Set `true` for Actionable behavior (Undo / Retry / View). |
+| `Show Close` | Boolean | `false` | Toggles the trailing 24 dp close ✕. Set `true` for Persistent behavior. |
+| `Message` | Text | `"Toast message"` | Editable message string |
+| `Action Text` | Text | `"Retry"` | Editable action label (visible only when `Show Action = true`) |
+| `Icon Swap` | Instance swap | per-type default | Swap to any icon from `Foundation/icons` (renders at 24 dp) |
 
----
+> **Why 4 ship variants and not 32?** Figma uses booleans + text props
+> instead of exploding variants — a Type × showIcon × showAction ×
+> showClose matrix would be 4 × 2 × 2 × 2 = 32. The 4-variant + 3-
+> boolean structure ships the same designs with one quarter of the
+> variant explosion.
 
-## 2. The 3 Toast Behaviors
+### Code enum ↔ Figma variant string
 
-| Behavior | Icon | Action CTA | Close X | Duration | Use Case |
-|----------|------|-----------|---------|----------|----------|
-| **Informational** | Yes | No | No | 2s auto | Server rejected action, call failed, status changed |
-| **Actionable** | Yes | Yes | No | 8s auto | User just did something undoable — "Delete kiya `Undo`" |
-| **Persistent** | Yes | Optional | Yes | Until dismissed | Offline mode, critical state user must acknowledge |
+| `WiomToastType` (Kotlin) | Figma `Type` value |
+|---|---|
+| `Error` | `Error` |
+| `Warning` | `Warning` |
+| `Info` | `Info` |
+| `Success` | `Success` |
 
----
-
-## 3. The 4 Types
-
-Each type changes the background tint, the icon, and (for Warning only) the text color. Body text defaults to `text.default` on Error / Info / Success surfaces. **Warning is the exception — it uses `text.onWarning` (#372902 olive) because the gold-tinted surface would fail AA with `text.default`.**
-
-| Type | Fill | Icon | Icon tint | Text | Sample |
-|------|------|------|-----------|------|--------|
-| **Error** | `bg.critical.subtle` #FFE5E7 | `Icons.Rounded.Error` | `icon.critical` #D92130 | `text.default` | "Server ne request reject kiya" |
-| **Warning** | `bg.warning.subtle` #FFE9A1 | `Icons.Rounded.Warning` | `icon.warning` #E2B203 | `text.onWarning` #372902 | "Offline — purana data dikh raha hai" |
-| **Info** | `bg.info.subtle` #F1E5FF | `Icons.Rounded.Info` | `icon.info` #6D17CE | `text.default` | "Status update ho gayi" |
-| **Success** | `bg.positive.subtle` #E1FAED | `Icons.Rounded.CheckCircle` | `icon.positive` #008043 | `text.default` | "Nikaasi safal rahi" |
-
----
-
-## 4. Token Reference
-
-### Container
-
-| Property | Value | Token |
-|----------|-------|-------|
-| Width | 344px (screen 360 − 8px × 2) | — |
-| Default height | 48px (single line: 12V pad × 2 + 24 LH) | — |
-| Max height | 72px (2 lines: 12V pad × 2 + 24 LH × 2) | — |
-| Height | Hug content, max 2 lines | — |
-| Radius | 8px | `radius-small` |
-| Horizontal padding | 16px | `space-16` |
-| Vertical padding | 12px | `space-12` |
-| Gap (icon-text) | 8px | `space-8` |
-| Gap (text-action) | 8px | `space-8` |
-| Shadow | `shadow.lg` | 0 4px 12px rgba(0,0,0,0.15) |
-| Position | Bottom, 8px margin each side, 8px above safe area | — |
-
-### Typography
-
-| Element | Style | Token |
-|---------|-------|-------|
-| Message | Noto Sans Regular 400, 16sp, LH 24 | `type.body.lg` |
-| Action CTA | Noto Sans SemiBold 600, 16sp, LH 24 | `type.label.lg` |
-
-### Icon
-
-| Element | Size | Library | Token |
-|---------|------|---------|-------|
-| Leading icon | 24×24dp | Material Symbols Rounded (filled) | `icon.md` |
-| Close icon | 24×24dp | Material Symbols Rounded (filled) | `icon.md` |
+| `WiomToastBehavior` (Kotlin) | Figma boolean toggles |
+|---|---|
+| `Informational` | `Show Icon = true`, `Show Action = false`, `Show Close = false` |
+| `Actionable` | `Show Icon = true`, `Show Action = true`, `Show Close = false` |
+| `Persistent` | `Show Icon = true`, `Show Close = true`, `Show Action = optional` |
 
 ---
 
-## 5. Decision Tree — Toast vs Other Feedback
+## 2. Anatomy
+
+| Slot | Value | Token |
+|---|---|---|
+| Container width | Derived — `fillMaxWidth()` inside the surface margin (toast surface owns `space-16` start / end) | — |
+| Container height | Derived — `space-12 V` + content (24 LH at `body.lg` for single line) + `space-12 V` = 48 dp single line | — |
+| Container radius | 8 dp | `radius-small` |
+| Container fill | `bg.default` (#FAF9FC) — **same for all 4 types**; only the icon (and Warning's text) carries the type color | `bg.default` |
+| Container shadow | `shadow.lg` (drop) | `shadow.lg` |
+| Horizontal padding | 16 dp | `space-16` |
+| Vertical padding | 12 dp | `space-12` |
+| Inner row | Vertically centered, items align center; gap `space-8` between every adjacent item | — |
+| Leading icon | 24 dp | (`icon.md` size) |
+| Message style | Noto Sans Regular 16 / 24 LH | `type.body.lg` |
+| Action label style | Noto Sans SemiBold 16 / 24 LH | `type.label.lg` |
+| Close icon | 24 dp | (`icon.md` size) |
+
+**No fixed dimensions on the container.** Width emerges from the surface
+margin contract; height emerges from padding + content. Don't set
+`Modifier.width(...)`, `Modifier.height(...)`, `heightIn`, `widthIn`, or
+`Modifier.size(...)` on the toast container.
+
+---
+
+## 3. The 4 types — same container, different icon
+
+All 4 types share the **same `bg.default` container**. The only per-type
+differences are the leading icon color (and one text-color exception
+for Warning).
+
+| Type | Icon (Material Symbols Rounded, filled) | Icon color | Message text color | Sample copy |
+|---|---|---|---|---|
+| **Error** | `error` | `icon.critical` (#D92130) | `text.default` | "Server ne request reject kiya" |
+| **Warning** | `warning` | `icon.warning` (#E2B203 gold) | `text.onWarning` (#372902 olive) | "Offline — purana data dikh raha hai" |
+| **Info** | `info` | `icon.info` (#6D17CE) | `text.default` | "Status update ho gayi" |
+| **Success** | `check_circle` | `icon.positive` (#008043) | `text.default` | "Nikaasi safal rahi" |
+
+**Action label colour is always `text.brand` (#D9008D)**, regardless of
+type — the Undo / Retry / View affordance is the screen's brand action,
+not the toast's status colour.
+
+> **Warning text exception.** Warning is the only type whose message
+> text uses a non-default colour. White on `bg.warning` would fail AA;
+> the foundations rule is that `text.onWarning` (dark olive) is the
+> only text token paired with the warning family across surfaces. On
+> `bg.default` it still passes AAA, so Warning toasts adopt it for
+> consistency with banners / chips.
+
+---
+
+## 4. The 3 behavior modes
+
+Behavior is **not** a Figma variant — it's a pattern composed from the
+booleans + duration. Pick the row matching the user's intent.
+
+| Behavior | Show Action | Show Close | Duration | Use for |
+|---|---|---|---|---|
+| **Informational** | No | No | 2 s auto | Fire-and-forget feedback. Server rejected an action; status changed; queued for processing. |
+| **Actionable** | Yes | No | 8 s auto | User just did something **undoable** — "Ticket delete kiya" + Undo. Long enough to read AND tap. |
+| **Persistent** | Optional | **Yes** | None (until close ✕ or state change) | Critical state the user must acknowledge — Offline mode, account on hold, quality review pending. |
+
+### Duration reasoning
+
+- **2 s** — fast read, user moves on. Anything shorter feels skipped.
+- **8 s** — the floor for an action a user must read AND tap. Match
+  Material's 8-second snackbar guidance.
+- **No auto-dismiss** — only when state-driven (offline → online clears
+  it; or user taps close). Anything else risks the user missing it.
+
+---
+
+## 5. Surface contract — placement
+
+| Placement | What the surface (host) owns | What the toast does |
+|---|---|---|
+| Bottom of screen, above nav bar | `space-16` start / end horizontal margin · `space-16` bottom margin above safe-area inset · vertical animation slot | `fillMaxWidth()` inside that margin (lands at 328 dp on a 360 dp screen). No width set on the toast itself. |
+
+**The host is the surface, not the toast.** `WiomToastHost` (defined
+in §8) places the toast inside the surface margin and runs the animation
+in/out. The `WiomToast` composable itself doesn't know about screen
+edges.
 
 ```
-Something happened that needs user feedback. Ask:
+┌─────────────────── 360 dp screen ────────────────────┐
+│                                                       │
+│                     content                           │
+│                                                       │
+│  ←16→ ┌───────────────────────────────┐ ←16→         │   ← toast surface margin
+│       │ ●  Message text…       Action │              │
+│       └───────────────────────────────┘              │
+│                                                       │
+│  ─────────── safe-area / nav bar ──────────────       │
+└───────────────────────────────────────────────────────┘
+```
 
-1. Did the ENTIRE screen fail to load? (no data at all)
-   → EMPTY STATE screen (not toast)
+Anchors above OS navigation / gesture bar via `navigationBarsPadding()`
+inside the host.
 
-2. Is it a FORM/INPUT VALIDATION error? (user typed wrong value)
-   → INLINE ERROR on the field (not toast)
+---
 
-3. Is it a PERSISTENT STATE user must be aware of?
-   (offline, account hold, quality review)
-   → BANNER at top of screen (not toast)
+## 6. Decision logic — toast vs other feedback
 
-4. Is it a TERMINAL OUTCOME of a multi-step flow?
-   (withdrawal completed/failed, payment result)
-   → DEDICATED RESULT SCREEN (not toast)
+```
+Step 1 — Is toast even the right surface?
+  ENTIRE screen failed to load (no data at all)?
+    → Empty state screen (not toast)
+  FORM / INPUT validation error (user typed wrong value)?
+    → Inline error on the field (not toast)
+  PERSISTENT state user must continually be aware of (offline, account hold)?
+    → Banner at the top of screen (not toast)
+  TERMINAL outcome of a multi-step flow (withdrawal completed, payment result)?
+    → Dedicated result screen (not toast)
+  QUICK feedback to a single tap (server rejected, call failed, queued, undoable delete)?
+    → Toast (proceed)
 
-5. Is it QUICK FEEDBACK to a single tap?
-   (server rejected, call failed, action queued, undoable delete)
-   → TOAST ← use this
+Step 2 — Type
+  Server rejected / call failed / action blocked      → Error
+  Offline / degraded / non-blocking caution           → Warning
+  Neutral state change / info, no semantic weight     → Info
+  Positive outcome the user genuinely needs to know   → Success (use sparingly)
 
-Then decide behavior:
-  Informational (2s auto) — fire and forget
-  Actionable (8s auto)   — user can Undo/Retry
-  Persistent (dismissible) — critical, must acknowledge
-
-Then decide type:
-  Error / Warning / Info / Success
+Step 3 — Behavior
+  User just informed, nothing to do                    → Informational (2 s)
+  User can undo / retry / view                         → Actionable (8 s)
+  Critical state until acknowledged                    → Persistent (close ✕)
 ```
 
 ### One-liner
 
-> **Toast = quick feedback to a single action, no explanation needed, user can retry immediately.**
-> 
-> **Everything else gets a bigger component.**
+> **Toast = quick feedback to a single action, no explanation needed,
+> user can retry immediately. Everything else gets a bigger component.**
+
+### Wiom Constitution rules (copy)
+
+- **No congratulatory messages.** Avoid "Great!", "Awesome!", "Done!".
+  Success toasts only when the user genuinely needs confirmation
+  (e.g., wallet withdrawal sent).
+- **Hindi primary, English fallback.** Toast copy is short — Hindi
+  reads denser; favor it.
+- **Specific over generic.** "Server ne request reject kiya" beats
+  "Error". "Ticket delete kiya" beats "Success".
 
 ---
 
-## 6. Type Decision
+## 7. Universal rules
 
-```
-What does the feedback represent?
-
-Server rejected / call failed / action blocked     → ERROR
-Offline / degraded / non-blocking caution           → WARNING
-Neutral state change / info / no semantic weight   → INFO
-Positive outcome (rare — app avoids celebration)   → SUCCESS
-```
-
-**Wiom Constitution rule:** No congratulatory messages. Success toasts are used sparingly — only for outcomes where user genuinely needs confirmation (e.g., wallet withdrawal sent).
-
----
-
-## 7. Behavior Decision
-
-```
-What does the user need to do with this toast?
-
-Nothing — just informing them                → Informational (2s)
-Act fast — offer Undo/Retry/View            → Actionable (8s)
-Acknowledge — critical state that persists  → Persistent (dismissible)
-```
-
-### Duration reasoning
-- **2s** — fast read, user moves on. Matches app spec.
-- **8s** — long enough to read AND tap action button.
-- **Persistent** — stays until user or state change dismisses.
-
----
-
-## 8. Figma Component
-
-Location: Sandbox - SAAD → Toast / Snackbar section
-
-### Smart component structure
-
-1 component set, 4 variants (Type), 6 additional properties:
-
-| Property | Type | Default | Purpose |
-|----------|------|---------|---------|
-| **Type** | Variant | Error | Error / Warning / Info / Success |
-| **Show Icon** | Boolean | true | Toggle leading icon |
-| **Show Action** | Boolean | false | Toggle action CTA |
-| **Show Close** | Boolean | false | Toggle close X |
-| **Message** | Text | "Toast message" | Editable message text |
-| **Action Text** | Text | "Retry" | Editable action label |
-| **Icon Swap** | Instance Swap | error | Swap to any icon from library |
-
-**Why only 4 variants?** Booleans handle Icon/Action/Close visibility. Text properties handle message content. Instance swap handles icon. Variants would have exploded to 4 × 2 × 2 × 2 = 32 — this structure keeps it lean.
+1. **Max 1 toast visible at a time.** Never stack. Queue if the host
+   gets a second toast while one is showing — show the new one only
+   after the first dismisses.
+2. **Bottom position only.** Never top, never middle.
+3. **No fixed dimensions on the toast.** Width comes from the host's
+   surface margin (`space-16` each side); height comes from
+   `space-12 V` + content. No `width(...)`, `height(...)`,
+   `heightIn`, `widthIn`, `size(...)`.
+4. **Toast body is passive — never tappable.** Only the Action label
+   and Close ✕ are interactive. Don't wrap the whole toast in
+   `Modifier.clickable`.
+5. **Action label is text-only, brand-pink** (`text.brand`,
+   `type.label.lg`). No filled buttons inside a toast.
+6. **No retry loops.** One attempt — revert state + show toast — user
+   re-taps the originating control manually if they want to retry.
+7. **Message: 1 line target, 2 lines tolerated.** `maxLines = 2`,
+   `overflow = TextOverflow.Ellipsis`. If it truncates, that's a
+   signal to rewrite copy shorter.
+8. **Tokens only.** Element-first (`bg.*` / `text.*` / `icon.*`).
+   No raw hex. No legacy `color.*` role-first tokens.
+9. **All 4 types share `bg.default`.** Only the icon (and Warning's
+   message text) carries the type colour.
+10. **Action label colour is always `text.brand`**, regardless of
+    toast type.
+11. **Persistent toasts must show Close ✕.** A toast with no
+    auto-dismiss and no close is a stuck toast.
+12. **No congratulatory copy.** Per Wiom Constitution.
 
 ---
 
-## 9. Universal Rules
+## 8. Compose API + code
 
-1. **Max 1 toast visible at a time** — never stack. Queue if needed.
-2. **Bottom position only** — never top, never middle.
-3. **8px margin each side** (344px on 360px screen) — wider than the 16px screen gutter so the toast reads as a floating surface, not inline content.
-4. **No retry loops** — one attempt, revert state + toast, user re-taps manually.
-5. **Message max 2 lines** — target single line; 2 is tolerated for Hindi copy. Beyond 2, text truncates with ellipsis — that's a signal to rewrite shorter copy.
-6. **Hindi is primary** — English as fallback only.
-7. **No congratulatory messages** per app constitution. Avoid "Great!", "Awesome!", etc.
-8. **Action CTA is optional, text-only** — no filled buttons in toasts.
-9. **Token-only values** — every color, spacing, radius, shadow from foundation.
-10. **Toast is passive** — body of toast is never tappable. Only the Action CTA or Close X are interactive.
-
----
-
-## 10. Never Do
-
-| Anti-Pattern | Why |
-|-------------|-----|
-| Stacking multiple toasts | Confuses hierarchy. Queue them. |
-| Toast for form validation | Use inline error — stays visible until fixed. |
-| Toast for persistent state | Use banner — doesn't auto-dismiss. |
-| Toast for multi-step outcome | Use result screen — gives context + next step. |
-| Long message (3+ lines, truncates) | Breaks quick-glance model. Rewrite shorter. Max 2 lines. |
-| Tappable toast body | Only action button or close are tappable. |
-| Success toast for every action | Feels spammy. Use only when user needs confirmation. |
-| Icon-only toast (no text) | Text is the message. Icon is supporting. |
-| Filled button in toast | Tertiary/text style only. Filled competes with screen CTAs. |
-| Toast with no auto-dismiss | Unless Persistent (has close button), always auto-dismiss. |
-
----
-
-## 11. Compose Implementation
+### Public API
 
 ```kotlin
-// Informational toast (default, 2s auto-dismiss)
-WiomToast(
-    type = WiomToastType.Error,
-    message = "Server ne request reject kiya",
+enum class WiomToastType { Error, Warning, Info, Success }
+
+// Label + handler are paired — eliminates the "label without handler" bug class.
+data class ToastAction(val label: String, val onClick: () -> Unit)
+
+sealed class WiomToastBehavior {
+    object Informational : WiomToastBehavior()                     // 2 s, no action, no close
+    data class Actionable(                                         // 8 s, action visible, no close
+        val action: ToastAction,
+    ) : WiomToastBehavior()
+    data class Persistent(                                         // until close ✕ or state change
+        val action: ToastAction? = null,                           // optional; pair is required-together
+        val onClose: () -> Unit,
+    ) : WiomToastBehavior()
+}
+
+data class WiomToastSpec(
+    val type: WiomToastType,
+    val message: String,
+    val behavior: WiomToastBehavior = WiomToastBehavior.Informational,
+    val icon: ImageVector? = null,                                 // null = type's default icon
 )
 
-// Actionable toast (8s auto-dismiss)
-WiomToast(
-    type = WiomToastType.Info,
-    message = "Ticket delete kiya",
-    actionText = "Undo",
-    onActionClick = { /* restore ticket */ },
-    duration = 8.seconds,
+@Composable
+fun WiomToast(
+    spec: WiomToastSpec,
+    modifier: Modifier = Modifier,
 )
 
-// Persistent toast (dismissible)
-WiomToast(
-    type = WiomToastType.Warning,
-    message = "Offline — purana data dikh raha hai",
-    showClose = true,
-    onCloseClick = { /* dismiss */ },
-    duration = null, // persistent
+// Host — manages queue, animation in/out, auto-dismiss timer.
+// `bottomInset` reserves space for a Wiom bottom nav bar, sticky CTA bar,
+// or any other bottom chrome. Pass 0 (default) when there's only the OS
+// nav bar — `navigationBarsPadding()` handles that automatically.
+@Composable
+fun WiomToastHost(
+    hostState: WiomToastHostState,
+    bottomInset: Dp = 0.dp,
+    modifier: Modifier = Modifier,
 )
 
-// Custom icon swap
-WiomToast(
-    type = WiomToastType.Info,
-    message = "5 NetBox bhej diye",
-    icon = Icons.Filled.Inventory2, // swap default info icon
-)
+class WiomToastHostState {
+    private val channel = Channel<WiomToastSpec>(Channel.UNLIMITED)
+    private val _current = MutableStateFlow<WiomToastSpec?>(null)
+    val current: StateFlow<WiomToastSpec?> = _current.asStateFlow()
 
-// Scaffold integration
-Scaffold(
-    snackbarHost = {
-        WiomToastHost(
-            hostState = toastHostState,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
-        )
+    // Pumps the channel one-at-a-time. The host calls this in a LaunchedEffect.
+    internal suspend fun consume() {
+        for (spec in channel) {
+            _current.value = spec
+            // Host's auto-dismiss timer (or user close) sets _current back to null.
+            // Wait until _current becomes null before pulling the next.
+            _current.first { it == null }
+        }
     }
-) { /* content */ }
+
+    /** Enqueue a toast; returns immediately. The host displays it FIFO. */
+    fun show(spec: WiomToastSpec) { channel.trySend(spec) }
+
+    /** Force-close the currently visible toast. */
+    fun dismiss() { _current.value = null }
+}
 ```
 
-### Toast host API
+### Token resolver
+
+```kotlin
+@Composable
+private fun rememberToastColors(type: WiomToastType): ToastColors = when (type) {
+    WiomToastType.Error   -> ToastColors(Wiom.icon.critical, Wiom.text.default)
+    WiomToastType.Warning -> ToastColors(Wiom.icon.warning,  Wiom.text.onWarning)   // olive on bg.default — see §3
+    WiomToastType.Info    -> ToastColors(Wiom.icon.info,     Wiom.text.default)
+    WiomToastType.Success -> ToastColors(Wiom.icon.positive, Wiom.text.default)
+}
+
+@Composable
+private fun rememberDefaultIcon(type: WiomToastType): ImageVector = when (type) {
+    WiomToastType.Error   -> Icons.Rounded.Error
+    WiomToastType.Warning -> Icons.Rounded.Warning
+    WiomToastType.Info    -> Icons.Rounded.Info
+    WiomToastType.Success -> Icons.Rounded.CheckCircle
+}
+
+private data class ToastColors(val icon: Color, val message: Color)
+```
+
+### `WiomToast` implementation
+
+```kotlin
+@Composable
+fun WiomToast(spec: WiomToastSpec, modifier: Modifier = Modifier) {
+    val colors = rememberToastColors(spec.type)
+    val behavior = spec.behavior
+
+    // Resolve action — single source of truth, no nullable-pair gymnastics.
+    val action: ToastAction? = when (behavior) {
+        is WiomToastBehavior.Actionable -> behavior.action
+        is WiomToastBehavior.Persistent -> behavior.action
+        WiomToastBehavior.Informational -> null
+    }
+
+    Surface(
+        color = Wiom.bg.default,                                   // same for all 4 types
+        shape = RoundedCornerShape(Wiom.radius.small),             // 8dp
+        modifier = modifier
+            .fillMaxWidth()                                        // host owns the gutter
+            // shadow.lg has Y=4 offset + 12 blur — Compose `shadowElevation` only takes Dp
+            // (no offset). Use Modifier.shadow with a clipped shape and live with the limitation,
+            // OR draw a custom offset shadow via drawBehind. Simple path:
+            .shadow(elevation = 12.dp, shape = RoundedCornerShape(Wiom.radius.small)),
+    ) {
+        Row(
+            modifier = Modifier.padding(
+                horizontal = Wiom.space.s16,
+                vertical = Wiom.space.s12,
+            ),
+            horizontalArrangement = Arrangement.spacedBy(Wiom.space.s8),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Leading icon
+            Icon(
+                imageVector = spec.icon ?: rememberDefaultIcon(spec.type),
+                contentDescription = null,                          // message carries the meaning
+                tint = colors.icon,
+                modifier = Modifier.size(24.dp),
+            )
+
+            // Message — fills, max 2 lines
+            Text(
+                text = spec.message,
+                style = Wiom.type.body.lg,
+                color = colors.message,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+
+            // Action label — wrapped to ensure ≥48dp hit area
+            action?.let { a ->
+                Box(
+                    modifier = Modifier
+                        .minimumInteractiveComponentSize()         // ≥48dp WCAG hit area
+                        .clickable { a.onClick() },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = a.label,
+                        style = Wiom.type.label.lg,
+                        color = Wiom.text.brand,                    // always brand pink
+                        maxLines = 1,
+                    )
+                }
+            }
+
+            // Close ✕ (Persistent only) — 24dp glyph inside ≥48dp hit area
+            if (behavior is WiomToastBehavior.Persistent) {
+                Box(
+                    modifier = Modifier
+                        .minimumInteractiveComponentSize()
+                        .clickable { behavior.onClose() },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Close,
+                        contentDescription = "Dismiss",
+                        tint = Wiom.icon.action,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+```
+
+### `WiomToastHost` implementation (animation + auto-dismiss + surface margin)
 
 ```kotlin
 @Composable
 fun WiomToastHost(
     hostState: WiomToastHostState,
-    modifier: Modifier = Modifier
+    bottomInset: Dp = 0.dp,                                         // pass nav-bar / sticky-CTA height
+    modifier: Modifier = Modifier,
 ) {
-    val current by hostState.currentToast.collectAsState()
-    AnimatedVisibility(
-        visible = current != null,
-        enter = slideInVertically(
-            initialOffsetY = { it },
-            animationSpec = tween(300, easing = EaseOut)
-        ) + fadeIn(),
-        exit = slideOutVertically(
-            targetOffsetY = { it },
-            animationSpec = tween(300, easing = EaseIn)
-        ) + fadeOut(),
+    val current by hostState.current.collectAsState()
+
+    // Drains the queue one toast at a time — never overlaps.
+    LaunchedEffect(hostState) { hostState.consume() }
+
+    // Auto-dismiss timer (cancels if behavior is Persistent).
+    LaunchedEffect(current) {
+        val spec = current ?: return@LaunchedEffect
+        val durationMs = when (spec.behavior) {
+            WiomToastBehavior.Informational -> 2_000L
+            is WiomToastBehavior.Actionable -> 8_000L
+            is WiomToastBehavior.Persistent -> null                 // no auto-dismiss
+        }
+        durationMs?.let { delay(it); hostState.dismiss() }
+    }
+
+    // Surface margin lives here, not in WiomToast.
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Wiom.space.s16)                   // 16dp gutter
+            .padding(bottom = Wiom.space.s16 + bottomInset)         // above any bottom chrome
+            .navigationBarsPadding(),                               // OS gesture inset
+        contentAlignment = Alignment.BottomCenter,
     ) {
-        current?.let { WiomToast(it) }
+        AnimatedVisibility(
+            visible = current != null,
+            enter = slideInVertically(initialOffsetY = { it },
+                                      animationSpec = tween(300, easing = EaseOut)) + fadeIn(),
+            exit  = slideOutVertically(targetOffsetY  = { it },
+                                       animationSpec = tween(300, easing = EaseIn))  + fadeOut(),
+        ) {
+            current?.let { WiomToast(it) }
+        }
     }
 }
 ```
 
+### Common mistake → fix
+
+```kotlin
+// ❌ WRONG — hardcoded width, per-type tinted bg, body wrapped in clickable
+Box(
+    modifier = Modifier
+        .width(344.dp)                                              // never hardcode
+        .background(Color(0xFFFFE5E7))                              // old per-type tint
+        .clickable { /* ... */ },                                   // toast body is passive
+) {
+    Text("Error: server rejected", style = WiomType.bodyMd /* 14sp old */)
+}
+
+// ✅ RIGHT — host owns the gutter, all 4 types share bg.default, action only is tappable
+WiomToastHost(hostState = toastHostState)
+
+// elsewhere: enqueue the spec
+toastHostState.show(WiomToastSpec(
+    type = WiomToastType.Error,
+    message = "Server ne request reject kiya",
+    behavior = WiomToastBehavior.Actionable(
+        action = ToastAction(label = "Retry", onClick = { retry() }),
+    ),
+))
+```
+
 ---
 
-## 12. Animation Specs
+## 9. Screen-level recipes
+
+End-to-end usage. Pick the matching pattern, then swap copy.
+
+### Scaffold integration
+
+```kotlin
+val toastHostState = remember { WiomToastHostState() }
+
+Scaffold(
+    snackbarHost = { WiomToastHost(toastHostState) },
+) { padding ->
+    // your screen content
+}
+```
+
+### Informational — fire-and-forget (server rejected)
+
+```kotlin
+toastHostState.show(WiomToastSpec(
+    type = WiomToastType.Error,
+    message = "Server ne request reject kiya",
+    behavior = WiomToastBehavior.Informational,                     // 2s auto
+))
+```
+
+### Actionable — undoable delete
+
+```kotlin
+toastHostState.show(WiomToastSpec(
+    type = WiomToastType.Info,
+    message = "Ticket delete kiya",
+    behavior = WiomToastBehavior.Actionable(
+        action = ToastAction(label = "Undo", onClick = { restoreTicket() }),
+    ),                                                              // 8s auto
+))
+```
+
+### Persistent — offline mode banner-toast hybrid
+
+```kotlin
+// Tied to a connectivity StateFlow — shows on offline, dismisses on online.
+LaunchedEffect(isOffline) {
+    if (isOffline) {
+        toastHostState.show(WiomToastSpec(
+            type = WiomToastType.Warning,
+            message = "Offline — purana data dikh raha hai",
+            behavior = WiomToastBehavior.Persistent(
+                onClose = { /* user-acknowledged; reshow on next offline */ },
+            ),
+        ))
+    } else {
+        toastHostState.dismiss()
+    }
+}
+```
+
+### With a sticky CTA bar or bottom nav — pass `bottomInset`
+
+```kotlin
+val ctaBarHeight = 88.dp                                             // measure or pass from layout
+WiomToastHost(toastHostState, bottomInset = ctaBarHeight)
+```
+
+---
+
+## 10. Anti-patterns
+
+(Universal rules in §7 cover the bans. Listed here are extras that
+aren't already a numbered rule.)
+
+- ❌ Using `bg.warning` / `bg.critical` etc. as the toast container fill.
+  All 4 types share `bg.default`. The type colour only paints the icon
+  (and Warning's text).
+- ❌ Auto-dismissing a Persistent toast. Persistent has no timer — it
+  dismisses on close ✕ or on the state-change that produced it.
+- ❌ Toast for **form validation** (use inline error on the field) ·
+  for **persistent state** (use banner) · for **multi-step outcome**
+  (use result screen). All in §6 decision tree.
+- ❌ Generic copy ("Error", "Success", "Done"). Be specific:
+  "Server ne request reject kiya" / "Ticket delete kiya" /
+  "Nikaasi safal rahi".
+- ❌ Congratulatory copy ("Great!", "Awesome!", "Done!"). Wiom
+  Constitution.
+- ❌ Showing a Success toast for every user action — feels spammy.
+  Only when the user genuinely needs confirmation.
+- ❌ Multiple toasts visible at once. Queue, don't stack.
+
+---
+
+## 11. Animation specs
 
 | Transition | Duration | Easing |
-|------------|----------|--------|
-| Slide in (from bottom) | 300ms | EaseOut |
-| Slide out (to bottom) | 300ms | EaseIn |
-| Auto-dismiss timer | 2s / 8s / infinite | — |
+|---|---|---|
+| Slide in (from bottom) | 300 ms | `EaseOut` |
+| Slide out (to bottom) | 300 ms | `EaseIn` |
+| Auto-dismiss timer (Informational) | 2 s | — |
+| Auto-dismiss timer (Actionable) | 8 s | — |
+| Persistent | until close ✕ / state change | — |
 
-Used Smart Animate in Figma prototype to match code behavior.
+Match Smart Animate in the Figma prototype to keep design ↔ code parity.
 
 ---
 
-## 13. Strict Rules
+## 12. Figma traceability
 
-### DO
-- Use the decision tree to pick toast vs other feedback
-- Use `type.body.lg` (16sp Regular) for message
-- Use `type.label.lg` (16sp SemiBold) for action CTA
-- Use `shadow.lg` for the floating effect
-- Position at bottom, 8px margin each side
-- Auto-dismiss 2s (informational), 8s (actionable)
-- Use icons from Material Symbols Rounded (filled) library
-- Queue toasts — never stack
+File: `ZPErh7YU7omdbyy2o268Qo`. Toast / Snackbar canvas: `2279:5820`.
+Re-pull `get_variable_defs` on `2222:478` if foundations token names
+ever change.
 
-### DO NOT
-- Do NOT use toast for form validation (use inline error)
-- Do NOT use toast for persistent state (use banner)
-- Do NOT use toast for multi-step outcomes (use result screen)
-- Do NOT stack or overlap multiple toasts
-- Do NOT wrap message to 2+ lines
-- Do NOT make the toast body tappable
-- Do NOT use filled buttons inside toasts
-- Do NOT use generic text ("Error", "Success") — be specific about what happened
-- Do NOT hardcode colors, spacing, radius, or typography — use tokens/styles
+| Node | Component / variant |
+|---|---|
+| `2222:478` | Toast component set — 4 type variants × 3 booleans × 2 text props × 1 icon swap |
+| `2222:449` | Type=Error — `bg.default` · `icon.critical` · `text.default` |
+| `2222:456` | Type=Warning — `bg.default` · `icon.warning` (gold) · `text.onWarning` (olive) |
+| `2222:463` | Type=Info — `bg.default` · `icon.info` · `text.default` |
+| `2222:470` | Type=Success — `bg.default` · `icon.positive` · `text.default` |
 
-### WHEN IN DOUBT
-Ask: "Can the user fix this right now by tapping the same button again?" — if yes, toast is fine. If no, use something bigger.
+**Description-vs-ship discrepancies** — if a stale doc or old skill
+says otherwise, trust ship values:
+
+- **All 4 types share `bg.default`** (#FAF9FC, near-white). Old skill
+  said per-type tinted backgrounds (`bg.critical.subtle` for Error,
+  `bg.warning.subtle` for Warning, etc.). New ship: same neutral
+  container for all, only the icon (and Warning's text) carries the
+  status colour.
+- **Width is 328 dp** (surface margin 16 dp each side on a 360 dp
+  screen), not 344 dp / 8 dp margin. Toast now aligns with the
+  standard surface gutter used by CTA, list-item, top-bar,
+  bottom-sheet content.
+- **Vertical padding is 12 dp** (`space-12`), not 16. Single-line
+  height = 12 + 24 LH + 12 = 48 dp.
+- **Typography is `type.body.lg` (16 sp Regular)** for the message and
+  `type.label.lg` (16 sp SemiBold) for the action label. Old skill
+  said 14 sp / `body.md` and `label.md` — Figma now uses 16 sp.
+- **Action label colour is always `text.brand`** (#D9008D), not the
+  type's status colour.
+- **Warning is the only type whose message text uses
+  `text.onWarning`** (the dark olive that doubles as warning-family
+  text on every surface, per foundations). Other types use
+  `text.default`.
+- **Icon colours come from `icon.critical` / `icon.warning` /
+  `icon.info` / `icon.positive`** — element-first `icon.*` tokens,
+  not `color.*.primary` legacy.
 
 ---
 
 ## See also
 
-- `wiom-design-foundations` — color tokens, warning-family rules, patterns.md banner/toast tables
-- `wiom-compose-layout-rules` — Compose structural rules, Icons.Rounded.* enforcement
-- `wiom-badge` — related inline feedback surface (same token family)
-- `wiom-cta` — action CTAs inside Actionable toasts
+- `wiom-design-foundations` — token source. Especially the
+  warning-family rule (`text.onWarning` works on `bg.warning`,
+  `bg.warning.subtle`, AND `bg.default`).
+- `wiom-cta` — the action label inside a toast borrows the brand-pink
+  treatment but is text-only; no filled CTA inside a toast.
+- `wiom-list-item` · `wiom-top-bar` — banner / inline-error patterns
+  that toast deliberately is NOT (see §6 decision tree).
+- `wiom-bottomsheet` — when an outcome needs more context than a
+  toast can give.
+- `wiom-icon-badge` — distinct passive indicator (not a toast).
