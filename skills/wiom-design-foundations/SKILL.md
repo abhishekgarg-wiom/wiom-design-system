@@ -255,6 +255,20 @@ Triple-dim lands at ~1.64:1 (text/icon on disabled surface) — **intentionally 
 
 **For non-Neutral base colors** (Brand/Positive/Critical/Warning/Info) with no dedicated disabled token, apply **40% opacity** to the base color. Never apply opacity to Neutral-family tokens. No pointer events (`cursor: not-allowed`, `onClick = null`).
 
+### 11. Surface Gutter Contract — Per Surface
+
+Components are end-to-end (`fillMaxWidth()`); the **host surface** owns the horizontal gutter, and the gutter is **not universal 16 dp** — it varies by surface:
+
+| Surface | Horizontal gutter |
+|---|---|
+| Top bar · Nav bar · Bottom sheet | **edge-to-edge** (0 dp from screen edges; the surface fills the screen width) |
+| Toast | **8 dp** left + 8 dp right (toast pill sits 8 dp from screen edges) |
+| Dialog | **24 dp** left + 24 dp right (content area = 264 dp on a 360 screen) |
+| List item | **edge-to-edge** when on a screen with no surface background; **16 dp** standard padding when inside a card / list-group with a background colour |
+| Screen content · Sticky CTA bar · Filter bar | **16 dp** left + 16 dp right (default screen-body gutter) |
+
+A component's **own internal padding** (CTA's 16 dp pill pad, list-item's 16 dp inner gutter, dialog's 24 dp content padding, bottom-sheet Header's 16 dp horizontal pad) is component chrome and stays as defined in each component skill — distinct from the surface gutter above. Each component skill's §3 Surface contract should match this table for its host surface.
+
 ---
 
 ## Component Quick-Build Reference

@@ -15,9 +15,8 @@ description: >
 # Wiom Compose Layout Rules
 
 Structural and anti-hallucination rules for Jetpack Compose UI that consumes Wiom
-foundations. Parallel in spirit to `wiom-figma-design-rules` on the design side —
-values and tokens live in foundations; component anatomy lives in component skills;
-this file governs **how the Compose scaffolding is shaped**.
+foundations. Values and tokens live in foundations; component anatomy lives in
+component skills; this file governs **how the Compose scaffolding is shaped**.
 
 ---
 
@@ -26,8 +25,7 @@ this file governs **how the Compose scaffolding is shaped**.
 | You need… | Go to |
 |---|---|
 | Token values (color, type, spacing, radius, stroke, shadow) | `wiom-design-foundations` |
-| Figma-side structural rules | `wiom-figma-design-rules` |
-| Component anatomy, variants, states | `skills/components/wiom-*` |
+| Component anatomy, variants, states, and per-surface gutters | `skills/components/wiom-*` |
 | How to lay the code out on the canvas of a screen | **this file** |
 
 Never duplicate token values in this file. Never duplicate anatomy from component
@@ -88,15 +86,18 @@ tell the user and update this file.
 
 ## 5. Icons and graphics
 
-- **Material icons:** `Icons.Rounded.*` from
-  `androidx.compose.material:material-icons-extended` — **only**. Never
-  `Icons.Default`, `Icons.Filled`, `Icons.Outlined`, `Icons.Sharp`, or
-  `Icons.TwoTone`.
+- **Production icons:** `painterResource(R.drawable.ic_<name>_rounded)` — the Wiom
+  app bundles vector drawables that mirror the Material Symbols **Rounded** set,
+  and code references those drawables. Do **not** import
+  `androidx.compose.material.icons.*` directly in app code; the Material variants
+  (`Icons.Default`, `Icons.Filled`, `Icons.Outlined`, `Icons.Sharp`, `Icons.TwoTone`)
+  are banned, and pulling `Icons.Rounded.*` from `material-icons-extended` is
+  discouraged because the dependency is heavy.
 - **Wiom / partner glyphs:** `painterResource(R.drawable.ic_wiom_*)` or
   `painterResource(R.drawable.ic_partner_*)` — **only**.
-- If the required icon is not in the `Icons.Rounded.*` set nor in the Wiom/partner
-  drawables, **stop and flag**. Never substitute a similar-looking icon, never
-  inline SVG, never hand-draw with `Canvas`.
+- If the required icon is not in the bundled `ic_*_rounded` set nor in the Wiom /
+  partner drawables, **stop and flag**. Never substitute a similar-looking icon,
+  never inline SVG, never hand-draw with `Canvas`.
 - **Icon tints** use `icon.*` tokens — never `text.on*`. (Sizes and touch-target
   rules live in `wiom-design-foundations` → iconography.)
 
@@ -162,10 +163,10 @@ Any of the following → surface them, don't silently assume:
 |---|---|
 | `Modifier.width(320.dp)` on a card | `Modifier.fillMaxWidth()` with parent padding from a spacing token |
 | `Modifier.height(48.dp)` on a button | Let padding + line-height from the CTA skill drive the height |
-| `Modifier.padding(start = 16.dp)` on every child of a Column | `Column(verticalArrangement = Arrangement.spacedBy(WiomSpacing.m))` and parent owns horizontal padding |
-| `Icons.Default.Check` | `Icons.Rounded.Check` |
-| `color = Color(0xFFD9008D)` | `color = WiomColor.bg.brand` |
-| `fontSize = 16.sp` | `style = WiomType.labelL` |
+| `Modifier.padding(start = 16.dp)` on every child of a Column | `Column(verticalArrangement = Arrangement.spacedBy(Wiom.space.s16))` and parent owns horizontal padding |
+| `Icons.Default.Check` or `Icons.Rounded.Check` directly | `Icon(painter = painterResource(R.drawable.ic_check_rounded), …)` |
+| `color = Color(0xFFD9008D)` | `color = Wiom.bg.brand` |
+| `fontSize = 16.sp` | `style = Wiom.type.label.lg` |
 | `Modifier.offset(x = 8.dp)` to nudge layout | Re-parent, or use a proper `Row`/`Box` with alignment |
 | `Spacer(Modifier.height(16.dp))` as the default gap | `Arrangement.spacedBy(WiomSpacing.m)` on the parent |
 
