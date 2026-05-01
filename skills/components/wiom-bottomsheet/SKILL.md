@@ -335,7 +335,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Outer padding | `8T · 16R · 16B · 16L` |
 | Slot gap (icon ↔ text ↔ trailing action) | `space-12` |
 | Title style / colour | `type.heading.md` (20/28 Bold) · `text.default` (#161021) |
-| Subtitle style / colour | `type.body.sm` (12/16) · `text.subtle` (#665E75) |
+| Subtitle style / colour | `type.body.sm` (12/16) · `text.subtle` (#5C5570) |
 | Title → Subtitle gap | `space-4` |
 | Trailing action style / colour | `type.label.md` (14/20 SemiBold) · `text.brand` (#D9008D) — acts as a link |
 | Leading icon | 24 dp · `icon.nonAction` (#898296) |

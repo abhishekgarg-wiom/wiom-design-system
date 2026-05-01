@@ -82,7 +82,7 @@ Source: `get_design_context` on `1043:316` (Pill Track Count=2),
 | State | Container fill | Container shadow | Label | Default badge fill | Default badge label |
 |---|---|---|---|---|---|
 | **Active** | `bg.default` (#FAF9FC) | `shadow.sm` (drop) | `text.selected` (#D9008D) | `bg.brand` (#D9008D) | `text.onBrand` (#FFFFFF) |
-| **Inactive** | transparent | none | `text.subtle` (#665E75) | `bg.muted` (#E8E4F0) | `text.subtle` |
+| **Inactive** | transparent | none | `text.subtle` (#5C5570) | `bg.muted` (#E8E4F0) | `text.subtle` |
 | **Disabled** | `bg.disabled` (#D7D3E0) | none | `text.disabled` (#A7A1B2) | `bg.muted` | `text.subtle` |
 
 > **Disabled fill detail.** Figma node `1043:265` ships with `bg.disabled`
@@ -177,7 +177,7 @@ Source: `get_design_context` on `2941:6684` (Active item),
 | State | Indicator | Label | Icon (icon-only variant) |
 |---|---|---|---|
 | **Active** | `bg.brand` (#D9008D), 2 dp, full-width | `text.brand` (#D9008D) | `icon.brand` (#D9008D) |
-| **Inactive (Default)** | transparent / hidden | `text.subtle` (#665E75) | `icon.action` (#352D42) |
+| **Inactive (Default)** | transparent / hidden | `text.subtle` (#5C5570) | `icon.action` (#352D42) |
 | **Disabled** | transparent | `text.disabled` (#A7A1B2) | `icon.disabled` (#A7A1B2) |
 
 > **Indicator note.** The Figma description names the indicator color
@@ -705,7 +705,7 @@ without scroll on a 360 dp screen.
    pill (bg.default + shadow.sm). Underline Filter uses the 2 dp brand
    indicator. Never both, never neither.
 5. **Inactive must be visibly recessive but readable** — `text.subtle`
-   (#665E75) clears WCAG body contrast on `bg.default` and `bg.muted`.
+   (#5C5570) clears WCAG body contrast on `bg.default` and `bg.muted`.
    Do not use lighter greys for inactive state.
 6. **Disabled = whole item is greyed and non-tappable.** Pill Tab uses
    `bg.disabled` + `text.disabled`. Underline Filter has no fill change

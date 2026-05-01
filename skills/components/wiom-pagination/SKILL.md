@@ -276,7 +276,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Indicator gap (Bars) | `space-4` (4 dp) |
 | Wrapper → counter gap | `space-8` (8 dp) |
 | Counter typography | `type.label.md` (Noto Sans SemiBold 14 / 20 LH) |
-| Counter color (under Pagination) | `text.subtle` (#665E75) |
+| Counter color (under Pagination) | `text.subtle` (#5C5570) |
 | Counter color (Pagination / Counter) | `text.default` (#161021) — full contrast since it's the only text |
 | Chevron tint — tappable | `icon.action` (#352D42) |
 | Chevron tint — non-tappable (page 1 Back / last-page Forward) | `icon.disabled` (#A7A1B2) — chevron stays visible |

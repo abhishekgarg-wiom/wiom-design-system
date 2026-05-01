@@ -216,7 +216,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Icon (Default) | `icon.nonAction` (#898296) — outline glyph |
 | Icon (Selected) | `icon.brand` (#D9008D) — filled glyph (FILL=1) |
 | Label typography | `type.label.sm` (Noto Sans SemiBold 12 / 16 LH) |
-| Label color (Default) | `text.subtle` (#665E75) |
+| Label color (Default) | `text.subtle` (#5C5570) |
 | Label color (Selected) | `text.selected` (#D9008D) |
 | Badge fill | `bg.critical` (#D92130) |
 | Badge size | 8 dp · `radius-full` |
@@ -286,7 +286,7 @@ private fun rememberNavItemColors(selected: Boolean): NavItemColors =
     ) else NavItemColors(
         pillFill   = Color.Transparent,
         iconTint   = Wiom.icon.nonAction,          // #898296 — decorative-in-tappable-row
-        labelColor = Wiom.text.subtle,             // #665E75
+        labelColor = Wiom.text.subtle,             // #5C5570
     )
 
 private data class NavItemColors(

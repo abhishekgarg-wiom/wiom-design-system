@@ -136,7 +136,7 @@ All 5 types share a single envelope:
 | Title typography | `type.heading.md` (Bold 20 / 28 LH) |
 | Title color | `text.default` (#161021) |
 | Body typography | `type.body.md` (Regular 14 / 20 LH) |
-| Body color | `text.subtle` (#665E75) |
+| Body color | `text.subtle` (#5C5570) |
 
 ### Per-type header
 
@@ -239,7 +239,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Title typography | `type.heading.md` (Bold 20 / 28 LH) |
 | Title color | `text.default` (#161021) |
 | Body typography | `type.body.md` (Regular 14 / 20 LH) |
-| Body color | `text.subtle` (#665E75) |
+| Body color | `text.subtle` (#5C5570) |
 | Alert header (icon-with-bg) — fill | `bg.subtle` (#F1EDF7) by default; status-coded tone subtles otherwise |
 | Alert header — icon tint | `icon.action` (#352D42) by default; status-coded tone otherwise |
 | Illustration container — fill | `bg.brand.subtle` (#FFE5F6) by default |
