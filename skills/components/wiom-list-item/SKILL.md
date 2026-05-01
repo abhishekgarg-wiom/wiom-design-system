@@ -206,7 +206,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Pressed overlay | `bg.subtle` (#F1EDF7) |
 | Selected overlay | `bg.selected` (#FFCCED) |
 | Primary text | `type.body.lg` + `text.default` (#161021) |
-| Secondary text | `type.body.sm` + `text.subtle` (#665E75) |
+| Secondary text | `type.body.sm` + `text.subtle` (#5C5570) |
 | Trailing meta text | `type.body.sm` + `text.subtle` |
 | Leading icon (Default · Switch) | 24 dp · `icon.nonAction` (#898296) — decorative-in-tappable-row |
 | Trailing chevron | 20 dp · **`icon.brand` (#D9008D)** — pink, signalling tap affordance |

@@ -244,7 +244,7 @@ All tokens are **element-first**. Don't reference raw hex.
 |---|---|
 | Container fill | `bg.default` (#FAF9FC) |
 | Title color | `text.default` (#161021) |
-| Subtitle color | `text.subtle` (#665E75) |
+| Subtitle color | `text.subtle` (#5C5570) |
 | Trailing Text CTA color | `text.brand` (#D9008D) |
 | Leading / Trailing icon tint | `icon.action` (#352D42) |
 | Search pill fill | `bg.subtle` (#F1EDF7) |

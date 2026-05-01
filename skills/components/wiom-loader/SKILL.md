@@ -304,7 +304,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Slot | Brand | Neutral | OnColor |
 |---|---|---|---|
 | Track (full ring) | `bg.brand.subtle` (#FFE5F6) | `stroke.subtle` (#D7D3E0) | (no track) |
-| Indicator (3/4 arc) | `bg.brand` (#D9008D) | `text.subtle` (#665E75) | `icon.inverse` (#FAF9FC) |
+| Indicator (3/4 arc) | `bg.brand` (#D9008D) | `text.subtle` (#5C5570) | `icon.inverse` (#FAF9FC) |
 | Background | transparent | transparent | transparent |
 
 ### Linear
