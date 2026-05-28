@@ -255,8 +255,8 @@ All transitions are caller-driven — no infinite animation. Determinate progres
 | Rich completion card — title + status pill + value numbers — KYC, referral, earnings | **`Completion`** | All three signals at once on a home / dashboard card |
 | Multi-stage compact bar with named stages (2 / 3 / 4 / 5) — install, delivery, verification | **`Milestones`** | Conveys *where* you are, not just *how far* |
 | Compact donut on a status tile or KPI summary | **`Circular`** | Small footprint, single % at a glance |
-| Per-step detail with description + action (CTA / input / OTP) per step | **Stepper / Vertical** *(separate skill)* | Progress here doesn't carry per-step content |
-| Top-of-screen wizard nav with short labels | **Stepper / Horizontal** *(separate skill)* | This skill is for status visuals, not for navigation |
+| Per-step detail with description + action (CTA / input / OTP) per step | **Build per-step screens** — each step is its own screen / bottom sheet with its own header, body and CTA; surface position via `Pagination/Bars` or a compact `Milestones` strip at the top | Progress here doesn't carry per-step content, and Wiom doesn't ship a dedicated Stepper component — compose from existing primitives |
+| Top-of-screen wizard nav with short labels | **`Pagination/Bars`** with labels under each bar | This skill is for status visuals, not for navigation; Pagination Bars handle position-on-known-list with labels just fine |
 | Indeterminate "something is happening" with no progress signal | **`Loader/Spinner`** *(see `wiom-loader`)* | This skill is determinate only |
 | Short determinate wait inside a snackbar / inline strip (no milestones) | **`Loader/Linear`** *(see `wiom-loader`)* | Loader's Linear = brand-only, snackbar-style; this skill's Linear = state-coloured for completion meters |
 | Unlabeled "how far am I" wizard dots | **`Pagination/Bars`** *(see `wiom-pagination`)* | Pagination owns position-on-known-list patterns |
@@ -267,7 +267,7 @@ All transitions are caller-driven — no infinite animation. Determinate progres
 
 | Moment | Right call |
 |---|---|
-| Home-screen status summary that links to a detail screen | `Milestones` (compact) → tap card → detail screen with per-step cards / a Stepper Vertical |
+| Home-screen status summary that links to a detail screen | `Milestones` (compact) → tap card → detail screen with per-step cards (one screen / sheet per step) |
 | KYC / profile completion card | `Completion` |
 | File / image upload progress | `Linear` (Md, brand) — flips to `Linear` (positive) on completion |
 | Single status tile on a dashboard ("Network 75 %") | `Circular` |
@@ -354,10 +354,10 @@ All tokens are **element-first**. Don't reference raw hex.
 3. **Progress is display-only.** No tap target, no CTA, no dismiss. The hosting card / row owns interaction.
 4. **Pick the right component per §4.** Plain bar → Linear · rich card → Completion · named stages → Milestones · compact donut → Circular. Don't stack multiple progress visuals on the same card.
 5. **Milestones supports 2 / 3 / 4 / 5 stages — pick the right count for the flow.** Don't pad a 3-stage flow to 5 just to fit the original Figma layout; V2 ships all four stage counts.
-6. **Stage labels and icons are direct-edit per instance.** Figma TEXT / INSTANCE_SWAP properties have a single shared default across variants; the V2 file works around this by leaving them as direct layers. In code, the helper composable accepts `List<WiomMilestoneStage>` so call sites name their stages explicitly.
+6. **Stage labels and icons are direct-edit per instance.** Figma TEXT / INSTANCE_SWAP properties have a single shared default across variants; the V2 file works around this by leaving them as direct layers. In code, the helper composable accepts `List<WiomMilestoneStage>` so call sites name their stages explicitly. **Stage icons:** prefer Material3 `Icons.Rounded.*` (`WiomMilestoneIcon.vector(...)`) wherever the family has a fit; fall back to a brand drawable (vector / animated json / raster) via `WiomMilestoneIcon.resource(R.drawable.ic_*_rounded)` only when no Material3 rounded icon matches. Never `Icons.Default / Filled / Outlined / Sharp / TwoTone`.
 7. **Animate caller-driven changes only.** Determinate progress shouldn't appear animated when nothing is changing. Tween fill / arc / colour over 300–600 ms when `progress` / `state` / `currentStage` updates.
 8. **For long indeterminate / blocking waits, use a loader instead.** `Loader/Spinner` for short, `Loader/Brand` Overlay for blocking critical ops (payment, KYC upload). When the wait completes, route to a `wiom-bottomsheet` Illustration outcome surface — don't linger on a progress visual.
-9. **Progress vs Stepper:** if the user is acting per step (filling a form, tapping CTAs), use a stepper. If they're observing forward motion, use this skill. Compact tracker cards on home screens link through to a stepper-vertical detail screen.
+9. **Progress vs per-step screens:** if the user is acting per step (filling a form, tapping CTAs), build per-step screens — one screen / bottom sheet per step, with its own header, body and CTA — and surface position with `Pagination/Bars` or a compact `Milestones` strip. If they're observing forward motion, use this skill. Compact tracker cards on home screens link through to the per-step detail.
 10. **Tokens only — element-first.** No raw hex. No legacy `colors.bg.brand` / `WiomColor.brandPrimary` namespaces; use `Wiom.bg.brand` / `Wiom.text.subtle` / `Wiom.bg.muted`.
 
 ---
@@ -371,9 +371,26 @@ enum class WiomProgressLinearSize     { Sm, Md }
 enum class WiomProgressLinearState    { Brand, Info, Positive }
 enum class WiomProgressCompletionState { JustStarted, InProgress, AlmostThere, Complete }
 
+/**
+ * A named stage in a Milestones bar.
+ *
+ * Prefer the Material3 `Icons.Rounded.*` family — use `vector(...)`.
+ * Fall back to a brand-specific drawable (vector / animated json /
+ * raster) only when no Material3 rounded icon fits — use `resource(...)`.
+ */
+sealed interface WiomMilestoneIcon {
+    data class Vector(val icon: ImageVector) : WiomMilestoneIcon
+    data class Resource(@DrawableRes val resId: Int) : WiomMilestoneIcon
+
+    companion object {
+        fun vector(icon: ImageVector): WiomMilestoneIcon = Vector(icon)
+        fun resource(@DrawableRes resId: Int): WiomMilestoneIcon = Resource(resId)
+    }
+}
+
 data class WiomMilestoneStage(
     val label: String,
-    @DrawableRes val iconRes: Int,
+    val icon: WiomMilestoneIcon,
 )
 
 @Composable
@@ -593,6 +610,8 @@ fun WiomProgressMilestones(
 
 @Composable
 private fun StageCircle(stage: WiomMilestoneStage, reached: Boolean) {
+    val tint = if (reached) Wiom.icon.inverse else Wiom.icon.nonAction
+
     Box(
         modifier = Modifier
             .size(24.dp)
@@ -600,12 +619,22 @@ private fun StageCircle(stage: WiomMilestoneStage, reached: Boolean) {
             .padding(4.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(
-            painter = painterResource(stage.iconRes),
-            contentDescription = null,
-            tint = if (reached) Wiom.icon.inverse else Wiom.icon.nonAction,
-            modifier = Modifier.size(16.dp),
-        )
+        when (val icon = stage.icon) {
+            is WiomMilestoneIcon.Vector ->
+                Icon(
+                    imageVector = icon.icon,                      // Icons.Rounded.* (preferred)
+                    contentDescription = null,
+                    tint = tint,
+                    modifier = Modifier.size(16.dp),
+                )
+            is WiomMilestoneIcon.Resource ->
+                Icon(
+                    painter = painterResource(icon.resId),         // brand drawable fallback
+                    contentDescription = null,
+                    tint = tint,
+                    modifier = Modifier.size(16.dp),
+                )
+        }
     }
 }
 ```
@@ -736,11 +765,13 @@ WiomProgressCompletion(
 ```kotlin
 val installStages = remember {
     listOf(
-        WiomMilestoneStage("Survey",   R.drawable.ic_home_work_rounded),
-        WiomMilestoneStage("Cable",    R.drawable.ic_cable_rounded),
-        WiomMilestoneStage("Router",   R.drawable.ic_router_rounded),
-        WiomMilestoneStage("Activate", R.drawable.ic_bolt_rounded),
-        WiomMilestoneStage("Done",     R.drawable.ic_check_circle_rounded),
+        // Material3 rounded icons — preferred wherever the icon exists in the family.
+        WiomMilestoneStage("Survey",   WiomMilestoneIcon.vector(Icons.Rounded.HomeWork)),
+        // Brand-specific drawable fallback — for glyphs not in Icons.Rounded.*.
+        WiomMilestoneStage("Cable",    WiomMilestoneIcon.resource(R.drawable.ic_cable_rounded)),
+        WiomMilestoneStage("Router",   WiomMilestoneIcon.resource(R.drawable.ic_router_rounded)),
+        WiomMilestoneStage("Activate", WiomMilestoneIcon.vector(Icons.Rounded.Bolt)),
+        WiomMilestoneStage("Done",     WiomMilestoneIcon.vector(Icons.Rounded.CheckCircle)),
     )
 }
 
@@ -810,7 +841,7 @@ Card(
 }
 ```
 
-### Compact home card → tap → Stepper Vertical detail
+### Compact home card → tap → per-step detail
 
 ```kotlin
 // Home: compact Milestones inside a tappable list-item card.
@@ -825,8 +856,9 @@ WiomListItem(
         currentStage = 3,
     )
 }
-// Detail screen renders the same `currentStage` data through a Stepper Vertical
-// where each step has its own description + action slot.
+// Detail screen renders one screen / bottom sheet per step (each with its own
+// header, body and CTA) and surfaces position with a Pagination/Bars indicator
+// or a compact Milestones strip pinned at the top.
 ```
 
 ---
@@ -871,7 +903,7 @@ Re-pull `get_variable_defs` on each component set if foundations token names eve
 **Description-vs-ship discrepancies** — if a stale doc says otherwise, trust ship values:
 
 - The ship has **4 component sets · 29 ship variants total** (Linear 6 + Completion 4 + Milestones 14 + Circular 5). Older skill drafts described 4 components but counted Milestones as 5 fixed variants; V2 ships 14 (Stage Count 2/3/4/5 × Current Stage). The old `Progress/Icon Bar` set (`2879:132`) is **not in V2** — it was replaced by `Progress/Circular` (`3109:110`).
-- **Milestones supports 2 / 3 / 4 / 5 stages.** Older drafts said "Fixed at 5 stages — 3-stage / 7-stage flows need a parallel component." V2 resolves this with the `Stage Count` variant. 7+ stages still aren't supported (and shouldn't be — at that point use a Stepper Vertical detail screen).
+- **Milestones supports 2 / 3 / 4 / 5 stages.** Older drafts said "Fixed at 5 stages — 3-stage / 7-stage flows need a parallel component." V2 resolves this with the `Stage Count` variant. 7+ stages still aren't supported (and shouldn't be — at that point build per-step screens with one screen / bottom sheet per step).
 - **Bar geometry is fluid (flexbox), not fixed pixel positions.** Older drafts described stage circles at fixed x = 12 / 86 / 160 / 234 / 308 with labels positioned via `iconCenter − labelWidth / 2`. V2 ships the circles + connectors as a flex Row, so 2 / 3 / 4 / 5-stage layouts compose without manual repositioning.
 - **Stage labels and stage icons are NOT INSTANCE_SWAP / TEXT properties** — they're direct layers, edited per instance in Figma. Same with Completion's title / value / pill copy. This is a Figma platform constraint (TEXT properties have a single shared default across variants), not a Wiom design choice. The Compose API works around it with explicit `title` / `subtitle` / `stages` parameters.
 - **Reversed semantics — never `bg.warning` / `bg.critical` on the fill.** Wiom progress represents forward motion toward a desirable outcome. Stuck / blocked / errored flows route to a `wiom-bottomsheet` Illustration outcome surface or a status pill *adjacent* to the progress, never colour the bar amber / red.

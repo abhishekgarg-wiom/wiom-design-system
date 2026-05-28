@@ -4,9 +4,9 @@ The official Wiom Design System for the Wiom Partner & Customer Android apps —
 
 This repo contains:
 
-- **`skills/`** — 18 installable Claude Code skills (foundations + 16 components + compose layout rules)
+- **`skills/`** — 17 installable Claude Code skills (foundations + 15 components + compose layout rules)
 
-> Human-readable reference documents (`docs/`) were removed in the V2 refresh because they had drifted from the skills. They will be regenerated in a follow-up pass.
+> The skill files are the canonical documentation. Earlier human-readable reference docs (`docs/`) were removed in the V2 refresh because they had drifted from the skills — there is no plan to reintroduce them.
 
 ---
 
@@ -35,9 +35,8 @@ This repo contains:
 | `wiom-bottomsheet` | Bottom Sheet — 8 size variants + picker / action-menu patterns (replaces the deprecated dropdown menu UX) |
 | `wiom-dialog` | Dialog / Modal — 5 types (Alert · Input · Selection · Illustration · Loading) |
 | `wiom-toast` | Toast / Snackbar — 4 types × 3 behaviors |
-| `wiom-loader` | Loader — Spinner, Status (Wait → Success / Error), Dots, Skeleton, Brand full-screen |
+| `wiom-loader` | Loader — Spinner, Linear (Indeterminate / Determinate), Dots, Skeleton, Brand full-screen |
 | `wiom-progress-indicator` | Determinate progress — Linear, Completion meter, Milestones, Circular |
-| `wiom-stepper` | Stepper — Horizontal and Vertical, shared StepIndicator atom |
 | `wiom-pagination` | Pagination — Dots-Simple / Dots-Expanded / Bars, Counter, Scroll Indicator |
 
 ---
@@ -140,7 +139,6 @@ wiom-design-system/
 │       ├── wiom-toast/SKILL.md
 │       ├── wiom-loader/SKILL.md
 │       ├── wiom-progress-indicator/SKILL.md
-│       ├── wiom-stepper/SKILL.md
 │       └── wiom-pagination/SKILL.md
 └── …
 ```

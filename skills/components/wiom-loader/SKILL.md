@@ -23,7 +23,7 @@ description: >
   (Loading state uses Spinner sm), wiom-input-fields (trailing
   Spinner sm during validation), wiom-dialog (Loading dialog
   composes Spinner / Brand), wiom-progress-indicator (long-form
-  determinate progress with milestones — use that for steppers,
+  determinate progress with milestones / KYC / install meters —
   Loader Linear is for short waits), and wiom-compose-layout-rules
   (Modifier discipline).
 ---
@@ -156,7 +156,7 @@ The Figma container is illustrative — in code, the parent (snackbar / inline s
 
 ```
 ┌─ 104 × 32 dp chat bubble · bg.subtle (brand/neutral) · bg.brand (onColor) ─┐
-│  [padding 12h · 10v]                                                       │
+│  [padding 12h · 12v]                                                       │
 │       ●  ●  ●        ← 3 dots · 8 dp each · 4 dp gap · uniform opacity     │
 ╰─                     ← bottom-left corner radius-tiny (4 dp) · tail        │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -167,7 +167,7 @@ The Figma container is illustrative — in code, the parent (snackbar / inline s
 | Bubble fill — Brand / Neutral | `bg.subtle` |
 | Bubble fill — OnColor | `bg.brand` |
 | Bubble radius | `radius-large` (16 dp) — except bottom-left = `radius-tiny` (4 dp) |
-| Bubble padding | 12 h · 10 v |
+| Bubble padding | 12 h · 12 v (`space-12`) |
 | Dot fill — Brand | `bg.brand` |
 | Dot fill — Neutral | `text.subtle` |
 | Dot fill — OnColor | `icon.inverse` |
@@ -277,7 +277,7 @@ For Wiom users on budget Android (low-spec devices, intermittent connectivity, t
 | 1–3 s · section / card / dialog body | No | Low–Mid | **Spinner Md** (centered in the surface) |
 | 1–3 s · list / card / content area | **Yes** | Low | **Skeleton** (`ListItem` × N for lists, `Card` for cards, `Line` for text) |
 | 1–5 s · top of a snackbar / inline surface | — | Low | **Linear** (`Indeterminate` if no progress signal) |
-| Determinate progress with a known % | — | Low | **Linear** (`Determinate`) — for **milestone / stepper / KYC** progress, use `wiom-progress-indicator` instead |
+| Determinate progress with a known % | — | Low | **Linear** (`Determinate`) — for **milestone / KYC / completion-meter** progress, use `wiom-progress-indicator` instead |
 | Chat — assistant / agent composing | — | — | **Dots** (`Brand` for assistant, `Neutral` for human agent, `OnColor` inside brand bubble) |
 | Cold start / app launch / post-login splash | — | — | **Brand** (`Light` or `OnBrand`) |
 | Blocking critical operation > 3 s — payment, KYC upload, plan activation | — | **High (money / identity)** | **Brand Overlay** with a multi-line message (e.g. "Processing your payment…") |
@@ -323,7 +323,9 @@ All tokens are **element-first**. Don't reference raw hex.
 |---|---|---|---|
 | Bubble fill | `bg.subtle` (#F1EDF7) | `bg.subtle` | `bg.brand` (#D9008D) |
 | Bubble radius | `radius-large` 16 dp · bottom-left `radius-tiny` 4 dp | same | same |
-| Bubble padding | 12 h · 10 v | same | same |
+| Bubble padding | 12 h · 12 v (`space-12`) | same | same |
+<!-- Bubble padding is on the 4-dp grid (12 V, not 10 V). Older drafts said 10 V; corrected during V2 Android rebuild. -->
+
 | Dot fill | `bg.brand` | `text.subtle` | `icon.inverse` |
 | Dot size · gap · opacity | 8 dp · 4 dp · 1.0 — uniform | same | same |
 
@@ -895,5 +897,5 @@ Re-pull `get_variable_defs` on each component set if foundations token names eve
 - `wiom-dialog` — Loading dialog type composes `WiomSpinner.Md` or `WiomBrandLoader.Light` as its body.
 - `wiom-bottomsheet` — outcome surface that takes over from a loader at completion (Illustration · Positive / Critical for trust-heavy moments).
 - `wiom-toast` — non-essential post-wait acknowledgment. Don't keep a loader running past the wait — dismiss and toast (or sheet, for money moments).
-- `wiom-progress-indicator` — long-form determinate progress with milestones, percentage labels, or step counters. Loader Linear is for short, simple waits; the progress-indicator skill is for steppers / KYC / install meters.
+- `wiom-progress-indicator` — long-form determinate progress with milestones, percentage labels, or step counters. Loader Linear is for short, simple waits; the progress-indicator skill is for KYC / install meters / multi-stage completion.
 - `wiom-compose-layout-rules` — Modifier discipline; `infiniteRepeatable` for animation; no `Modifier.size` overrides on Spinner / Dots.

@@ -165,6 +165,21 @@ Each box is a square-ish container (height = 12 V + 24 LH + 12 V =
 48 dp) that fills width via `weight(1f)`. Boxes don't have fixed
 widths — the container's width and the count split it.
 
+| Slot | Value | Token |
+|---|---|---|
+| Title style | Noto Sans SemiBold 16 / 24 LH | `type.label.lg` |
+| **Digit (inside each box)** | **Noto Sans SemiBold 16 / 24 LH** | **`type.label.lg`** |
+| Helper / Timer style | Noto Sans Regular 14 / 20 LH | `type.body.md` |
+| Box wrap radius | 12 dp | `radius-medium` |
+| Box wrap padding | 12 H · 12 V | `space-12` |
+| Box-to-box gap | 8 dp | `space-8` |
+| Active box border | 2 dp | `stroke.brand.focus` |
+| Inactive box border | 1 dp | `stroke.subtle` |
+
+> **Digit typography is `type.label.lg`** — same weight as the Title.
+> Don't use `type.body.lg` (Regular weight); the digit needs SemiBold
+> presence to read as a discrete entered token, not flowing text.
+
 **No fixed dimensions** on any of the three components. Wrap heights
 hug from padding + line-height. Container width = parent surface
 margin (`fillMaxWidth()`).
@@ -250,7 +265,7 @@ All tokens are **element-first**. Always reference tokens, never hex.
 | Inside screen content | `space-16` start / end gutter via screen padding | `fillMaxWidth()` — width emerges as 328 dp on a 360 dp screen |
 | Inside dialog | `space-24` via dialog padding | `fillMaxWidth()` |
 | Inside bottom sheet | `space-16` via sheet padding | `fillMaxWidth()` |
-| Inside a stepper step | `space-16` via step content padding | `fillMaxWidth()` |
+| Inside a per-step screen / sheet | `space-16` via step content padding | `fillMaxWidth()` |
 
 **No fixed dimensions** on any field component.
 
@@ -490,9 +505,91 @@ fun WiomInput(
 
 `WiomTextarea` is the same shape with `singleLine = false`,
 `verticalAlignment = Alignment.Top`, and the placeholder Box using
-`contentAlignment = Alignment.TopStart`. `WiomOtp` is a `Row` of 4 or
-6 `weight(1f)` boxes; the active digit's box uses 2 dp
-`stroke.brand.focus` and the rest use 1 dp `stroke.subtle`.
+`contentAlignment = Alignment.TopStart`.
+
+### WiomOtp — single `BasicTextField` + `decorationBox` (canonical)
+
+> **Don't use N separate `BasicTextField`s** with manual focus
+> chaining. That's the wrong pattern for boxed OTP — paste fails,
+> backspace is unreliable, and IME suggestions break. Use **one**
+> hidden `BasicTextField` that owns the digit string, and render N
+> visual cells inside its `decorationBox`. Active cell = `text.cursor`
+> index inside the value; cell styling is pure layout.
+
+```kotlin
+@Composable
+fun WiomOtp(
+    value: String,
+    onValueChange: (String) -> Unit,
+    title: String = "Enter OTP",
+    state: FieldState = FieldState.Default,
+    sixDigit: Boolean = false,
+    helper: String? = null,
+    timer: String? = null,
+    modifier: Modifier = Modifier,
+) {
+    val count = if (sixDigit) 6 else 4
+    val colors = rememberFieldColors(state)
+    val focusedIndex = value.length.coerceAtMost(count - 1)
+
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Wiom.space.s8)) {
+        Text(title, style = Wiom.type.label.lg, color = colors.title)
+
+        BasicTextField(
+            value = value,
+            onValueChange = { onValueChange(it.filter(Char::isDigit).take(count)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+            modifier = Modifier.fillMaxWidth(),
+            decorationBox = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Wiom.space.s8),
+                ) {
+                    repeat(count) { i ->
+                        val isActive = i == focusedIndex && state != FieldState.Disabled
+                        val borderWidth = if (isActive) 2.dp else 1.dp
+                        val borderColor = if (isActive) Wiom.stroke.brand.focus else Wiom.stroke.subtle
+
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .heightIn(min = 48.dp)
+                                .border(borderWidth, borderColor, RoundedCornerShape(Wiom.radius.medium))
+                                .padding(horizontal = Wiom.space.s12, vertical = Wiom.space.s12),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = value.getOrNull(i)?.toString().orEmpty(),
+                                style = Wiom.type.label.lg,                   // SemiBold 16/24 — see §6
+                                color = colors.body,
+                            )
+                        }
+                    }
+                }
+            },
+        )
+
+        if (helper != null || timer != null) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12)) {
+                helper?.let { Text(it, style = Wiom.type.body.md, color = colors.helper, modifier = Modifier.weight(1f)) }
+                timer?.let  { Text(it, style = Wiom.type.body.md, color = Wiom.text.subtle) }   // Focused state only
+            }
+        }
+    }
+}
+```
+
+Key properties:
+
+- **One `BasicTextField`** owns the entire digit string. Paste, IME
+  autofill, and backspace work without any per-cell focus management.
+- **`decorationBox` renders N visual cells** via `repeat(count)` + a
+  `Row` of `weight(1f)` boxes. Cells are pure visual chrome.
+- **Active cell = next-position cell**, i.e. cell at `value.length`
+  (clamped to `count - 1`). Active = 2 dp `stroke.brand.focus`;
+  others = 1 dp `stroke.subtle`.
+- **Digit text style = `type.label.lg`** (SemiBold 16/24) — see §6.
 
 ### Common mistake → fix
 
@@ -714,6 +811,7 @@ trust ship values:
 - `wiom-cta` — the Primary "Done" CTA inside multi-select picker
   sheets.
 - `wiom-list-item` — list-row anatomy that hosts each picker option.
-- `wiom-stepper` — multi-step flows that embed Input / OTP per step.
+- `wiom-pagination` — position indicator (Pagination/Bars) for multi-step
+  flows that embed Input / OTP across screens.
 - `wiom-compose-layout-rules` — Modifier discipline; no fixed heights;
   `Icons.Rounded.*` enforcement.
