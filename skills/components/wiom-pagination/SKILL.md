@@ -711,6 +711,6 @@ Re-pull `get_variable_defs` on `1990:31` if foundations token names ever change.
 
 - `wiom-design-foundations` — token source. Especially `bg.brand` / `bg.muted` for Active / Inactive, `radius-full`, and the `icon.action` rule for tappable chrome chevrons.
 - `wiom-compose-layout-rules` — Modifier discipline; `Icons.Rounded.*` enforcement and the rule against `Icons.Default / Filled / Outlined / Sharp / TwoTone`.
-- `wiom-stepper` — sibling component when steps need labels (more verbose than Bars; pick this when each step has a name visible at the indicator).
+- `wiom-progress-indicator` — `Milestones` when each step needs a visible label and the user is observing forward motion (not navigating). Pagination/Bars is the lighter-weight indicator for wizard nav and carousels.
 - `wiom-tabs-filters` — for switching between sections inside one screen. Distinct from `Pagination`, which advances **through** content sequentially.
 - `wiom-top-bar` — chevron / nav-button styling reference for the `Pagination / Counter` chevrons.

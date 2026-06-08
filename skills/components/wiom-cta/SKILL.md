@@ -253,7 +253,13 @@ Master table — pick the row matching intent, read across.
 10. **Inner Row centered both axes** —
     `Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)` +
     `Alignment.CenterVertically`. Never `Arrangement.Start` /
-    `SpaceBetween`.
+    `SpaceBetween`. **The horizontal centering only takes effect when
+    the Row is wider than its content** — wrap the Row in
+    `Box(modifier.fillMaxWidth(), contentAlignment = Alignment.Center)`
+    (or apply `Modifier.fillMaxWidth()` to the Row itself). Without
+    this, short labels hug-content and render visually off-center
+    inside a fillMaxWidth() button — a real bug surfaced during the
+    Android v2 rebuild.
 11. **Tokens only — no raw hex, no role-first legacy tokens** like
     `color.brand.primary`. Element-first only (`bg.*`, `text.*`,
     `stroke.*`, `icon.*`).
@@ -419,17 +425,25 @@ Surface(
             onClick = onClick,
         ),
 ) {
-    Row(
-        modifier = Modifier.padding(
-            horizontal = Wiom.space.s16,
-            vertical = Wiom.space.s12,
-        ),
-        horizontalArrangement = Arrangement.spacedBy(
-            Wiom.space.s8,
-            Alignment.CenterHorizontally,
-        ),
-        verticalAlignment = Alignment.CenterVertically,
+    // Box(fillMaxWidth + contentAlignment.Center) lets short labels render
+    // centered inside a CTA that the caller has stretched with
+    // fillMaxWidth() / weight(1f). Without it, the inner Row hugs its
+    // content and the label drifts left of true centre.
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center,
     ) {
+        Row(
+            modifier = Modifier.padding(
+                horizontal = Wiom.space.s16,
+                vertical = Wiom.space.s12,
+            ),
+            horizontalArrangement = Arrangement.spacedBy(
+                Wiom.space.s8,
+                Alignment.CenterHorizontally,
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
         if (state == WiomButtonState.Loading) {
             CircularProgressIndicator(
                 color = colors.icon,
@@ -452,6 +466,7 @@ Surface(
                 Icon(it, contentDescription = null,
                     tint = colors.icon, modifier = Modifier.size(20.dp))
             }
+        }
         }
     }
 }

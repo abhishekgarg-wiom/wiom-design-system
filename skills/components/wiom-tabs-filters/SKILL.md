@@ -102,8 +102,8 @@ Source: `get_design_context` on `1043:316` (Pill Track Count=2),
 
 Figma ships three Pill Track variants: **Count = 1 · 2 · 3** (per
 metadata `1043:313 / 1043:316 / 1043:320`). The published doc says "Count:
-2 / 3 / 4" — that's an outdated description. Use the ship value: 1–3 fixed
-counts. **For 4+ tabs, use the scrollable behavior described in §1.5.**
+2 / 3 / 4" — that's an outdated description. **Use the ship value: 1–3
+fixed counts. Pill Track is hard-capped at 3.**
 
 | Count | Layout |
 |---|---|
@@ -111,24 +111,29 @@ counts. **For 4+ tabs, use the scrollable behavior described in §1.5.**
 | 2 | Two equal-width pills (most common — Customer / Partner, Hindi / English, Active / All) |
 | 3 | Three equal-width pills |
 
-### 1.5 4+ tabs — strongly discouraged
+### 1.5 4+ tabs — not supported
 
-Pill Track is hard-capped at 3 in Figma. **4+ Pill Tabs almost always
-indicate the wrong component.** Before reaching for a workaround,
-verify with design that a different pattern isn't a better fit:
+**Pill Track is hard-capped at 3.** There is no 4-tab variant and no
+horizontally-scrollable Pill Track fallback — both have been considered
+and explicitly excluded from Wiom DS. 4+ Pill Tabs almost always
+indicate the wrong component. Route to one of these instead:
 
 - 4+ items that are **mutually exclusive views of different data** →
-  consider Bottom Navigation (`wiom-navigation-bar`) or list-of-rows
+  Bottom Navigation (`wiom-navigation-bar`, 2–5 tabs) or list-of-rows
   navigation.
 - 4+ items that are **slices of the same data** → Underline Filter is
-  the right component, not Pill Tab.
-- 4+ items that are **categories / sub-pages** → consider section
-  headers, list-of-rows, or a separate screen per category.
+  the right component, not Pill Tab. Underline Filter has no cap and
+  can scroll horizontally.
+- 4+ items that are **categories / sub-pages** → section headers,
+  list-of-rows, or a separate screen per category.
 
-If 4+ Pill Tabs are still required after that conversation: the Track
-becomes horizontally scrollable, items keep hug-content width (do not
-`weight(1f)`), and the Active pill auto-scrolls into view on selection.
-Treat this as a code-only fallback, not a design pattern.
+Implementations must enforce the cap in code (`require(count in 1..3)`).
+If a screen looks like it needs 4+ pills, that's the signal to revisit
+the design — not to relax the cap.
+
+> **Implementor note:** Android v0.3.0 currently caps at `2..4` and
+> should tighten to `1..3` in the next minor release to match this
+> skill. Other consumers should ship with the `1..3` cap from day one.
 
 ---
 

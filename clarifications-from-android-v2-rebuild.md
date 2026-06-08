@@ -22,15 +22,25 @@ the next consumer derives the right code on the first try.
 | 2 | `WiomOtp` digit text uses `type.label.lg` (16/24 SemiBold). |
 | 3 | `WiomOtp` ships single `BasicTextField` + `decorationBox` rendering N weighted boxes; active digit gets `stroke.brand.focus`. |
 | 4 | `WiomDots` uses 4-dp-grid vertical padding (off-grid choice rejected; Android picks the safer canonical value). |
-| 5 | Android caps Pill Tab at 2..4 hard (no scroll fallback). 4+ pill tabs not yet exercised by any consumer screen. |
-| 6 | `WiomMilestoneStage(label: String, icon: ImageVector)` — caller passes `Icons.Rounded.*`. |
+| 5 | Android v0.3.0 currently caps Pill Tab at 2..4 hard (no scroll fallback). To tighten to 1..3 in the next minor release to match the skill. |
+| 6 | `WiomMilestoneStage(label, icon: WiomMilestoneIcon)` — caller passes either `WiomMilestoneIcon.vector(Icons.Rounded.X)` (preferred) or `WiomMilestoneIcon.resource(R.drawable.ic_*_rounded)` (fallback for brand glyphs not in Material3). |
+
+## Skill amendment status (2026-05-20)
+
+All six clarifications are now folded into the skill text. Resolutions:
+
+| # | Skill | Applied amendment |
+|---|---|---|
+| 1 | `wiom-cta` | §7 universal rule 10 extended with the centering constraint; §9 inner row wrapped in `Box(fillMaxWidth, contentAlignment = Center)`. |
+| 2 | `wiom-input-fields` | §6 OTP anatomy now names `type.label.lg` for the digit (with a callout against `type.body.lg`). |
+| 3 | `wiom-input-fields` | §8 ships the canonical single-`BasicTextField` + `decorationBox` snippet with active-cell handling. |
+| 4 | `wiom-loader` | Dots bubble padding corrected to 12 H · 12 V (`space-12`); on-grid. |
+| 5 | `wiom-tabs-filters` | §1.4 / §1.5 tightened — Pill Track is hard-capped at 1..3, no scroll fallback. Android v0.3.0 (2..4) to tighten next release. |
+| 6 | `wiom-progress-indicator` | `WiomMilestoneStage` icon now a sealed `WiomMilestoneIcon` (Vector / Resource). Material3 `Icons.Rounded.*` preferred; brand drawable fallback documented. |
 
 ## Reviewer notes
 
 These are clarifications, not bug fixes. The V2 ship behaviour is what's correct
-on the Wiom side — the Android rebuild now matches it. This document exists so
-the next consumer (iOS, Web) doesn't re-derive these edge cases from scratch.
-
-The skill text amendments themselves are deliberately not in this PR — the
-amendments are best authored by the skill maintainer in their own voice, taking
-this list as input.
+on the Wiom side — the Android rebuild now matches it. This document remains so
+the next consumer (iOS, Web) doesn't re-derive these edge cases from scratch,
+and so the history of why the prose now reads the way it does is preserved.

@@ -39,7 +39,7 @@ ONE SCALE:    1, 2, 4, 8 (power-of-2 progression).
 
 | Token | Use for | Do NOT use for |
 |-------|---------|----------------|
-| `shadow.none` | Buttons, inputs, checkboxes, radios, chips, banners, steppers — any surface intentionally flat. Also for resetting elevation (e.g., card embedded inside a bottom sheet). | — |
+| `shadow.none` | Buttons, inputs, checkboxes, radios, chips, banners, tabs / filters, nav bars — any surface intentionally flat. Also for resetting elevation (e.g., card embedded inside a bottom sheet). | — |
 | `shadow.sm` | Sticky nav (scrolled state only), tooltips, passive info cards — surfaces that need slight lift without dominating | Default card elevation, dropdowns — too subtle for interactive surfaces |
 | `shadow.md` | Interactive cards, bottom sheets, dropdown menus, popovers, FAB — the everyday default shadow | Every surface — not all surfaces need elevation. Elevation is intentional. |
 | `shadow.lg` | Floating toasts/snackbars, dropdown over visually busy backgrounds — surfaces that need to clearly "pop" | Common default — use on max 1–2 elements per screen |
@@ -52,7 +52,7 @@ ONE SCALE:    1, 2, 4, 8 (power-of-2 progression).
 Start from the top. The first match is your shadow.
 
 ```
-Is the surface intentionally flat (button, input, chip, banner, checkbox, radio, stepper, nav bar)?
+Is the surface intentionally flat (button, input, chip, banner, checkbox, radio, tabs / filters, nav bar)?
   → shadow.none
 
 Is the surface a tooltip, passive info card, or sticky nav on scroll?
@@ -86,7 +86,7 @@ This is the source of truth. Every component has exactly one shadow assignment.
 | Radio | Inline form control |
 | Chip / Tag | Inline label element |
 | Banner / Toast (inline) | Inline notification, uses color/border for distinction |
-| Stepper | Inline navigation indicator |
+| Tabs / Filters | Inline data-narrowing control |
 | Navigation bar | Fixed position, uses border-bottom for separation |
 
 ### shadow.sm — Subtle lift
