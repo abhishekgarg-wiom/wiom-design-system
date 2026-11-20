@@ -99,7 +99,7 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 |-------|------|--------|----|-----|
 | `type.display.lg` | 48sp | Bold 700 | 64sp | Hero / splash / marketing |
 | `type.heading.xl` | 32sp | Bold 700 | 44sp | Section hero |
-| `type.heading.lg` | 24sp | Bold 700 | 32sp | Page title / dialog header |
+| `type.heading.lg` | 24sp | Bold 700 | 32sp | Page title |
 | `type.heading.md` | 20sp | Bold 700 | 28sp | Card group / sub-section |
 | `type.title.lg` | 20sp | Medium 500 | 28sp | Nav / toolbar title |
 | `type.title.sm` | 16sp | Bold 700 | 24sp | Card title / list header |
@@ -111,7 +111,7 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 | `type.label.sm` | 12sp | SemiBold 600 | 16sp | Chat reply sender, bottom nav |
 | `type.meta.xs` | 10sp | Regular 400 | 16sp | ⚠ Chat-bubble timestamp / badge count ONLY |
 
-**Default: 16sp.** `body.lg` for reading text, `label.lg` for interactive text. Page / dialog headers default to `heading.lg` (24 Bold); bottom-sheet headers are `heading.md` (20 Bold). Chat bubble body is an **intentional exception** at `body.md` (14) — density matters in dense-message domain. Floor rule: sub-14sp only for captions/chat-reply/timestamps; `meta.xs` 10sp only for chat-bubble timestamps and badge counts. Never for Hindi body text.
+**Default: 16sp.** `body.lg` for reading text, `label.lg` for interactive text. Page headers default to `heading.lg` (24 Bold); dialog and bottom-sheet headers are `heading.md` (20 Bold). Chat bubble body is an **intentional exception** at `body.md` (14) — density matters in dense-message domain. Floor rule: sub-14sp only for captions/chat-reply/timestamps; `meta.xs` 10sp only for chat-bubble timestamps and badge counts. Never for Hindi body text.
 
 **Pairing rule (title → description):** Title 24/20 → description 16. Title/label 16 → description 14.
 
