@@ -130,7 +130,7 @@ For list / picker / form variants, the nested children expose their own variants
 
 ```
 ┌──────────────────────── 360 dp wide · hugs height ─────────────────────────┐
-│  [Scrim — bg.scrim 50% · only when Is Modal = true]                         │
+│  [Scrim — overlay.scrim 50% · only when Is Modal = true]                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 ┌──────── Sheet Surface · bg.default · radius-xlarge top · shadow.md ─────────┐
 │                                                                              │
@@ -250,7 +250,7 @@ Figma's `visible` binding is direct-state only — `Show Top Safe Space` and `Sh
 ### Scrim ownership
 
 `Is Modal = true` reveals the scrim. The scrim:
-- Fills the viewport above the sheet (`bg.scrim` = #161021 @ 50%).
+- Fills the viewport above the sheet (`overlay.scrim` = #161021 @ 50%).
 - Tap-to-dismiss is the user contract — wire `onDismissRequest` for scrim taps.
 - Does NOT receive shadow or radius — it's a flat colour pane.
 
@@ -318,7 +318,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Top corner radius | `radius-xlarge` (24 dp) |
 | Bottom corner radius | 0 (anchors flush) |
 | Shadow | `shadow.md` (drop-shadow · y=2 · blur=6 · #00000026) — no border |
-| Scrim fill (`Is Modal = true`) | `bg.scrim` (#161021 @ 50%) |
+| Scrim fill (`Is Modal = true`) | `overlay.scrim` (#161021 @ 50%) |
 | Sheet width | `fillMaxWidth()` (360 dp in Figma) |
 
 ### Handle
@@ -969,7 +969,7 @@ Re-pull `get_variable_defs` on `3022:424` if foundations token names change.
 
 ## See also
 
-- `wiom-design-foundations` — token source. Especially: `bg.default` / `bg.scrim` / `bg.selected`, `text.default` / `text.subtle` / `text.brand`, `stroke.strong` / `stroke.subtle`, `icon.nonAction` / `icon.brand`, `space-4` / `space-8` / `space-12` / `space-16` / `space-24` / `space-48`, `radius-xlarge` (24 dp), `radius-full`, `shadow.md`, `type.heading.md` / `type.body.md` / `type.body.sm` / `type.label.md`.
+- `wiom-design-foundations` — token source. Especially: `bg.default` / `overlay.scrim` / `bg.selected`, `text.default` / `text.subtle` / `text.brand`, `stroke.strong` / `stroke.subtle`, `icon.nonAction` / `icon.brand`, `space-4` / `space-8` / `space-12` / `space-16` / `space-24` / `space-48`, `radius-xlarge` (24 dp), `radius-full`, `shadow.md`, `type.heading.md` / `type.body.md` / `type.body.sm` / `type.label.md`.
 - `wiom-list-item` — every row inside Compact / Half / Expanded / Full and inside picker / multi-select / action-menu sheets.
 - `wiom-selection-controls` — `WiomCheckbox` / `WiomRadio` embedded in the picker / multi-select rows (via `wiom-list-item` helpers).
 - `wiom-icon-badge` — the 96 dp Lg badge inside the Illustration / Illustration Left variants. Tone selection lives there (Brand / Positive / Critical / Warning / Info / Neutral).

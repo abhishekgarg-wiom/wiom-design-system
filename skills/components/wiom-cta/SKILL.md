@@ -96,7 +96,7 @@ padding and content; dimensions emerge.
 | Type | Purpose | Where it sits | Don't use for | Sample copy |
 |---|---|---|---|---|
 | **Primary** | Main action on a screen. Filled brand. Max 1 per screen. | Sticky bottom bar (most common); inline in cards / sheets / dialogs when it's the dominant action. | Cancel / Skip / Dismiss / Maybe later / generic "Continue". | "Recharge now", "भुगतान करें", "Verify OTP" |
-| **Secondary** | Alternate prominent action alongside Primary. Outlined brand. | Side-by-side with Primary in bottom sheets; stacked under Primary in dialogs; rarely standalone. | Destructive actions; throwaway dismiss; the screen's main action. | "Cancel", "Change plan", "वापस जाएं" |
+| **Secondary** | Alternate prominent action alongside Primary. Outlined brand. | Side-by-side with Primary in bottom sheets; stacked under Primary in dialogs (side-by-side when both labels are short); rarely standalone. | Destructive actions; throwaway dismiss; the screen's main action. | "Cancel", "Change plan", "वापस जाएं" |
 | **Tertiary** | Lightweight inline dismiss / soft action. Text-only. | Stacked under Primary; centered alone in dialogs for plain "OK"; inline in cards / list rows. | Destructive actions; the screen's main action; side-by-side next to Primary. | "बाद में", "Maybe later", "Skip", "Edit", "ठीक है" |
 | **Destructive** | Irreversible loss of data. Filled critical. **Never alone.** | Confirmation bottom sheets, confirmation dialogs — always with an escape (Secondary or Tertiary). | "Cancel" (form close), "Skip", "Go back" — those don't destroy data. Red is for losing data. | "Delete plan", "Remove partner", "Deactivate account" |
 | **Pre-booking** | Customer app only. The Primary of the **pre-booking journey** — every forward-action CTA from app-land through payment-success. Multiple per journey expected. | Sticky bar / sheets / dialogs / inline cards on every customer-app pre-booking screen until payment-success. **Auth screens reached via the journey still use standard Primary, not Pre-booking** — auth is a horizontal concern. | Login / signup / OTP. Post-payment-success screens. Partner app. Any non-pre-booking customer flow. | "Pre-book now", "Continue to plan", "Pay ₹X to pre-book" |
@@ -208,7 +208,7 @@ Master table — pick the row matching intent, read across.
 | | Equal weight, copy can't shorten | stacked | Secondary + Secondary |
 | | Destructive confirmation | side-by-side | Secondary (left) + Destructive (right) |
 | | 3 actions | stacked | Primary + Secondary + Tertiary |
-| **Dialog** (always stacked — 312 dp too narrow side-by-side) | Simple acknowledgment | single | Tertiary ("ठीक है") |
+| **Dialog** (stacked by default; side-by-side only when both labels are short — 264 dp content width) | Simple acknowledgment | single | Tertiary ("ठीक है") |
 | | Confirmation | stacked | Primary + Secondary |
 | | Destructive confirmation | stacked | Destructive + Secondary |
 | | Celebration / success | full-width | Primary |

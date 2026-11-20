@@ -701,7 +701,7 @@ Re-pull `get_variable_defs` on `1990:31` if foundations token names ever change.
 
 - Inactive dot / bar / scroll-indicator track ships at **`bg.muted` (#E8E4F0)**, not `stroke.default`. Older skill drafts mapped these to `stroke.default` — the ship value is the source of truth.
 - The Figma `Pagination` component ships **fixed at 6 slots per `Style × Current Page` variant**. There are no `Show Slot 3..6` booleans in the component (older drafts mentioned them). To represent fewer slots in Figma, customise the instance; in code, the `total` parameter handles 2..6 cleanly.
-- The `Pagination / Counter` component switches Back / Forward visibility via the `Pagination Point` variant (`At Start` / `In Middle` / `At End`), **not** via `Show Back` / `Show Forward` booleans. The Compose API hides chevrons based on `current` vs `total` (rule 4 in §6).
+- The `Pagination / Counter` component switches Back / Forward visibility via the `Pagination Point` variant (`At Start` / `In Middle` / `At End`), **not** via `Show Back` / `Show Forward` booleans. The Compose API keeps both chevrons rendered and switches the unavailable one to `icon.disabled` (no-op tap) based on `current` vs `total` (rule 4 in §6).
 - The `Scroll Indicator` thumb is **108 dp wide on a 360 dp track = 30%** of track width. This 30 % default holds in code unless the caller overrides via `LazyListState`-driven sizing. Don't shrink it below 10 % or it's hard to read.
 - The standalone `Pagination / Counter` uses **`text.default`** for the counter text (full contrast — only piece of text in a compact control), while the **counter label below `Pagination`** uses `text.subtle` (lower hierarchy, the indicator is the primary signal). Same typography, different colour by context.
 

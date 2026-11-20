@@ -1,10 +1,11 @@
 ---
 name: wiom-tabs-filters
 description: >
-  Wiom Tabs & Filters — two distinct components for narrowing what the user
+  Wiom Tabs & Filters — three distinct components for narrowing what the user
   sees. **Pill Tab** is a top-level context switch (changes the entire
   dataset — "whose data am I looking at?"). **Underline Filter** is a
   within-dataset narrower (single-select — "which subset do I want?").
+  **Chip** is a multi-select toggle ("which of these apply?").
   Use this skill EVERY TIME you create, edit, or review any screen that
   needs tabs, segmented controls, list filters, status filters, or any
   data-narrowing UI in the Wiom Partner or Customer app. Trigger when you
@@ -561,7 +562,7 @@ Shows a navigation menu / takes the user to a different screen:
 
 ## 6. Use cases — what / where to use
 
-### 5.1 Pill Tab
+### 6.1 Pill Tab
 
 - **Use for** — top-level context switches with 2 or 3 mutually-exclusive
   modes; bilingual toggles; persona / account-scope switches; before vs
@@ -576,13 +577,12 @@ Shows a navigation menu / takes the user to a different screen:
 - **Sample copy** — "Active jobs" / "Past jobs", "हिंदी" / "English",
   "Wallet" / "Pre-booking", "Customer" / "Partner".
 
-### 5.2 Underline Filter
+### 6.2 Underline Filter
 
 - **Use for** — single-select narrowing of a list, table, or feed; status
   filters ("Open / Closed / All"); type filters ("Recharges / Refunds /
   All"); period filters when there are 3–5 fixed periods.
-- **Don't use for** — multi-select filtering (use chip filters in a sort/
-  filter sheet — not in this skill); free-text search (use Search top
+- **Don't use for** — multi-select filtering (use Chip, §3 of this skill); free-text search (use Search top
   bar); top-level context switching (use Pill Tab); date-range pickers
   (use Input field).
 - **Where** — directly under the Top Bar (or under a Pill Tab if both
@@ -590,9 +590,9 @@ Shows a navigation menu / takes the user to a different screen:
   full-width within the screen scaffold's 16 dp gutter; never inside a
   bottom sheet or dialog (those use radio lists).
 - **Sample copy** — "All", "Open", "Closed", "Pending", "नया",
-  "पुराना", icon-only "More" trailing affordance for 5+ filters.
+  "पुराना", icon-only "More" trailing affordance for 7+ filters (§2.4).
 
-### 5.3 Combinations & stacking — what's allowed on one screen
+### 6.3 Combinations & stacking — what's allowed on one screen
 
 Filtering hierarchy goes **broad → narrow**, top → bottom. Pill Tab
 swaps the dataset; Underline Filter slices it; never reverse the order
@@ -627,7 +627,7 @@ configuration). Content scrolls under them.
 
 ---
 
-### 5.4 Pairing Pill Tab + Underline Filter on the same screen
+### 6.4 Pairing Pill Tab + Underline Filter on the same screen
 
 Allowed and common — the two answer different questions:
 
@@ -650,7 +650,7 @@ the first item).
 
 ---
 
-### 5.5 Partner-app-specific rules
+### 6.5 Partner-app-specific rules
 
 The Partner app trains repetitive muscle memory. These rules tighten
 how filters / tabs behave for Partners specifically; the Customer app
@@ -675,14 +675,14 @@ is more forgiving.
 5. **Max 2 filter levels per screen.** Pill Tab + Underline Filter is
    the ceiling. A third dimension goes into section headers in the
    content area, into a sort/filter sheet, or onto each row.
-6. **Acceptance threshold.** A screen with 1 filter row and ≤4 filters
+6. **Design-review threshold** (separate from the §2.4 overflow rule). A screen with 1 filter row and ≤4 filters
    ships. A screen with 2 filter rows or 5+ filters needs design
    review before shipping — that's a signal the model is getting
    complex.
 
 ---
 
-### 5.6 Sample copy — Partner & Customer
+### 6.6 Sample copy — Partner & Customer
 
 | Component | Partner-app copy | Customer-app copy |
 |---|---|---|
@@ -746,7 +746,7 @@ without scroll on a 360 dp screen.
 
 ## 8. Compose implementation
 
-### 7.1 Public API
+### 8.1 Public API
 
 ```kotlin
 // Pill Tab — context switch
@@ -864,8 +864,8 @@ padding.
 - ❌ Multi-select Underline Filter (single-select only — for multi-select,
   use chip filters in a sort/filter sheet).
 - ❌ **Combining horizontal scroll AND a More icon on the same Underline
-  Filter Bar.** Pick one mechanism per bar: scroll for 4–6 overflow,
-  More-icon for 7+. Mixing them means users miss filters because they're
+  Filter Bar.** Pick one mechanism per bar: scroll when 1–6 items don't fit,
+  More-icon for 7+ (§2.4). Mixing them means users miss filters because they're
   hidden in two different places.
 - ❌ Underline Filter with 7+ items rendered as a horizontal scroll
   without the More icon. 7+ goes to fit-N + More — not scroll.

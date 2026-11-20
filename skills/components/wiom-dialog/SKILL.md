@@ -116,7 +116,7 @@ All 5 types share a single envelope:
 │                                          │
 └──────────────────────────────────────────┘
               [ shadow.xl drop ]
-              [ scrim behind: bg.scrim 50% ]
+              [ scrim behind: overlay.scrim 50% ]
 ```
 
 | Slot | Value |
@@ -126,7 +126,7 @@ All 5 types share a single envelope:
 | Radius | `radius-xlarge` (24 dp) |
 | Surface fill | `bg.default` (#FAF9FC) |
 | Surface elevation | `shadow.xl` (drop · color `#00000026` · offset (0, 8) · radius 24 · spread 0) |
-| Scrim behind | `bg.scrim` (≈ rgba(22,16,33, 0.50)) — covers entire screen behind the dialog |
+| Scrim behind | `overlay.scrim` (#161021 @ 50%) — covers entire screen behind the dialog |
 | Stroke | **none** — shadow XOR border; dialog is shadow-only |
 | Header → text gap | `space-16` |
 | Title → body gap | `space-8` |
@@ -146,7 +146,7 @@ All 5 types share a single envelope:
 | `Input` | (none — title sits at the top) |
 | `Selection` | (none — title sits at the top) |
 | `Illustration` | Full-width × **144 dp** container · `radius-large` (16 dp) · `bg.brand.subtle` (#FFE5F6) by default — holds a 48 dp icon or an illustration drawable. Other subtle bgs allowed for tone (`bg.positive.subtle`, `bg.info.subtle`) |
-| `Loading` | 40 dp container with a **20 dp** `wiom-loader` Spinner centered (`size = md`, `color = brand`) |
+| `Loading` | 40 dp container with a **20 dp** `wiom-loader` Spinner centered (`size = sm`, `color = brand`) |
 
 ### Per-type text alignment
 
@@ -173,7 +173,7 @@ The dialog is a **modal surface** stacked above the screen content. It is **not 
 
 - **Wrap with the platform `Dialog`** (Compose Material) so the system handles focus, accessibility, and back-press dismissal.
 - **`Modifier.width(312.dp)`** on the inner `Surface`. Don't `fillMaxWidth()` — the dialog is *intentionally* narrower than the screen.
-- **Scrim** comes free with `Dialog(...)` — the system paints the standard scrim. Foundations matches the platform default at ~rgba(0, 0, 0, 0.50). Don't paint a manual `Box` scrim on top.
+- **Scrim** comes free with `Dialog(...)` — the system paints the standard scrim. Its colour must resolve to foundations' `overlay.scrim` (#161021 @ 50%) — not the platform's neutral black. Don't paint a manual `Box` scrim on top.
 - **Dismiss via explicit CTA + system back, not scrim tap.** Set `DialogProperties(dismissOnClickOutside = false, dismissOnBackPress = true)` so users can't accidentally tap-out and lose state mid-Input or mid-Selection. System back is always allowed (and should route to the dismiss action's `onClick` for parity, regardless of which CTA type the dismiss slot uses).
 
 ### Stacking with other surfaces
@@ -229,7 +229,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Surface fill | `bg.default` (#FAF9FC) |
 | Surface radius | `radius-xlarge` (24 dp) |
 | Surface shadow | `shadow.xl` (offset 0, 8 · radius 24 · color #00000026) |
-| Scrim | `bg.scrim` (≈ 50% black) — provided by the platform `Dialog` |
+| Scrim | `overlay.scrim` (#161021 @ 50%) — provided by the platform `Dialog` |
 | Padding | `space-24` |
 | Header → text gap | `space-16` |
 | Title → body gap | `space-8` |
@@ -246,7 +246,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Illustration container — radius | `radius-large` (16 dp) |
 | Illustration container — height | 144 dp |
 | Loader container | 40 dp · transparent · centered Spinner inside |
-| Loader spinner | 20 dp · `wiom-loader` Type=Spinner · `size = md` · `color = brand` |
+| Loader spinner | 20 dp · `wiom-loader` Type=Spinner · `size = sm` · `color = brand` |
 
 No stroke. No tonal elevation tint. Element-first only — don't deepen colours to "match a screen".
 
@@ -541,7 +541,7 @@ fun WiomLoadingDialog(
         backDismissible = cancel != null,                         // non-cancellable = no back-press dismiss
         header = {
             Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
-                WiomLoader(type = WiomLoaderType.Spinner, size = WiomLoaderSize.Md)
+                WiomLoader(type = WiomLoaderType.Spinner, size = WiomLoaderSize.Sm)
             }
         },
         buttons = if (cancel != null) {
@@ -792,11 +792,11 @@ Re-pull `get_variable_defs` on `2151:348` if foundations token names ever change
 
 ## See also
 
-- `wiom-design-foundations` — token source. Especially `bg.default` / `radius.xlarge` / `shadow.xl` / `bg.scrim` / `bg.brand.subtle` / `space.s48`.
+- `wiom-design-foundations` — token source. Especially `bg.default` / `radius.xlarge` / `shadow.xl` / `overlay.scrim` / `bg.brand.subtle` / `space.s48`.
 - `wiom-cta` — the button group embedded at the bottom; stacked rules and the Primary + Destructive ban.
 - `wiom-input-fields` — Input dialog's inline field (instance, don't re-implement).
 - `wiom-list-item` + `wiom-selection-controls` — Selection dialog rows (`Type = Radio`).
-- `wiom-loader` — Loading dialog spinner (Type=Spinner, size=md, color=brand).
+- `wiom-loader` — Loading dialog spinner (Type=Spinner, size=sm, color=brand).
 - `wiom-icon-badge` — Alert dialog header at `size = md`, status-coded tone.
 - `wiom-bottomsheet` — the non-modal counterpart for picker lists, multi-field input, and transient confirmations.
 - `wiom-compose-layout-rules` — Modifier discipline; `Icons.Rounded.*` enforcement; `Arrangement.spacedBy` for gaps; stacked layout.

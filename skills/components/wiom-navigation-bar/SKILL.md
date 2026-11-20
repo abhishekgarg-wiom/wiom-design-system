@@ -66,7 +66,7 @@ highest-traffic destination in Tab1.
 
 | Property | Type | Default | Purpose |
 |---|---|---|---|
-| `icon` | Instance swap | per-tab default | Material Symbols Rounded glyph at 24 dp. Use the *outline* glyph; `Selected` should swap to its **filled** pair (FILL=1) |
+| `icon` | Instance swap | per-tab default | Material Symbols Rounded glyph at 24 dp. Use the *outline* (unfilled, FILL=0) Rounded glyph — not the banned `Icons.Outlined` family; `Selected` should swap to its **filled** pair (FILL=1) |
 | `label` | Text | `"Home"` | One-word destination name |
 | `Show Label` | Boolean | `true` | Reveals the label below the icon pill (always leave on — see §6) |
 | `Show Badge` | Boolean | `false` | Reveals the 8 dp notification dot at the top-right of the IconSlot |
@@ -141,7 +141,7 @@ item carries its own `space-8` vertical padding.
 | IconPill padding | `space-16` H · `space-4` V (constant — pill width does not grow with label) |
 | IconPill radius | `radius-full` |
 | IconPill fill | Default → transparent · Selected → `bg.selected` |
-| Icon size | 24 dp (`icon.md`), `Icons.Rounded.*` outline → filled on Selected |
+| Icon size | 24 dp (`icon.md`), Rounded unfilled (FILL=0) glyph → filled on Selected. Not `Icons.Outlined.*` (banned by foundations) |
 | Label style | `type.label.sm` (Noto Sans SemiBold 12 / 16 LH) |
 | Badge | 8 dp `bg.critical` dot at IconSlot's top-right (offset `+2 dp` outside the slot, both axes) |
 

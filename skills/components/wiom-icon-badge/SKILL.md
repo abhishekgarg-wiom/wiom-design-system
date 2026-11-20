@@ -51,7 +51,7 @@ Instance the component frame `3063:10031` and set `Property 1` to one of the thr
 |---|---|---|---|---|
 | `24 x 24` | `3115:7508` | 24 dp · `radius-full` · `bg.subtle` | 16 dp | `space-4` H · 4 dp V (Figma reads `radius/tiny` here, same 4 dp value) |
 | `48 x48` | `3063:10030` | 48 dp · `radius-full` · `bg.subtle` | 24 dp | `space-12` all sides |
-| `96 x 96` | `3063:10032` | 96 dp · `radius-full` · `bg.subtle` | 48 dp | 24 dp all sides (raw value — foundations doesn't expose a `space-24` token, but this matches `space-12 × 2`) |
+| `96 x 96` | `3063:10032` | 96 dp · `radius-full` · `bg.subtle` | 48 dp | `space-24` (24 dp) all sides |
 
 ### Properties (apply per instance)
 
@@ -169,7 +169,7 @@ All tokens are **element-first**. Don't reference raw hex.
 |---|---|---|---|
 | Container size | 24 dp | 48 dp | 96 dp |
 | Container radius | `radius-full` (9999) | `radius-full` | `radius-full` |
-| Padding | `space-4` (4 dp) | `space-12` (12 dp) | 24 dp (raw — no `space-24` token) |
+| Padding | `space-4` (4 dp) | `space-12` (12 dp) | `space-24` (24 dp) |
 | Glyph size | 16 dp (`icon.xs`) | 24 dp (`icon.md`) | 48 dp (`icon.lg`) |
 | Stroke | none | none | none |
 | Shadow | none | none | none |
@@ -187,7 +187,7 @@ All tokens are **element-first**. Don't reference raw hex.
 
 > **Always pair within a family.** `bg.warning.subtle` ⇿ `icon.warning`. Never cross-pair (e.g., `bg.brand.subtle` + `icon.positive`) — the foundation tokens are tuned for AA contrast within the family. Cross-pairing breaks contrast and reads as a bug.
 
-> **`icon.warning` is only legible on warning-tinted bg.** Don't use `icon.warning` (the deep olive) on `bg.default` or any non-warning surface — it fails contrast there. Foundations rule.
+> **`icon.warning` is only legible on warning-tinted bg.** Don't use `icon.warning` (gold #E2B203) on `bg.default` or any non-warning surface — it fails contrast there. Foundations rule.
 
 ---
 
@@ -455,7 +455,7 @@ Re-pull `get_variable_defs` on `3063:10031` if foundations token names ever chan
 
 - **Tones are not Figma variants.** Figma ships Neutral only (`bg.subtle` + `icon.nonAction`). Brand · Positive · Warning · Critical · Info are synthesised in code from foundations token pairs. Don't wait for Figma variants — the tokens are stable.
 - **The `48 x48` variant string has no space** between `48` and `x48` (the `24 x 24` and `96 x 96` variants do have spaces). Match Figma's spelling exactly when instancing — variant strings are case- and whitespace-sensitive.
-- **Some Figma variants render dimensions as raw numbers instead of tokens** — `Sm` vertical padding via `radius/tiny` (= 4 dp), `Lg` padding as raw `24px` (foundations exposes no `space-24` token; the value is the derived `(container − glyph) / 2`), and the `Lg` radius as `19998px` instead of the `radius-full` token. These are authoring quirks; visually identical to the canonical tokens. In code, always use the tokens (`space-4` / `radius-full`) and treat 24 dp as a derived dimension.
+- **Some Figma variants render dimensions as raw numbers instead of tokens** — `Sm` vertical padding via `radius/tiny` (= 4 dp), `Lg` padding as raw `24px` (bind it to `space-24` in code), and the `Lg` radius as `19998px` instead of the `radius-full` token. These are authoring quirks; visually identical to the canonical tokens. In code, always use the tokens (`space-4` / `radius-full`) and treat 24 dp as a derived dimension.
 - **The icon-badge component is parented to the Selection Controls canvas** (`3069:5843`) in Figma. That's a stray instance — the icon badge is conceptually independent. The selection-controls skill explicitly excludes the `icon_with_bg` frame from its variant count.
 
 ---

@@ -72,7 +72,7 @@ When assembling a Figma frame via MCP, instance the component set
 
 | Slot | Value | Token |
 |---|---|---|
-| Container width | Derived — `fillMaxWidth()` inside the surface margin (toast surface owns `space-16` start / end) | — |
+| Container width | Derived — `fillMaxWidth()` inside the surface margin (toast surface owns `space-8` start / end) | — |
 | Container height | Derived — `space-12 V` + content (24 LH at `body.lg` for single line) + `space-12 V` = 48 dp single line | — |
 | Container radius | 8 dp | `radius-small` |
 | Container fill | `bg.default` (#FAF9FC) — **same for all 4 types**; only the icon (and Warning's text) carries the type color | `bg.default` |
@@ -143,7 +143,7 @@ booleans + duration. Pick the row matching the user's intent.
 
 | Placement | What the surface (host) owns | What the toast does |
 |---|---|---|
-| Bottom of screen, above nav bar | `space-16` start / end horizontal margin · `space-16` bottom margin above safe-area inset · vertical animation slot | `fillMaxWidth()` inside that margin (lands at 328 dp on a 360 dp screen). No width set on the toast itself. |
+| Bottom of screen, above nav bar | `space-8` start / end horizontal margin · `space-16` bottom margin above safe-area inset · vertical animation slot | `fillMaxWidth()` inside that margin (lands at 344 dp on a 360 dp screen). No width set on the toast itself. |
 
 **The host is the surface, not the toast.** `WiomToastHost` (defined
 in §8) places the toast inside the surface margin and runs the animation
@@ -155,7 +155,7 @@ edges.
 │                                                       │
 │                     content                           │
 │                                                       │
-│  ←16→ ┌───────────────────────────────┐ ←16→         │   ← toast surface margin
+│  ←8→ ┌─────────────────────────────────┐ ←8→         │   ← toast surface margin
 │       │ ●  Message text…       Action │              │
 │       └───────────────────────────────┘              │
 │                                                       │
@@ -219,7 +219,7 @@ Step 3 — Behavior
    after the first dismisses.
 2. **Bottom position only.** Never top, never middle.
 3. **No fixed dimensions on the toast.** Width comes from the host's
-   surface margin (`space-16` each side); height comes from
+   surface margin (`space-8` each side); height comes from
    `space-12 V` + content. No `width(...)`, `height(...)`,
    `heightIn`, `widthIn`, `size(...)`.
 4. **Toast body is passive — never tappable.** Only the Action label
@@ -452,7 +452,7 @@ fun WiomToastHost(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = Wiom.space.s16)                   // 16dp gutter
+            .padding(horizontal = Wiom.space.s8)                    // 8dp: toast floats wider than the 16dp screen gutter
             .padding(bottom = Wiom.space.s16 + bottomInset)         // above any bottom chrome
             .navigationBarsPadding(),                               // OS gesture inset
         contentAlignment = Alignment.BottomCenter,
@@ -624,10 +624,10 @@ says otherwise, trust ship values:
   `bg.warning.subtle` for Warning, etc.). New ship: same neutral
   container for all, only the icon (and Warning's text) carries the
   status colour.
-- **Width is 328 dp** (surface margin 16 dp each side on a 360 dp
-  screen), not 344 dp / 8 dp margin. Toast now aligns with the
-  standard surface gutter used by CTA, list-item, top-bar,
-  bottom-sheet content.
+- **Width is 344 dp** (surface margin 8 dp each side on a 360 dp
+  screen), matching foundations ("Toast: 8 dp left + 8 dp right")
+  and the shipped app. The toast deliberately floats wider than the
+  16 dp gutter used by CTA, list-item, top-bar and bottom-sheet content.
 - **Vertical padding is 12 dp** (`space-12`), not 16. Single-line
   height = 12 + 24 LH + 12 = 48 dp.
 - **Typography is `type.body.lg` (16 sp Regular)** for the message and
