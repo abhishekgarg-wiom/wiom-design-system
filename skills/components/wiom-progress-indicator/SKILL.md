@@ -142,7 +142,7 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 ┌──────────────── 328 dp wide ────────────────────────────────────┐
 │ Net box installation                            3 of 5 steps    │   Header row · type.label.md (title) · type.body.sm (value)
 │  ●  In progress                                                  │   ↑ space-4 ↓
-│                                                                  │   Status pill · type.meta.xs · pill bg + text per state
+│                                                                  │   Status pill · type.label.sm · pill bg + text per state
 │ ───────────────── ↑ space-12 ↓ ────────────────────              │
 │ ████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░         │   Bar (Md, 8 dp) · width = state's fill %
 └──────────────────────────────────────────────────────────────────┘
@@ -152,7 +152,7 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 |---|---|
 | Title | `type.label.md` (14/20 SemiBold) · `text.default` |
 | Value (right-aligned) | `type.body.sm` (12/16) · `text.subtle` |
-| Status pill | `type.meta.xs` (10/16) · pill bg + text per state |
+| Status pill | `type.label.sm` (12/16 SemiBold) · pill bg + text per state |
 | Pill padding · radius | 8 h · 2 v · `radius-full` |
 | Header → bar gap | `space-12` (12 dp) |
 | Title → pill gap | `space-4` (4 dp) |
@@ -169,7 +169,7 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 │ ↑ space-20 ↓                                                     │
 │  ●━━━━●━━━━●━━━━○━━━━○                                           │   Bar row · 24 dp circles · 4 dp connectors · fluid spacing
 │  Survey Cable Router  Activate  Done                             │   Stage labels (when Has Labels = true)
-│  ↑ space-20 ↓                                                    │     · type.meta.xs (10/16) · centred under each stage
+│  ↑ space-20 ↓                                                    │     · type.body.sm (12/16) · centred under each stage
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -313,7 +313,7 @@ All tokens are **element-first**. Don't reference raw hex.
 |---|---|
 | Title | `type.label.md` (14/20 SemiBold) · `text.default` |
 | Value (right) | `type.body.sm` (12/16 Regular) · `text.subtle` |
-| Status pill label | `type.meta.xs` (10/16 Regular) · per state |
+| Status pill label | `type.label.sm` (12/16 SemiBold) · per state |
 | Pill padding | 8 h · 2 v |
 | Title → pill gap | `space-4` |
 | Header → bar gap | `space-12` |
@@ -333,7 +333,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Stage circle fill | `bg.brand` (reached) · `bg.muted` (unreached) |
 | Connector | 4 dp · `radius-full` · `bg.brand` / `bg.muted` |
 | Label — past · current · future | `text.default` · `text.brand` · `text.subtle` |
-| Label style | `type.meta.xs` (10/16) · centre-aligned under each circle |
+| Label style | `type.body.sm` (12/16) · centre-aligned under each circle |
 
 ### Circular
 
@@ -526,7 +526,7 @@ private fun StatusPill(label: String, bg: Color, fg: Color) {
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Box(modifier = Modifier.size(6.dp).background(fg, CircleShape))
-        Text(label, style = Wiom.type.meta.xs, color = fg)
+        Text(label, style = Wiom.type.label.sm, color = fg)
     }
 }
 
@@ -599,7 +599,7 @@ fun WiomProgressMilestones(
                     // Each label is auto-hugged and centred under its circle —
                     // wrap in a Box that takes the same flex slot the circle does.
                     Box(contentAlignment = Alignment.Center) {
-                        Text(stage.label, style = Wiom.type.meta.xs, color = labelColor, textAlign = TextAlign.Center)
+                        Text(stage.label, style = Wiom.type.body.sm, color = labelColor, textAlign = TextAlign.Center)
                     }
                     if (i != stages.lastIndex) Spacer(modifier = Modifier.weight(1f))
                 }
@@ -913,7 +913,7 @@ Re-pull `get_variable_defs` on each component set if foundations token names eve
 
 ## See also
 
-- `wiom-design-foundations` — token source. Especially: `bg.muted` (track), `bg.info` / `bg.brand` / `bg.positive` (fill ladder), `bg.info.subtle` / `bg.brand.subtle` / `bg.positive.subtle` (pill bg), `text.info` / `text.brand` / `text.positive` / `text.default` / `text.subtle`, `icon.inverse` / `icon.nonAction`, `radius-full`, `space-4` / `space-12`, `type.label.lg` / `type.label.md` / `type.label.sm` / `type.body.sm` / `type.meta.xs`.
+- `wiom-design-foundations` — token source. Especially: `bg.muted` (track), `bg.info` / `bg.brand` / `bg.positive` (fill ladder), `bg.info.subtle` / `bg.brand.subtle` / `bg.positive.subtle` (pill bg), `text.info` / `text.brand` / `text.positive` / `text.default` / `text.subtle`, `icon.inverse` / `icon.nonAction`, `radius-full`, `space-4` / `space-12`, `type.label.lg` / `type.label.md` / `type.label.sm` / `type.body.sm`.
 - `wiom-loader` — `Loader/Linear` (Indeterminate / Determinate, brand-only) for short waits with no progress signal; `Loader/Brand` Overlay for blocking critical ops; `Loader/Spinner` for inline waits. This skill is for state-coloured determinate completion progress; loader is for indeterminate / branded waits.
 - `wiom-list-item` — host for completion-card rows that link to detail screens (the row owns the tap; the progress visual is display-only).
 - `wiom-bottomsheet` — outcome surface that takes over from a progress visual at completion (Illustration · Positive for success, Critical for failure).

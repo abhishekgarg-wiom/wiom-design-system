@@ -17,8 +17,8 @@ description: Wiom Design System typography tokens and rules. Use this skill EVER
 |-------|-------------|------|--------|----|----------|---------|----------------|
 | `type.display.lg` | Type/Display/LG | 48sp | Bold 700 | 64sp | -0.02em | Splash hero, onboarding headline, marketing header | Section titles, body text, buttons |
 | `type.heading.xl` | Type/Heading/XL | 32sp | Bold 700 | 44sp | -0.01em | Section heroes, feature highlights, promo headers, primary amounts | Card titles, nav titles, body, buttons |
-| `type.heading.lg` | Type/Heading/LG | 24sp | Bold 700 | 32sp | -0.01em | **Default page title, dialog header, bottom sheet header.** Primary section heads. | Card titles, nav titles, buttons |
-| `type.heading.md` | Type/Heading/MD | 20sp | Bold 700 | 28sp | -0.01em | Card group titles, secondary bottom sheet headers, sub-sections | Card titles, nav titles, buttons, body |
+| `type.heading.lg` | Type/Heading/LG | 24sp | Bold 700 | 32sp | -0.01em | **Default page title, dialog header.** Primary section heads. | Card titles, nav titles, buttons |
+| `type.heading.md` | Type/Heading/MD | 20sp | Bold 700 | 28sp | -0.01em | Card group titles, bottom sheet headers, sub-sections | Card titles, nav titles, buttons, body |
 | `type.title.lg` | Type/Title/LG | 20sp | Medium 500 | 28sp | -0.01em | Nav titles, toolbar titles, prominent card titles | Section headings, buttons, body text |
 | `type.title.sm` | Type/Title/SM | 16sp | Bold 700 | 24sp | 0 | Card titles, list group headers, section subheads, secondary amounts | Buttons (use label.lg), body, nav titles |
 | `type.body.lg` | Type/Body/LG | 16sp | Regular 400 | 24sp | 0 | **Default reading text.** Paragraphs, descriptions, onboarding copy, toast body, input value, list item primary, empty-state message | Headings, titles, buttons, labels |
@@ -43,7 +43,8 @@ description: Wiom Design System typography tokens and rules. Use this skill EVER
 ```
 Hero / splash / marketing headline?          → display.lg   (48 Bold)
 Section hero / primary amount?               → heading.xl   (32 Bold)
-Page title / dialog / bottom sheet header?   → heading.lg   (24 Bold)   ← default page/sheet header
+Page title / dialog header?                 → heading.lg   (24 Bold)   ← default page header
+Bottom sheet header?                        → heading.md   (20 Bold)
 Card group title / sub-section?              → heading.md   (20 Bold)
 Nav / toolbar / prominent card title?        → title.lg     (20 Medium)
 Card title / list group header / sec. amount → title.sm     (16 Bold)
@@ -92,11 +93,11 @@ Examples:
 | Card title | `titleSm` | 16sp Bold — card-level structural anchor |
 | Card description | `bodyMd` | 14sp Regular — follows title→description pairing (16 → 14) |
 | Toolbar / nav bar title | `titleLg` | 20sp Medium — navigational emphasis |
-| Bottom sheet header | `headingLg` | 24sp Bold — default sheet header |
+| Bottom sheet header | `headingMd` | 20sp Bold — all sheets (see `wiom-bottomsheet`) |
 | Dialog title | `headingLg` | 24sp Bold |
 | Page title | `headingLg` | 24sp Bold |
 | Section header on home (group label above cards) | `titleSm` | 16sp Bold — group anchor, not page-level |
-| Secondary bottom sheet / compact dialog | `headingMd` | 20sp Bold — only when space-constrained |
+| Compact dialog | `headingMd` | 20sp Bold — only when space-constrained |
 | Chat bubble message | `bodyMd` | 14sp Regular — **intentional exception** to 16 default, density matters in dense-message domain |
 | Chat reply preview — sender name | `labelSm` | 12sp SemiBold |
 | Chat reply preview — message | `bodySm` | 12sp Regular |
@@ -392,7 +393,7 @@ Button(onClick = { }) {
 - Ask "what is this text's job?" before picking a token
 - **Default to `bodyLg` (16 Regular) for reading text if unsure**
 - **Default to `labelLg` (16 SemiBold) for interactive text if unsure**
-- Default page/dialog/bottom-sheet headers to `headingLg` (24 Bold)
+- Default page/dialog headers to `headingLg` (24 Bold); bottom-sheet headers to `headingMd` (20 Bold)
 - Apply the title→description pairing rule consistently
 - Test every screen at 130% system font scale
 - Migrate legacy tokens when you touch a screen
@@ -428,7 +429,7 @@ Button(onClick = { }) {
 DISPLAY   display.lg   48  Bold      64  -0.02em  Hero / splash / marketing
 ──────────────────────────────────────────────────────────────────────
 HEADING   heading.xl   32  Bold      44  -0.01em  Section hero / primary amount
-          heading.lg   24  Bold      32  -0.01em  ★ Default page / dialog / sheet header
+          heading.lg   24  Bold      32  -0.01em  ★ Default page / dialog header
           heading.md   20  Bold      28  -0.01em  Card group / sub-section
 ──────────────────────────────────────────────────────────────────────
 TITLE     title.lg     20  Medium    28  -0.01em  Nav / toolbar / card title

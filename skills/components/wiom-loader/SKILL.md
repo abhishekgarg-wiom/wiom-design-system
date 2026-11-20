@@ -97,7 +97,7 @@ All placeholder blocks fill `bg.muted` (#E8E4F0).
 |---|---|---|---|---|---|
 | `Light` | `2061:2` | `bg.default` | `text.brand` | `icon.brand` | `text.subtle` |
 | `OnBrand` | `2061:7` | `bg.brand` | `text.onBrand` | `icon.inverse` | `text.onBrand` |
-| `Overlay` | `2061:13` | content + `bg.scrim` (50 %) | (none) | `icon.inverse` | `text.onBrand` |
+| `Overlay` | `2061:13` | content + `overlay.scrim` (50 %) | (none) | `icon.inverse` | `text.onBrand` |
 
 Frame is 360 × 720 dp (standard Wiom phone canvas) · `radius-xlarge` (24 dp) corners. Infinity glyph is the Wiom wordmark mark (128 × 53 dp · stroke-dash chase animation, see §5). Message is `type.body.md` centered below the mark.
 
@@ -212,7 +212,7 @@ Type=ListItem — avatar + text + trailing
 ```
 Style=Light                Style=OnBrand                Style=Overlay
 ┌─ 360×720 ─┐             ┌─ 360×720 ─┐                ┌─ 360×720 ─┐
-│ bg.default│             │██bg.brand█│                │▒(content)▒│   bg.scrim
+│ bg.default│             │██bg.brand█│                │▒(content)▒│   overlay.scrim
 │           │             │███████████│                │▒(behind)▒▒│   over content
 │           │             │███████████│                │▒▒▒▒▒▒▒▒▒▒▒│
 │   Wiom    │             │███Wiom████│                │           │
@@ -226,7 +226,7 @@ Style=Light                Style=OnBrand                Style=Overlay
 
 | Slot | Light | OnBrand | Overlay |
 |---|---|---|---|
-| Background | `bg.default` | `bg.brand` | content + `bg.scrim` (#161021 @ 50 %) |
+| Background | `bg.default` | `bg.brand` | content + `overlay.scrim` (#161021 @ 50 %) |
 | Wordmark "Wiom" | `type.heading.xl` · `text.brand` | `type.heading.xl` · `text.onBrand` | (none) |
 | Infinity ∞ | 128 × 53 dp · `icon.brand` | 128 × 53 dp · `icon.inverse` | 128 × 53 dp · `icon.inverse` |
 | Message | `type.body.md` · `text.subtle` | `type.body.md` · `text.onBrand` | `type.body.md` · `text.onBrand` |
@@ -347,7 +347,7 @@ All tokens are **element-first**. Don't reference raw hex.
 
 | Slot | Light | OnBrand | Overlay |
 |---|---|---|---|
-| Background | `bg.default` | `bg.brand` | content + `bg.scrim` (#161021 @ 50 %) |
+| Background | `bg.default` | `bg.brand` | content + `overlay.scrim` (#161021 @ 50 %) |
 | Wordmark | `type.heading.xl` (32/44 Bold) · `text.brand` | `type.heading.xl` · `text.onBrand` (#FFFFFF) | (none) |
 | Infinity glyph | 128 × 53 dp · `icon.brand` | 128 × 53 dp · `icon.inverse` | 128 × 53 dp · `icon.inverse` |
 | Message | `type.body.md` (14/20) · `text.subtle` | `type.body.md` · `text.onBrand` | `type.body.md` · `text.onBrand` |
@@ -891,7 +891,7 @@ Re-pull `get_variable_defs` on each component set if foundations token names eve
 
 ## See also
 
-- `wiom-design-foundations` — token source. Especially: `bg.brand` / `bg.brand.subtle` / `bg.muted` / `bg.subtle` / `bg.default` / `bg.scrim`, `text.subtle` / `text.brand` / `text.onBrand`, `icon.brand` / `icon.inverse`, `stroke.subtle`, `radius-tiny` / `radius-medium` / `radius-large` / `radius-xlarge` / `radius-full`, `type.heading.xl` / `type.body.md`.
+- `wiom-design-foundations` — token source. Especially: `bg.brand` / `bg.brand.subtle` / `bg.muted` / `bg.subtle` / `bg.default` / `overlay.scrim`, `text.subtle` / `text.brand` / `text.onBrand`, `icon.brand` / `icon.inverse`, `stroke.subtle`, `radius-tiny` / `radius-medium` / `radius-large` / `radius-xlarge` / `radius-full`, `type.heading.xl` / `type.body.md`.
 - `wiom-cta` — `Loading` state composes `WiomSpinner.Sm` (`OnColor` on Primary fills, `Brand` on Secondary / Tertiary outlines).
 - `wiom-input-fields` — `WiomSpinner.Sm` in the trailing slot during async validation.
 - `wiom-dialog` — Loading dialog type composes `WiomSpinner.Md` or `WiomBrandLoader.Light` as its body.

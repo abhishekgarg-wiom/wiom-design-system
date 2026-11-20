@@ -159,7 +159,7 @@ The list item **owns the row** as a self-contained surface: full-width fill, 16 
 
 ### Stacking lists
 
-- Stack rows directly with **0 gap** — the 16 dp vertical padding on each row creates natural separation. Don't add explicit dividers.
+- Stack rows directly with **0 gap** — the 16 dp vertical padding on each row creates natural separation. Don't add explicit dividers. **Exception:** inside a `wiom-dialog` Selection body, rows sit `space-8` apart (Figma ship `2151:113`).
 - Place the stack inside a card with `radius-large` (16 dp) corners and `bg.default` or `bg.subtle` fill. **Card padding = 0 all sides** — rows own their padding.
 - Inside a bottom-sheet picker, the stack hosts ≤ 4 rows for quick pickers (or unlimited rows in scrollable pickers); the sheet handle + handle padding is handled by `wiom-bottomsheet`.
 
@@ -240,7 +240,7 @@ No shadow on the row. No stroke. No tonal elevation. Pressed / Selected / Disabl
 5. **Disabled is Pattern A, not opacity.** Swap content tokens directly to the `*.disabled` family. Never `Modifier.alpha`.
 6. **Trailing chevron is `icon.brand` (pink).** It's the tap-affordance signal — leading icons stay `icon.nonAction` (neutral), trailing chevron pulls the eye.
 7. **Pressed XOR Selected.** Don't render both overlays together. Selected wins when the row is the current item.
-8. **Stack lists with 0 gap and no dividers.** The 16 dp vertical padding on each row provides separation. Cards hosting the stack have 0 internal padding.
+8. **Stack lists with 0 gap and no dividers** (one exception: `space-8` between rows in a `wiom-dialog` Selection body). The 16 dp vertical padding on each row provides separation. Cards hosting the stack have 0 internal padding.
 9. **Don't put a CTA in a row.** If the row leads to an action that needs a button, route via row tap; the action page below shows the CTA. Rows are navigation / selection / display, not action surfaces.
 10. **Tokens only — element-first.** No raw hex. No legacy `WiomColor.surfaceSubtle` / `WiomColor.textPrimary` namespaces; use `Wiom.bg.subtle` / `Wiom.text.default`.
 

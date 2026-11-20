@@ -43,7 +43,7 @@ ONE SCALE:    1, 2, 4, 8 (power-of-2 progression).
 | `shadow.sm` | Sticky nav (scrolled state only), tooltips, passive info cards — surfaces that need slight lift without dominating | Default card elevation, dropdowns — too subtle for interactive surfaces |
 | `shadow.md` | Interactive cards, bottom sheets, dropdown menus, popovers, FAB — the everyday default shadow | Every surface — not all surfaces need elevation. Elevation is intentional. |
 | `shadow.lg` | Floating toasts/snackbars, dropdown over visually busy backgrounds — surfaces that need to clearly "pop" | Common default — use on max 1–2 elements per screen |
-| `shadow.xl` | Modal dialogs, full-screen bottom sheets — always paired with `color.overlay.default` backdrop | Regular cards, dropdowns — reserved for full-attention overlays only |
+| `shadow.xl` | Modal dialogs — always paired with `overlay.scrim` backdrop | Regular cards, dropdowns — reserved for full-attention overlays only |
 
 ---
 
@@ -120,10 +120,10 @@ This is the source of truth. Every component has exactly one shadow assignment.
 
 | Component | Why highest |
 |-----------|------------|
-| Modal dialog | Full-attention overlay. Trust-heavy flows: payment confirmation, refund authorization, plan commitment. Always with `color.overlay.default` backdrop. |
+| Modal dialog | Full-attention overlay. Trust-heavy flows: payment confirmation, refund authorization, plan commitment. Always with `overlay.scrim` backdrop. |
 | Full-screen bottom sheet (expanded) | Behaves like a modal when expanded to near-full-screen |
 
-**Rule:** `shadow.xl` is ALWAYS paired with `color.overlay.default` (rgba(22,16,33,0.50)) backdrop.
+**Rule:** `shadow.xl` is ALWAYS paired with `overlay.scrim` (rgba(22,16,33,0.50)) backdrop.
 
 ---
 
@@ -157,7 +157,7 @@ Shadow and stroke can coexist on the same surface. This is critical for Wiom's a
 - Default to `shadow.md` when adding elevation and unsure which level
 - Use `shadow.none` explicitly when a component is intentionally flat
 - Reserve `shadow.xl` for modal dialogs and full-screen overlays only
-- Always pair `shadow.xl` with `color.overlay.default` backdrop
+- Always pair `shadow.xl` with `overlay.scrim` backdrop
 - Pair shadow with border on critical surfaces for budget device robustness
 - Limit `shadow.lg` to 1–2 elements per screen
 - Use CSS custom properties: `var(--shadow-sm)`, `var(--shadow-md)`, etc.

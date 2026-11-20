@@ -111,7 +111,7 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 | `type.label.sm` | 12sp | SemiBold 600 | 16sp | Chat reply sender, bottom nav |
 | `type.meta.xs` | 10sp | Regular 400 | 16sp | ⚠ Chat-bubble timestamp / badge count ONLY |
 
-**Default: 16sp.** `body.lg` for reading text, `label.lg` for interactive text. Page / dialog / bottom-sheet headers default to `heading.lg` (24 Bold). Chat bubble body is an **intentional exception** at `body.md` (14) — density matters in dense-message domain. Floor rule: sub-14sp only for captions/chat-reply/timestamps; `meta.xs` 10sp only for chat-bubble timestamps and badge counts. Never for Hindi body text.
+**Default: 16sp.** `body.lg` for reading text, `label.lg` for interactive text. Page / dialog headers default to `heading.lg` (24 Bold); bottom-sheet headers are `heading.md` (20 Bold). Chat bubble body is an **intentional exception** at `body.md` (14) — density matters in dense-message domain. Floor rule: sub-14sp only for captions/chat-reply/timestamps; `meta.xs` 10sp only for chat-bubble timestamps and badge counts. Never for Hindi body text.
 
 **Pairing rule (title → description):** Title 24/20 → description 16. Title/label 16 → description 14.
 
@@ -219,7 +219,7 @@ Border radius must match the component's radius token. Focus ring radius = compo
 Parents set gap between children. Children set their own padding. No margins — ever.
 
 ### 5. Touch Targets Are Non-Negotiable
-Owned by `spacing.md` §6. Three-tier system by action importance:
+Owned by `spacing.md` §6. Three-tier system by action importance. Tiers are **minimums** — a component may set a larger target (list rows and tabs are 48 dp):
 - **Action** 48×48dp (`space-48`) — high-consequence interactive icons (delete, edit, share, close, menu, back)
 - **Navigation** 32×32dp (`space-32`) — medium-priority frequent-use icons (expand, sort, arrows, pagination, filters)
 - **Info** 24×24dp (`space-24`) — low-stakes informational icons (help, tooltip triggers, status indicators)
@@ -262,7 +262,7 @@ Components are end-to-end (`fillMaxWidth()`); the **host surface** owns the hori
 | Surface | Horizontal gutter |
 |---|---|
 | Top bar · Nav bar · Bottom sheet | **edge-to-edge** (0 dp from screen edges; the surface fills the screen width) |
-| Toast | **8 dp** left + 8 dp right (toast pill sits 8 dp from screen edges) |
+| Toast | **8 dp** left + 8 dp right (344 dp wide on a 360 screen; the toast floats wider than the 16 dp surface gutter; see `wiom-toast`) |
 | Dialog | **24 dp** left + 24 dp right (content area = 264 dp on a 360 screen) |
 | List item | **edge-to-edge** when on a screen with no surface background; **16 dp** standard padding when inside a card / list-group with a background colour |
 | Screen content · Sticky CTA bar · Filter bar | **16 dp** left + 16 dp right (default screen-body gutter) |
@@ -357,16 +357,16 @@ When building a common component, here's which tokens from each foundation apply
 |-----------|-------|
 | Surface | `bg.default` |
 | Radius | `radius-xlarge` (24px) top corners only |
-| Shadow | `shadow.md` (standard) or `shadow.xl` (full-screen, with overlay.scrim) |
+| Shadow | `shadow.md` only — never `shadow.xl`, never a border (see `wiom-bottomsheet`) |
 | Padding | `space-16` all sides |
-| Header | `type.heading.lg` (24sp Bold) + `text.default` — `heading.md` (20) only for compact secondary sheets |
+| Header | `type.heading.md` (20sp Bold) + `text.default` |
 | Stroke | None (shadow provides depth) |
 
 ### Checkbox / Radio
 | State | Stroke | Fill |
 |---|---|---|
 | Unchecked (rest) | `stroke-medium` (2px) + `stroke.strong` (#473F55) | transparent |
-| Checked | none (filled = no border) | `bg.brand` (#D9008D) + checkmark `text.onBrand` |
+| Checked | none (filled = no border) | `bg.brand` (#D9008D) + checkmark `icon.inverse` |
 | Focused (keyboard) | `stroke.brand.focus` (#D9008D) ring **outside** | (unchanged) |
 | Error (unchecked) | `stroke-medium` + `stroke.critical.focus` (#D92130) | transparent |
 | **Checked + in error** | none | **`bg.critical`** (#D92130) + checkmark `text.onCritical` — fill swaps from brand to critical |
