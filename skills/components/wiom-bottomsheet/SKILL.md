@@ -383,7 +383,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | `Brand` (Figma default) | `bg.brand.subtle` + `icon.brand` | Tips · announcements · first-run celebrations · neutral-positive |
 | `Positive` | `bg.positive.subtle` + `icon.positive` | Payment success · activation success · verification done |
 | `Critical` | `bg.critical.subtle` + `icon.critical` | Payment failure · network error · permission denied · destructive confirmation |
-| `Warning` | `bg.warning.subtle` + `icon.warning` | Low balance · expiring plan · permission required |
+| `Warning` | `bg.warning.subtle` + `icon.action` (dark) | Low balance · expiring plan · permission required |
 | `Info` | `bg.info.subtle` + `icon.info` | Explanatory feedback · neutral status changes |
 
 > Old skill called the brand tone "Neutral" and used a `bg.selected` (#FFCCED) fill. V2 ship uses `bg.selected` literally on the Figma node — but the canonical tone in code is `Brand` (`bg.brand.subtle` + `icon.brand`), which renders the same pink family. Always go through `WiomIconBadge` instead of replicating the badge inline.

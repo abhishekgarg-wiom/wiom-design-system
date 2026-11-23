@@ -101,7 +101,7 @@ for Warning).
 | Type | Icon (Material Symbols Rounded, filled) | Icon color | Message text color | Sample copy |
 |---|---|---|---|---|
 | **Error** | `error` | `icon.critical` (#D92130) | `text.default` | "Server ne request reject kiya" |
-| **Warning** | `warning` | `icon.warning` (#E2B203 gold) | `text.onWarning` (#372902 olive) | "Offline — purana data dikh raha hai" |
+| **Warning** | `warning` | `icon.action` (#352D42 dark) inside a `bg.warning.subtle` circle | `text.onWarning` (#372902 olive) | "Offline — purana data dikh raha hai" |
 | **Info** | `info` | `icon.info` (#6D17CE) | `text.default` | "Status update ho gayi" |
 | **Success** | `check_circle` | `icon.positive` (#008043) | `text.default` | "Nikaasi safal rahi" |
 
@@ -318,7 +318,7 @@ class WiomToastHostState {
 @Composable
 private fun rememberToastColors(type: WiomToastType): ToastColors = when (type) {
     WiomToastType.Error   -> ToastColors(Wiom.icon.critical, Wiom.text.default)
-    WiomToastType.Warning -> ToastColors(Wiom.icon.warning,  Wiom.text.onWarning)   // olive on bg.default — see §3
+    WiomToastType.Warning -> ToastColors(Wiom.icon.action,   Wiom.text.onWarning)   // dark glyph on a bg.warning.subtle circle; gold is ratings-only
     WiomToastType.Info    -> ToastColors(Wiom.icon.info,     Wiom.text.default)
     WiomToastType.Success -> ToastColors(Wiom.icon.positive, Wiom.text.default)
 }
@@ -367,7 +367,8 @@ fun WiomToast(spec: WiomToastSpec, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(Wiom.space.s8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Leading icon
+            // Leading icon. Warning: dark glyph on a bg.warning.subtle circle
+            // (circle size still open, see notes; don't invent one).
             Icon(
                 imageVector = spec.icon ?: rememberDefaultIcon(spec.type),
                 contentDescription = null,                          // message carries the meaning
@@ -612,7 +613,7 @@ ever change.
 |---|---|
 | `2222:478` | Toast component set — 4 type variants × 3 booleans × 2 text props × 1 icon swap |
 | `2222:449` | Type=Error — `bg.default` · `icon.critical` · `text.default` |
-| `2222:456` | Type=Warning — `bg.default` · `icon.warning` (gold) · `text.onWarning` (olive) |
+| `2222:456` | Type=Warning — `bg.default` · Figma still shows gold `icon.warning`; skill uses dark `icon.action` on `bg.warning.subtle` (Figma to update) · `text.onWarning` (olive) |
 | `2222:463` | Type=Info — `bg.default` · `icon.info` · `text.default` |
 | `2222:470` | Type=Success — `bg.default` · `icon.positive` · `text.default` |
 
@@ -639,7 +640,12 @@ says otherwise, trust ship values:
   `text.onWarning`** (the dark olive that doubles as warning-family
   text on every surface, per foundations). Other types use
   `text.default`.
-- **Icon colours come from `icon.critical` / `icon.warning` /
+- **Warning icon is dark, never gold.** `icon.action` on a
+  `bg.warning.subtle` circle behind the glyph; the toast itself stays
+  `bg.default`. Gold `icon.warning` is for rating stars only (foundations
+  iconography § Warning icons). **Open:** the circle's size is not yet
+  specified. Keep the 24 dp glyph; don't invent a size, flag it in review.
+- **Icon colours come from `icon.critical` / `icon.action` (Warning) /
   `icon.info` / `icon.positive`** — element-first `icon.*` tokens,
   not `color.*.primary` legacy.
 

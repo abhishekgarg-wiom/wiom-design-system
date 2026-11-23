@@ -68,16 +68,18 @@ Same pattern: `text.critical` is safe for headings/buttons/icons on error banner
 | `text.onWarning` (#372902) | `bg.warning` (#E2B203) | 7.16 | AA |
 | `text.onWarning` (#372902) | `bg.warning.subtle` (#FFE9A1) | 8.76 | AA |
 | `text.onWarning` (#372902) | `bg.default` (#FAF9FC) | **14.18** | **AAA** — warning-family text on white/light neutral surfaces |
-| `icon.warning` (#E2B203) | `bg.warning.subtle` (#FFE9A1) | 1.64 | **Fails — OK for accent, not text** |
+| `icon.warning` (#E2B203) | `bg.warning.subtle` (#FFE9A1) | 1.64 | **Fails. Not allowed for Warning icons** |
+| `icon.action` (#352D42) | `bg.warning.subtle` (#FFE9A1) | 10.85 | **Warning icon, subtle** |
+| `icon.action` (#352D42) | `bg.warning` (#E2B203) | 6.60 | **Warning icon, solid** |
 | `icon.warning` | `bg.default` | 1.89 | **Fails — token is invalid on bg.default** |
 
 ### Three things to know
 
 1. **`text.onWarning` is a one-token family — valid on three surfaces.** `bg.warning` (solid gold, 7.16:1 AA), `bg.warning.subtle` (banner, 8.76:1 AA), and `bg.default` (white, 14.18:1 AAA). Warning is the only family where `text.on*` doubles as the family's default-surface text because warning bgs are light (yellow/gold) so `text.on*` is dark (olive). Critical/positive/info `text.on*` tokens are white, so they only work on their saturated-colored bgs — those families use separate `text.critical` / `text.positive` / `text.info` tokens for default-surface text. Warning doesn't need one. Do not use `text.default` on a warning surface.
 
-2. **`icon.warning` is only AA-pass for graphics (≥3:1)** when it's inside `bg.warning.subtle` at sufficient size (≥24dp with 2dp+ stroke). The icon is decorative-tier on this surface — the warning signal is carried by the surface color and context, not by icon contrast. This is documented and accepted; the token is scoped to warning surfaces only.
+2. **Warning icons are dark.** `icon.action` on `bg.warning.subtle` (10.85:1) or `bg.warning` (6.60:1). The old "gold on pale yellow is decorative-tier" exception is withdrawn (owner decision, 23 Nov 2026).
 
-3. **`icon.warning` on `bg.default` is 1.89:1 — invalid.** A lint rule checks this. If you need a yellow warning indicator on a white card, wrap it in a `bg.warning.subtle` chip or use `icon.critical` (red) for the alert instead.
+3. **Gold `icon.warning` is for rating stars only** (1.89:1 on `bg.default`; the star shape carries the meaning). Never a Warning indicator on any surface.
 
 ## Status — info
 
@@ -182,7 +184,7 @@ When adding a new semantic token, verify against the relevant background using t
 | (none — `text.critical` on bg.default is 4.75:1, passes AA for body) | — |
 | `text.brand` for body text on `bg.brand.subtle` | 4.10:1 — passes AA-large only |
 | `text.default` on `bg.warning.subtle` | ratio fine (15.42:1) but **wrong token** — warning family uses `text.onWarning` for cohesive identity |
-| `icon.warning` on `bg.default` | 1.89:1 — invalid |
+| `icon.warning` as a Warning glyph (any surface) | Invalid; use `icon.action` on a warning bg. Rating stars only |
 | `icon.nonAction` on `bg.muted` | 2.92:1 — **fails graphics AA** on that specific surface. Keep decorative icons on `bg.default` or `bg.subtle`; if the surface must be `bg.muted` and the icon is meaningful, escalate to `icon.action` (Neutral_900). |
 | White text on `bg.brand.accent` (#FF66C9) | 2.63:1 — fails. Must use `text.onBrandAccent` (dark) |
 | White text on `bg.warning` (#E2B203) | 1.98:1 — fails. Must use `text.onWarning` (dark) |

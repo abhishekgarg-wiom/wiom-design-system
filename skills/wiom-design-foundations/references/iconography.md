@@ -103,7 +103,7 @@ Each category has different fill and color rules. Always identify the category b
 |----------|----------|--------------|------------------------|----------------------|
 | **Action** | ArrowBack, Search, Share, Close, Edit, MoreVert, Menu | Rounded (filled) | N/A — no selected state | `icon.action` (#352D42) |
 | **Navigation** | Home, AccountBalanceWallet, AccountCircle, Explore | Outlined variant (unselected) | Filled variant (selected) | `icon.nonAction` unselected (#898296); `icon.brand` selected (#D9008D) |
-| **Status** | CheckCircle, Cancel, Warning, Info | Filled always | N/A | `icon.positive` / `icon.critical` / `icon.warning` / `icon.info` |
+| **Status** | CheckCircle, Cancel, Warning, Info | Filled always | N/A | `icon.positive` / `icon.critical` / `icon.action` (Warning, on a warning bg) / `icon.info` |
 | **Toggle** | Bookmark/BookmarkBorder, Favorite/FavoriteBorder | `*Border` variant (off) | Filled variant (on) | `icon.nonAction` off; `icon.brand` on |
 | **Brand** | Wiom logo, Wiom SIM icon | Original brand colors | N/A | `Color.Unspecified` — exempt from tinting |
 | **Partner** | WhatsApp, Instagram, YouTube logos | Original brand colors | N/A | `Color.Unspecified` — exempt from tinting and Rounded style |
@@ -161,7 +161,7 @@ Is it a brand mark or partner logo?                    → Custom drawable (ic_w
 | Chip leading icon | `WiomIcon.SM` | filled | `icon.action` or `icon.brand` (selected) |
 | Success status icon | `WiomIcon.MD` | `Icons.Rounded.CheckCircle` | `icon.positive` |
 | Error status icon | `WiomIcon.MD` | `Icons.Rounded.Cancel` | `icon.critical` |
-| Warning status icon (inside `bg.warning.subtle`) | `WiomIcon.MD` | `Icons.Rounded.Warning` | `icon.warning` |
+| Warning status icon (inside `bg.warning.subtle`) | `WiomIcon.MD` | `Icons.Rounded.Warning` | `icon.action` (dark) |
 | Info status icon | `WiomIcon.MD` | `Icons.Rounded.Info` | `icon.info` |
 | Empty state illustration | `WiomIcon.LG` | filled | `icon.nonAction` or semantic status token |
 | Success full-page illustration | `WiomIcon.LG` | `Icons.Rounded.CheckCircle` | `icon.positive` |
@@ -351,7 +351,7 @@ Icon(
 | Brand accent | `icon.brand` | #D9008D | Selected nav, active toggles, focused chevron, inside Secondary/Tertiary CTAs |
 | Success / positive | `icon.positive` | #008043 | Success check, verified, confirmation (filled) |
 | Critical / error | `icon.critical` | #D92130 | Error alerts, cancel, destructive indicators (filled) |
-| Warning | `icon.warning` | #E2B203 | Warning indicator — **ONLY** on `bg.warning.subtle` or inside a rating component. Fails AA graphics contrast (3:1) on `bg.default` |
+| Warning | `icon.warning` | #E2B203 | **Rating stars only.** Never a Warning indicator; Warning glyphs use `icon.action` (see below) |
 | Info | `icon.info` | #6D17CE | Info indicators (filled) |
 | Inverse | `icon.inverse` | #FAF9FC | Icons on `bg.inverse`, `bg.brand.bold`, and inside Primary/Destructive CTAs |
 | Disabled | `icon.disabled` | #A7A1B2 | Disabled interactive icons. Same hex as `text.disabled` (both Neutral_400) so a disabled icon + disabled label read as one muted pair on `bg.disabled` at ~1.64:1 (sub-AA, intentional). Distinct from `icon.nonAction` (Neutral_500, darker) — non-action icons sit on light surfaces and need AA. |
@@ -386,11 +386,20 @@ Badge icons follow the same dark-fill / light-fill logic as CTAs: a solid dark f
 
 If the icon is inside a tappable card/row but the icon itself isn't the tap target, use `icon.nonAction` — the whole-row tap is handled by the row.
 
-### `icon.warning` is scoped
+### Warning icons: the three approved combinations
 
-`#E2B203` on `bg.default` is 1.89:1 — fails graphics AA (3:1). The token is only valid inside `bg.warning.subtle` (#FFE9A1), where the surrounding yellow surface and context carry the warning meaning, or inside a rating component (gold stars are culturally recognizable regardless of contrast — documented exception).
+Owner decision, 23 Nov 2026 (same on iOS). These are the only ones.
 
-A lint rule should allow `icon.warning` inside a `RatingBar` or `StarIcon`, and on a `bg.warning.subtle` surface; flag it everywhere else.
+| Use | Icon | Background | Contrast |
+|---|---|---|---|
+| Rating stars only | `icon.warning` (#E2B203 gold) | The rating component's surface | 1.89:1 on `bg.default`; accepted for the star shape only |
+| Warning indicator, subtle | `icon.action` (#352D42) | `bg.warning.subtle` (#FFE9A1) | 10.85:1 |
+| Warning indicator, solid | `icon.action` (#352D42) | `bg.warning` (#E2B203) | 6.60:1 |
+
+- Gold `icon.warning` is **never** a Warning triangle, alert or status glyph, on any background (white, pale yellow or solid gold).
+- Toast and input stay `bg.default`; their Warning glyph sits on a `bg.warning.subtle` circle. The circle's size is still open: keep the glyph size, flag the gap.
+- `icon.action` here names the colour, not a tap target. Decorative Warning glyphs stay `contentDescription = null`; the host's text carries the meaning.
+- Lint: allow `icon.warning` only inside a `RatingBar` / `StarIcon`; flag it everywhere else.
 
 ---
 
@@ -478,7 +487,7 @@ TINT      Action  → icon.action      Non-action → icon.nonAction
 (Wiom)    Brand   → icon.brand       Disabled   → icon.disabled
           Inverse → icon.inverse     Status     → icon.positive /
                                                   icon.critical /
-                                                  icon.warning /
+                                                  icon.action (Warning) /
                                                   icon.info
           Brand/Partner mark      → Color.Unspecified
           Inside Primary/Destructive CTA → icon.inverse
