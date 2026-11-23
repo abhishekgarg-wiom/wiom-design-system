@@ -86,7 +86,7 @@ No rest-state fill. `text.brand` label + `stroke.brand.focus` border (saturated 
 
 ### 5. "How do I color a warning surface (badge or banner)?"
 **Solid badge:** `bg.warning` (#E2B203 ← Warning_300) + `text.onWarning` (#372902 ← Warning_900) label. 7.16:1, AA.
-**Subtle banner/card:** `bg.warning.subtle` (#FFE9A1 ← Warning_100) + `text.onWarning` body + `icon.warning` (#E2B203) for the alert icon + optional `stroke.warning` (#E2B203) outline. 8.76:1, AA.
+**Subtle banner/card:** `bg.warning.subtle` (#FFE9A1 ← Warning_100) + `text.onWarning` body + dark `icon.action` (#352D42) for the alert icon (10.85:1; gold is ratings-only) + optional `stroke.warning` (#E2B203) outline. 8.76:1, AA.
 Dark olive text on both — cohesive warning identity across the family. Note: white text on either fill fails AA (1.98:1 on solid gold, ~1.75:1 on subtle yellow); `text.onWarning` is the only valid warning-text token.
 
 ### 6. "My CTA has an icon next to the label — what tint?"
@@ -152,7 +152,7 @@ These rules are mechanically enforceable because the element is in the token nam
 2. `text.*` tokens only valid on Text/label properties
 3. `bg.brand` (primary CTA) requires `text.onBrand` child
 4. `bg.critical` **used as a CTA button fill** is rate-limited to 1 per screen — the check applies to `Button(containerColor = bgCritical)`, not to badges, avatar fills, or form error states
-5. `icon.warning` only valid inside `bg.warning.subtle` **or** inside a rating component (e.g., `RatingBar`, `StarIcon`) — flag everywhere else
+5. `icon.warning` (gold) only inside a rating component (`RatingBar`, `StarIcon`). Warning glyphs use `icon.action` on `bg.warning.subtle` / `bg.warning`. Flag gold everywhere else
 6. No raw hex outside the design-system module — primitives are `internal`
 
 If you're writing a lint rule, reference these invariants.

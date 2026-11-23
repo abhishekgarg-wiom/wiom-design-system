@@ -101,40 +101,42 @@ Source: `get_design_context` on `1043:316` (Pill Track Count=2),
 
 ### 1.4 Track variants (Count)
 
-Figma ships three Pill Track variants: **Count = 1 · 2 · 3** (per
-metadata `1043:313 / 1043:316 / 1043:320`). The published doc says "Count:
-2 / 3 / 4" — that's an outdated description. **Use the ship value: 1–3
-fixed counts. Pill Track is hard-capped at 3.**
+**Pill Track takes 2 to 4 pills** (owner decision, 23 Nov 2026; same
+on iOS). This matches what the Android library ships (`2..4`) and
+supersedes the older 1–3 rule.
 
 | Count | Layout |
 |---|---|
-| 1 | Single full-width pill (rare; usually used when only one mode applies but the chrome is preserved for layout consistency) |
-| 2 | Two equal-width pills (most common — Customer / Partner, Hindi / English, Active / All) |
+| 2 | Two equal-width pills (most common: Customer / Partner, Hindi / English, Active / All) |
 | 3 | Three equal-width pills |
+| 4 | Four equal-width pills. Keep labels short (one word); check Hindi at 360 dp |
 
-### 1.5 4+ tabs — not supported
+A single pill is not a valid Pill Tab: with one mode there is nothing to
+switch. Drop the track.
 
-**Pill Track is hard-capped at 3.** There is no 4-tab variant and no
-horizontally-scrollable Pill Track fallback — both have been considered
-and explicitly excluded from Wiom DS. 4+ Pill Tabs almost always
+> **Figma:** the Pill Track set ships `Count = 1 · 2 · 3` (`1043:313 /
+> 1043:316 / 1043:320`). Count 4 needs to be added to Figma, and Count 1
+> marked unused. Until then, build 4 from four Pill Tab Items in the
+> track's Auto Layout.
+
+### 1.5 5+ tabs: not supported
+
+**Pill Track is hard-capped at 4.** There is no 5-tab variant and no
+horizontally-scrollable Pill Track fallback. 5+ Pill Tabs almost always
 indicate the wrong component. Route to one of these instead:
 
-- 4+ items that are **mutually exclusive views of different data** →
+- 5+ items that are **mutually exclusive views of different data** →
   Bottom Navigation (`wiom-navigation-bar`, 2–5 tabs) or list-of-rows
   navigation.
-- 4+ items that are **slices of the same data** → Underline Filter is
+- 5+ items that are **slices of the same data** → Underline Filter is
   the right component, not Pill Tab. Underline Filter has no cap and
   can scroll horizontally.
-- 4+ items that are **categories / sub-pages** → section headers,
+- 5+ items that are **categories / sub-pages** → section headers,
   list-of-rows, or a separate screen per category.
 
-Implementations must enforce the cap in code (`require(count in 1..3)`).
-If a screen looks like it needs 4+ pills, that's the signal to revisit
-the design — not to relax the cap.
-
-> **Implementor note:** Android v0.3.0 currently caps at `2..4` and
-> should tighten to `1..3` in the next minor release to match this
-> skill. Other consumers should ship with the `1..3` cap from day one.
+Implementations must enforce the range in code (`require(count in 2..4)`).
+If a screen looks like it needs 5+ pills, that's the signal to revisit
+the design, not to relax the cap.
 
 ---
 
@@ -732,7 +734,7 @@ without scroll on a 360 dp screen.
    required, show a skeleton in the content area, not on the tab.
 10. **Single-row only — never wrap to a second row.** Overflow is
     handled differently per component:
-    - **Pill Tab:** capped at 3 in Figma. 4+ is a design-review smell;
+    - **Pill Tab:** 2 to 4 pills. 5+ is a design-review smell;
       see §1.5.
     - **Underline Filter:** count-based per §2.4 — 1–6 fits or scrolls,
       7+ uses fit-N + More icon. **Never combine horizontal scroll with
@@ -757,7 +759,7 @@ without scroll on a 360 dp screen.
 @Composable
 fun WiomPillTabRow(
     selectedIndex: Int,
-    tabs: List<WiomPillTab>,            // 1–3 tabs ship; 4+ falls back to scrollable
+    tabs: List<WiomPillTab>,            // 2–4 tabs; require(tabs.size in 2..4)
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 )
@@ -911,7 +913,7 @@ gives a design that maps 1-to-1 to the Compose API.
 | Component | Node | Properties to set | Mapping to Compose |
 |---|---|---|---|
 | **Pill Tab Item** | `1043:250` | `State` (`Active` / `Inactive` / `Disabled`), `Badge` (boolean) | One element of `tabs: List<WiomPillTab>`; `selectedIndex` derives Active. `Badge` → `WiomPillTab.badgeCount != null`. |
-| **Pill Track** | `1043:312` | `Count` (1 / 2 / 3) | `WiomPillTabRow(tabs = listOf(... .size 1–3))` |
+| **Pill Track** | `1043:312` | `Count` (2 / 3; 4 to be added, see §1.4) | `WiomPillTabRow(tabs = listOf(... .size 2–4))` |
 | **Underline Filter Item** | `2941:6683` | `State` (`Active` / `Default` / `Disabled`), `Badge` (`On` / `Off`), `Icon Only` (`Yes` / `No`) | One element of `filters: List<WiomUnderlineFilter>`; `Icon Only=Yes` is reserved for the More item only. |
 | **Underline Filter Bar** | `2941:6714` | `Scrollable` (`No` / `Yes`), `tab3..tab6` booleans, `moreIconTab` boolean | `FilterOverflow.None` (Scrollable=No, no More) · `FilterOverflow.HorizontalScroll` (Scrollable=Yes, no More) · `FilterOverflow.More(...)` (Scrollable=No, moreIconTab=true) |
 | **Chip** | `1043:301` | `State` (`Unselected` / `Selected` / `Disabled`) | One element of `chips: List<WiomChip>`; `selected: Boolean` toggles between Unselected ↔ Selected; `enabled = false` → Disabled |
@@ -928,7 +930,7 @@ Column {
     WiomTopBar(title = …)
     WiomPillTabRow(            // optional — only when there's a context switch
         selectedIndex = mode,
-        tabs = …,              // 1–3 WiomPillTab
+        tabs = …,              // 2–4 WiomPillTab
         onSelect = { mode = it; status = 0 },   // reset filter on context flip
     )
     WiomUnderlineFilterBar(    // optional — only when there's a slice filter

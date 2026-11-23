@@ -87,7 +87,7 @@ Badges can also use the subtle-tier fill (e.g., `bg.positive.subtle` + `text.pos
 |---|---|---|
 | `bg.positive.subtle` | `text.positive` (for headings/short labels) or `text.default` (for body) | `icon.positive` |
 | `bg.critical.subtle` | `text.critical` (AA-large only — large text or bold) or `text.default` | `icon.critical` |
-| `bg.warning.subtle` | `text.onWarning` (warning family's own body-text token — do not use `text.default`) | `icon.warning` |
+| `bg.warning.subtle` | `text.onWarning` (warning family's own body-text token — do not use `text.default`) | `icon.action` (dark; gold is ratings-only) |
 | `bg.info.subtle` | `text.info` or `text.default` | `icon.info` |
 
 ---
@@ -124,7 +124,7 @@ Leading icon inside a tooltip → `icon.inverse`.
 
 `icon.warning` (#E2B203). Gold is the industry standard for rating stars; reusing the warning token keeps the system lean.
 
-Star ratings are the one explicit exception to the "`icon.warning` only inside `bg.warning.subtle`" rule — a gold star shape reads as a rating regardless of contrast.
+Star ratings are the **only** use of `icon.warning`: a gold star shape reads as a rating regardless of contrast. Warning indicators never use gold; they use `icon.action` on a warning bg (iconography.md § Warning icons).
 
 ---
 

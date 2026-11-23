@@ -419,14 +419,14 @@ A glyph inside a filled, circular container. Used as a leading affordance in lis
 | `neutral` | `bg.subtle` (#F1EDF7) | `icon.nonAction` (#898296) | Default · decorative leading slot in list rows (row itself carries the tap target) |
 | `brand` | `bg.brand.subtle` (#FFE5F6) | `icon.brand` (#D9008D) | Featured / promoted rows · brand-flagged settings entry |
 | `positive` | `bg.positive.subtle` (#E1FAED) | `icon.positive` (#008043) | Success summary · confirmed / completed rows |
-| `warning` | `bg.warning.subtle` (#FFE9A1) | `icon.warning` (#E2B203) | Warning summary · attention rows (glyph is inside warning-tinted surface — one of the sanctioned uses of `icon.warning`) |
+| `warning` | `bg.warning.subtle` (#FFE9A1) | `icon.action` (#352D42) | Warning summary · attention rows (dark glyph, 10.85:1; gold `icon.warning` is ratings-only) |
 | `critical` | `bg.critical.subtle` (#FFE5E7) | `icon.critical` (#D92130) | Error summary · attention-required rows |
 | `info` | `bg.info.subtle` (#F1E5FF) | `icon.info` (#6D17CE) | Informational rows · tips · helper cards |
 
 **Rules:**
 - No border, no shadow — container fill is the only visual weight (Shadow vs Border rule).
 - Icon Badge is a **display element**. Tap lives on the parent row or CTA, never on the badge itself.
-- `icon.warning` is invisible on `bg.default`, but valid inside `bg.warning.subtle` here where context carries the meaning.
+- Warning icons: dark `icon.action` on `bg.warning.subtle` (10.85:1) or `bg.warning` (6.60:1); gold `icon.warning` is for rating stars only (owner decision, 23 Nov 2026; same on iOS).
 - Neutral tone uses `icon.nonAction` by default (decorative-inside-tappable-row). Use `icon.action` (#352D42) instead only when the badge is genuinely the sole affordance — a rare case; prefer restructuring.
 
 ---

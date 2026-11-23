@@ -75,7 +75,7 @@ Instance the component frame `3063:10031` and set `Property 1` to one of the thr
 | `WiomIconBadgeTone.Neutral` (Figma default) | `bg.subtle` + `icon.nonAction` |
 | `WiomIconBadgeTone.Brand` | `bg.brand.subtle` + `icon.brand` |
 | `WiomIconBadgeTone.Positive` | `bg.positive.subtle` + `icon.positive` |
-| `WiomIconBadgeTone.Warning` | `bg.warning.subtle` + `icon.warning` |
+| `WiomIconBadgeTone.Warning` | `bg.warning.subtle` + `icon.action` (dark) |
 | `WiomIconBadgeTone.Critical` | `bg.critical.subtle` + `icon.critical` |
 | `WiomIconBadgeTone.Info` | `bg.info.subtle` + `icon.info` |
 
@@ -181,13 +181,13 @@ All tokens are **element-first**. Don't reference raw hex.
 | `Neutral` | `bg.subtle` (#F1EDF7) | `icon.nonAction` (#898296) |
 | `Brand` | `bg.brand.subtle` (#FFE5F6) | `icon.brand` (#D9008D) |
 | `Positive` | `bg.positive.subtle` | `icon.positive` |
-| `Warning` | `bg.warning.subtle` | `icon.warning` |
+| `Warning` | `bg.warning.subtle` | `icon.action` (dark, 10.85:1) |
 | `Critical` | `bg.critical.subtle` (#FFE5E7) | `icon.critical` (#D92130) |
 | `Info` | `bg.info.subtle` | `icon.info` |
 
-> **Always pair within a family.** `bg.warning.subtle` ⇿ `icon.warning`. Never cross-pair (e.g., `bg.brand.subtle` + `icon.positive`) — the foundation tokens are tuned for AA contrast within the family. Cross-pairing breaks contrast and reads as a bug.
+> **Always pair within a family** (Warning is the one exception: `bg.warning.subtle` ⇿ dark `icon.action`). Never cross-pair (e.g., `bg.brand.subtle` + `icon.positive`) — the foundation tokens are tuned for AA contrast within the family. Cross-pairing breaks contrast and reads as a bug.
 
-> **`icon.warning` is only legible on warning-tinted bg.** Don't use `icon.warning` (gold #E2B203) on `bg.default` or any non-warning surface — it fails contrast there. Foundations rule.
+> **Warning glyph is dark, never gold.** Warning icons: dark `icon.action` on `bg.warning.subtle` (10.85:1) or `bg.warning` (6.60:1); gold `icon.warning` is for rating stars only (owner decision, 23 Nov 2026; same on iOS).
 
 ---
 
@@ -197,9 +197,9 @@ All tokens are **element-first**. Don't reference raw hex.
 2. **Always filled · no border · no shadow.** Foundations cross-rule (shadow XOR border, and this is filled). The fill is the only visual weight.
 3. **Single glyph only.** One `Icons.Rounded.*` or one `painterResource(R.drawable.ic_wiom_*)`. Never two glyphs, never text, never a count overlay (that's `wiom-badge`), never a multi-color illustration (use an illustration drawable).
 4. **Display-only — no tap handler on the badge.** Tap belongs to the parent row / card / CTA. `Sm` (24 dp) standalone fails the ≥ 48 dp WCAG hit target — wrap the parent in a 48 dp clickable surface, keep the badge decorative.
-5. **Pair container and glyph from the same tone family.** `bg.brand.subtle` + `icon.brand`, `bg.warning.subtle` + `icon.warning`, etc. Never cross-pair.
+5. **Pair container and glyph from the same tone family.** `bg.brand.subtle` + `icon.brand`, etc. Never cross-pair. Warning: `bg.warning.subtle` + dark `icon.action`.
 6. **One size per use site.** Don't pass `Modifier.size(…)` from the call site to enlarge / shrink the badge — the `size` enum is the contract. If a design wants 32 dp or 64 dp, ask whether it really should be `Sm` or `Md`; the system has 3 sizes by design.
-7. **`icon.warning` is warning-bg-only.** Never tint a glyph `icon.warning` outside a warning-tinted container.
+7. **Warning glyph is `icon.action`, never gold `icon.warning`.** Gold is for rating stars only.
 8. **Tokens only — element-first.** No raw hex except the documented edge cases (none in this component). No legacy `color.brand.primary`.
 
 ---
@@ -303,7 +303,7 @@ private fun colorsFor(tone: WiomIconBadgeTone): IconBadgeColors = when (tone) {
     WiomIconBadgeTone.Neutral  -> IconBadgeColors(Wiom.bg.subtle,           Wiom.icon.nonAction)
     WiomIconBadgeTone.Brand    -> IconBadgeColors(Wiom.bg.brand.subtle,     Wiom.icon.brand)
     WiomIconBadgeTone.Positive -> IconBadgeColors(Wiom.bg.positive.subtle,  Wiom.icon.positive)
-    WiomIconBadgeTone.Warning  -> IconBadgeColors(Wiom.bg.warning.subtle,   Wiom.icon.warning)
+    WiomIconBadgeTone.Warning  -> IconBadgeColors(Wiom.bg.warning.subtle,   Wiom.icon.action)   // dark; gold is ratings-only
     WiomIconBadgeTone.Critical -> IconBadgeColors(Wiom.bg.critical.subtle,  Wiom.icon.critical)
     WiomIconBadgeTone.Info     -> IconBadgeColors(Wiom.bg.info.subtle,      Wiom.icon.info)
 }
@@ -462,7 +462,7 @@ Re-pull `get_variable_defs` on `3063:10031` if foundations token names ever chan
 
 ## See also
 
-- `wiom-design-foundations` — token source. Especially: `bg.subtle` / `bg.brand.subtle` / `bg.positive.subtle` / `bg.warning.subtle` / `bg.critical.subtle` / `bg.info.subtle`, `icon.nonAction` / `icon.brand` / `icon.positive` / `icon.warning` / `icon.critical` / `icon.info`, `radius-full`, `space-4` / `space-12`. Also the warning-tone-only-on-warning-bg rule.
+- `wiom-design-foundations` — token source. Especially: `bg.subtle` / `bg.brand.subtle` / `bg.positive.subtle` / `bg.warning.subtle` / `bg.critical.subtle` / `bg.info.subtle`, `icon.nonAction` / `icon.brand` / `icon.positive` / `icon.action (Warning glyph)` / `icon.critical` / `icon.info`, `radius-full`, `space-4` / `space-12`. Also the warning-tone-only-on-warning-bg rule.
 - `wiom-badge` — the **count / dot / label chip** family. Different component: text-bearing or numeric, not glyph-only. Don't confuse the two.
 - `wiom-list-item` — the primary host for `Sm` and `Md` icon-badges in the leading slot.
 - `wiom-dialog` — the Alert dialog header is a `Md` icon-badge with status-coded tone.

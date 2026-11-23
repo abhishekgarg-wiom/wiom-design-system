@@ -131,7 +131,7 @@ Two-tier neutral split covers the light-surface case:
 | `icon.brand` | #D9008D | Brand_600 | Brand accent (selected check, focused chevron) |
 | `icon.positive` | #008043 | Positive_600 | Success check, confirmation |
 | `icon.critical` | #D92130 | Critical_600 | Error alerts |
-| `icon.warning` | #E2B203 | Warning_300 | Warning indicator (inside `bg.warning.subtle`) · **also reused for star ratings** (gold is the industry convention) |
+| `icon.warning` | #E2B203 | Warning_300 | **Rating stars only.** Never a Warning indicator: Warning glyphs use `icon.action` on `bg.warning.subtle` / `bg.warning` |
 | `icon.info` | #6D17CE | Info_600 | Info indicators |
 | `icon.disabled` | #A7A1B2 | Neutral_400 | Disabled interactive icons. Shares hex with `text.disabled` (also Neutral_400) so a disabled icon + disabled label read as one muted pair on a `bg.disabled` (#D7D3E0 Neutral_300) surface at ~1.64:1. Sub-AA is intentional; disabled signals "unavailable," not "readable." Distinct from `icon.nonAction` (Neutral_500), which is darker because non-action icons sit on light surfaces and need graphics AA. |
 
@@ -142,11 +142,9 @@ Two-tier neutral split covers the light-surface case:
 
 If the icon is inside a tappable card/row but the icon itself isn't the tap target, use `icon.nonAction`. The whole-row tap is handled by the row.
 
-### icon.warning is dangerous outside warning surface
+### icon.warning is for rating stars only
 
-`#E2B203` on `bg.default` is 1.6:1 — invisible as a solo icon, and fails graphics AA (3:1). The token is only valid inside `bg.warning.subtle` where the surrounding yellow surface and context carry the warning meaning.
-
-**One explicit exception: star ratings.** A filled gold star has a recognizable shape that users identify regardless of contrast — a 1.6:1 gold star on white still reads as "a star, probably a rating" because the visual language is culturally baked in (Amazon, Google Play, Swiggy, Zomato all use the same gold-on-white pattern). Star ratings reference `icon.warning` deliberately, not accidentally. A lint rule should allow `icon.warning` inside a `RatingBar` or similar rating component; flag it everywhere else.
+`#E2B203` fails as an icon colour everywhere (1.89:1 on `bg.default`, 1.64:1 on `bg.warning.subtle`). Owner decision, 23 Nov 2026: Warning glyphs use dark `icon.action` on `bg.warning.subtle` (10.85:1) or `bg.warning` (6.60:1). Gold stays only for rating stars, where the star shape carries the meaning. Full table: `iconography.md` § Warning icons. A lint rule should allow `icon.warning` inside a `RatingBar` / `StarIcon` and flag it everywhere else.
 
 ---
 

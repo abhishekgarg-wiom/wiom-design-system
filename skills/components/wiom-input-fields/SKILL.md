@@ -240,7 +240,7 @@ All tokens are **element-first**. Always reference tokens, never hex.
 | Filled | `bg.default` | 1 dp `stroke.subtle` | `text.subtle` | `text.default` | `text.subtle` | user-set |
 | Error | `bg.default` | 2 dp `stroke.critical.focus` | `text.subtle` | `text.default` | `text.critical` | hardcoded `error` · `icon.critical` |
 | Success | `bg.default` | 2 dp `stroke.positive.focus` | `text.subtle` | `text.default` | `text.positive` | hardcoded `check_circle` · `icon.positive` |
-| Warning | `bg.default` | 2 dp `stroke.warning` | `text.subtle` | `text.default` | `text.onWarning` | hardcoded `warning` · `icon.warning` |
+| Warning | `bg.default` | 2 dp `stroke.warning` | `text.subtle` | `text.default` | `text.onWarning` | hardcoded `warning` · `icon.action` on a `bg.warning.subtle` circle (gold is ratings-only) |
 | Disabled | `bg.disabled` | 1 dp `stroke.subtle` | `text.disabled` | `text.disabled` | `text.disabled` | dimmed |
 | Read-only | `bg.subtle` | 1 dp `stroke.subtle` | `text.default` | `text.default` | `text.subtle` | typically `expand_more` for dropdown |
 
@@ -387,7 +387,7 @@ private fun rememberFieldColors(state: FieldState): FieldColors = when (state) {
 private fun rememberStatusIcon(state: FieldState): Pair<ImageVector, Color>? = when (state) {
     FieldState.Error   -> Icons.Rounded.Error       to Wiom.icon.critical
     FieldState.Success -> Icons.Rounded.CheckCircle to Wiom.icon.positive
-    FieldState.Warning -> Icons.Rounded.Warning     to Wiom.icon.warning
+    FieldState.Warning -> Icons.Rounded.Warning     to Wiom.icon.action   // dark, on a bg.warning.subtle circle (size open); never gold
     else -> null
 }
 
