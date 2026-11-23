@@ -722,8 +722,12 @@ without scroll on a 360 dp screen.
 8. **Tab / filter copy reflects the data, not the action.** "Active jobs"
    not "Show active". The user is choosing what they're looking at, not
    issuing a command.
-9. **Switching state is instant and free.** No confirmation, no loading
-   spinner blocking the tap — the new dataset / slice can resolve while
+9. **Switching state is immediate and free.** No confirmation, no loading
+   spinner blocking the tap. Visually, the old and new item's colours
+   ease in place on `WiomMotion.selection()` (200 ms, foundations
+   § Motion): pill fill, shadow and label; underline indicator and
+   label; chip fill, border, label and close icon. Nothing slides from
+   one item to another — the new dataset / slice can resolve while
    the user is already looking at the new tab. If a network call is
    required, show a skeleton in the content area, not on the tab.
 10. **Single-row only — never wrap to a second row.** Overflow is
@@ -829,10 +833,24 @@ padding.
 
 **WiomChipRow** — see §3.7 implementation notes.
 
+**Motion (all three):** wrap every state colour in
+`animateColorAsState(target, WiomMotion.selection())`; a colour that
+appears or disappears (inactive pill, hidden underline, chip fill)
+fades to `color.clear()`, never `Color.Transparent`; Pill Tab active
+elevation in `animateDpAsState(…, WiomMotion.selection())`; chip close
+icon in `AnimatedVisibility(fadeIn + fadeOut)` on the same spec. Keep
+each item's identity stable (`key(item.id)`, never keyed on selected).
+Pill Tab: every item draws its own `Surface`; only colour and elevation
+change. Don't render one shared pill that moves across the track, and
+don't animate chip width or row layout. Programmatic scroll to the
+active filter uses `animateScrollTo` on the same spec.
+
 ---
 
 ## 9. Anti-patterns
 
+- ❌ A sliding pill / underline that travels between items, or a bounce / scale on select. Colours ease in place (§8.2 Motion).
+- ❌ Hard colour swap on selection. Use `WiomMotion.selection()` (foundations § Motion).
 - ❌ Using Pill Tab for narrowing within a dataset (use Underline Filter).
 - ❌ Using Underline Filter for context switching (use Pill Tab).
 - ❌ More than one Active item in a group.

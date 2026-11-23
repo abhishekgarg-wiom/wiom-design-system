@@ -201,6 +201,32 @@ Every spacing/sizing/padding/margin value must be a **multiple of 4px**. Primiti
 
 ---
 
+### Motion: selection transitions · 1 token
+
+| Token | Value | Compose | Use |
+|---|---|---|---|
+| `motion.micro` + `ease.standard` | 200 ms · cubic (0.4, 0, 0.2, 1) | `tween(200, easing = FastOutSlowInEasing)` | Selection colour changes: checkbox, radio, switch (track + thumb), pill tab, underline filter, chip, selected list row |
+
+```kotlin
+object WiomMotion {
+    const val MICRO_MS = 200
+    /** Selection / state colour change. Same curve as iOS `motion/micro` + `ease/standard`. */
+    fun <T> selection(): FiniteAnimationSpec<T> = tween(MICRO_MS, easing = FastOutSlowInEasing)
+}
+
+/** Clear version of a colour: fade to / from this, never Color.Transparent. */
+fun Color.clear(): Color = copy(alpha = 0f)
+```
+
+- **The value commits on tap; only the look eases.** Callbacks, state and TalkBack fire immediately. Never wait for the animation.
+- **Animate colours in place** with `animateColorAsState(target, WiomMotion.selection())` (and `animateDpAsState` for the switch thumb). Selection and deselection use the same spec.
+- **Fade to `color.clear()`, never `Color.Transparent`.** `Color.Transparent` is transparent *black*, so pink → Transparent passes through a muddy dark mid-frame. A fill that appears or disappears animates between `bg.x` and `bg.x.clear()`.
+- **Pressed stays instant.** Press feedback (`bg.subtle`, `bg.brand.pressed`) snaps; use `snap()` while pressed.
+- **Nothing moves between controls.** No sliding pill or underline from one item to another, no bounce, no scale, no width animation.
+- **Keep control identity stable** (no `key()` change on toggle) so a quick second tap reverses from the current colour.
+- **System "Remove animations"** is honoured automatically by Compose. Don't override it.
+- Same rule on iOS, so both apps feel the same. Owner decision, 23 Nov 2026.
+
 ## Cross-Foundation Rules
 
 These rules span multiple foundations. Violations are common — check these first.

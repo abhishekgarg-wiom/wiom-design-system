@@ -265,7 +265,8 @@ All tokens are **element-first**. Don't reference raw hex.
 9. **Pre-checking consent is banned.** Consent (T&C, auto-debit, marketing) checkboxes start `Selection = No`. The user must actively opt in.
 10. **Standalone Radio is not a valid pattern.** Always part of a group of 2+ mutually-exclusive options.
 11. **Switch is for instant-apply only.** If the change requires a "Save" tap to take effect, use a Checkbox. (Switches that wait for submission are a pattern bug.)
-12. **Tokens only — element-first.** No raw hex except the Switch thumb's `#FFFFFF`. No legacy `color.brand.primary`.
+12. **Selection eases; the value doesn't wait.** Fill, stroke, glyph and switch track colours change with `WiomMotion.selection()` (200 ms, `FastOutSlowInEasing`, foundations § Motion) in both directions. The thumb slides on the same 200 ms spec. Pressed colours snap. The callback fires on tap, never after the animation.
+13. **Tokens only — element-first.** No raw hex except the Switch thumb's `#FFFFFF`. No legacy `color.brand.primary`.
 
 ---
 
@@ -320,18 +321,21 @@ fun WiomCheckbox(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val colors = rememberCheckboxColors(state, selection)
     val shape = RoundedCornerShape(4.dp)                              // radius-tiny
+    // §6 rule 12: fill and stroke cross-fade; filled = stroke fades out (rule 5).
+    // Fade to .clear() of the same colour, never Color.Transparent (foundations § Motion).
+    val on = rememberCheckboxColors(state, WiomCheckboxSelection.Selected)
+    val off = rememberCheckboxColors(state, WiomCheckboxSelection.No)
+    val filled = selection != WiomCheckboxSelection.No
+    val fill by animateColorAsState(if (filled) on.fill else on.fill.clear(), WiomMotion.selection(), label = "CheckboxFill")
+    val stroke by animateColorAsState(if (filled) off.stroke.clear() else off.stroke, WiomMotion.selection(), label = "CheckboxStroke")
 
     Box(
         modifier = modifier
             .size(24.dp)
             .focusRing(focused = isFocused, shape = shape)            // §6 rule 7 — see helper below
-            .then(
-                if (colors.fill != Color.Transparent)
-                    Modifier.background(colors.fill, shape)
-                else Modifier.border(BorderStroke(2.dp, colors.stroke), shape)
-            )
+            .background(fill, shape)
+            .border(BorderStroke(2.dp, stroke), shape)
             .then(
                 if (state != WiomCheckboxState.Disabled && onToggle != null)
                     Modifier.clickable(
@@ -346,18 +350,21 @@ fun WiomCheckbox(
         // Material `Icons.Rounded.Check / Remove` ship intrinsic ~2 dp padding inside their
         // 24 dp container, so a 24 dp glyph centred in a 24 dp Box renders at the right visual
         // density (~20 dp visible) without manual sizing.
-        when (selection) {
-            WiomCheckboxSelection.No -> Unit
-            WiomCheckboxSelection.Indeterminate -> Icon(
-                imageVector = Icons.Rounded.Remove,
-                contentDescription = null,
-                tint = colors.glyph!!,
-            )
-            WiomCheckboxSelection.Selected -> Icon(
-                imageVector = Icons.Rounded.Check,
-                contentDescription = null,
-                tint = colors.glyph!!,
-            )
+        // Glyph fades in / out with the fill (no draw-on, no scale).
+        Crossfade(targetState = selection, animationSpec = WiomMotion.selection(), label = "CheckboxGlyph") { sel ->
+            when (sel) {
+                WiomCheckboxSelection.No -> Unit
+                WiomCheckboxSelection.Indeterminate -> Icon(
+                    imageVector = Icons.Rounded.Remove,
+                    contentDescription = null,
+                    tint = rememberCheckboxColors(state, sel).glyph!!,
+                )
+                WiomCheckboxSelection.Selected -> Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = null,
+                    tint = rememberCheckboxColors(state, sel).glyph!!,
+                )
+            }
         }
     }
 }
@@ -399,17 +406,18 @@ fun WiomRadio(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val colors = rememberRadioColors(state, selected)
+    // §6 rule 12: fill and ring cross-fade in place, via .clear() (foundations § Motion).
+    val on = rememberRadioColors(state, selected = true)
+    val off = rememberRadioColors(state, selected = false)
+    val fill by animateColorAsState(if (selected) on.fill else on.fill.clear(), WiomMotion.selection(), label = "RadioFill")
+    val stroke by animateColorAsState(if (selected) off.stroke.clear() else off.stroke, WiomMotion.selection(), label = "RadioStroke")
 
     Box(
         modifier = modifier
             .size(24.dp)
             .focusRing(focused = isFocused, shape = CircleShape)
-            .then(
-                if (colors.fill != Color.Transparent)
-                    Modifier.background(colors.fill, CircleShape)
-                else Modifier.border(BorderStroke(2.dp, colors.stroke), CircleShape)
-            )
+            .background(fill, CircleShape)
+            .border(BorderStroke(2.dp, stroke), CircleShape)
             .then(
                 if (state != WiomRadioState.Disabled && onSelect != null)
                     Modifier.clickable(
@@ -421,11 +429,16 @@ fun WiomRadio(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        if (selected) {
+        // Dot fades in / out (no scale).
+        AnimatedVisibility(
+            visible = selected,
+            enter = fadeIn(WiomMotion.selection()),
+            exit = fadeOut(WiomMotion.selection()),
+        ) {
             Box(
                 modifier = Modifier
                     .size(10.dp)                                      // inner dot
-                    .background(colors.dot!!, CircleShape),
+                    .background(on.dot!!, CircleShape),
             )
         }
     }
@@ -464,11 +477,21 @@ fun WiomSwitch(
     val pressed by interactionSource.collectIsPressedAsState()
     val isFocused by interactionSource.collectIsFocusedAsState()
     val colors = rememberSwitchColors(state, checked, pressed)
+    // §6 rule 12: track colour eases on selection; pressed colour snaps (instant feedback).
+    val trackSpec: AnimationSpec<Color> = if (pressed) snap() else WiomMotion.selection()
+    val trackFill by animateColorAsState(colors.trackFill, trackSpec, label = "SwitchTrackFill")
+    // On has no stroke: fade the Off stroke to its .clear() version, never Color.Transparent.
+    val offStroke = rememberSwitchColors(state, checked = false, pressed = false).trackStroke
+    val trackStroke by animateColorAsState(
+        if (colors.trackStroke == Color.Transparent) offStroke.clear() else colors.trackStroke,
+        trackSpec, label = "SwitchTrackStroke",
+    )
 
     // Track inner travel = 52 − 24 (thumb) − 4 × 2 (insets) = 20 dp.
-    // Thumb x-offset: 0 dp when Off, 20 dp when On. animateDpAsState gives a 100 ms glide.
+    // Thumb x-offset: 0 dp when Off, 20 dp when On. 200 ms glide, same spec as every selection change.
     val thumbOffsetX by animateDpAsState(
         targetValue = if (checked) 20.dp else 0.dp,
+        animationSpec = WiomMotion.selection(),
         label = "WiomSwitchThumbOffset",
     )
 
@@ -476,12 +499,8 @@ fun WiomSwitch(
         modifier = modifier
             .size(width = 52.dp, height = 32.dp)
             .focusRing(focused = isFocused, shape = CircleShape)
-            .background(colors.trackFill, CircleShape)
-            .then(
-                if (colors.trackStroke != Color.Transparent)
-                    Modifier.border(BorderStroke(2.dp, colors.trackStroke), CircleShape)
-                else Modifier
-            )
+            .background(trackFill, CircleShape)
+            .border(BorderStroke(2.dp, trackStroke), CircleShape)       // Transparent when On (rule 5)
             .then(
                 if (state != WiomSwitchState.Disabled && onCheckedChange != null)
                     Modifier.clickable(
@@ -701,6 +720,8 @@ WiomListItem(
 
 (Universal rules in §6 cover the bans. Listed here are extras.)
 
+- ❌ Instant colour swap on selection, or a bounce / scale / draw-on tick. Colours ease on `WiomMotion.selection()` (§6 rule 12).
+- ❌ Delaying `onToggle` / `onCheckedChange` until the animation ends. The value commits on tap.
 - ❌ Material `Checkbox` / `RadioButton` / `Switch` directly — wrong tokens, wrong sizing, wrong stroke weight.
 - ❌ Pre-checking consent on first render — must start `No`; user actively opts in.
 - ❌ Standalone Radio without a peer group — wrong control; use Checkbox or a confirmation dialog.
