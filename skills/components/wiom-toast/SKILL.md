@@ -143,7 +143,7 @@ booleans + duration. Pick the row matching the user's intent.
 
 | Placement | What the surface (host) owns | What the toast does |
 |---|---|---|
-| Bottom of screen, above nav bar | `space-8` start / end horizontal margin · `space-8` bottom margin above safe-area inset (or above any bottom chrome) · vertical animation slot | `fillMaxWidth()` inside that margin (lands at 344 dp on a 360 dp screen). No width set on the toast itself. |
+| Bottom of screen, above nav bar | `space-8` start / end horizontal margin · `space-16` bottom margin above safe-area inset · vertical animation slot | `fillMaxWidth()` inside that margin (lands at 344 dp on a 360 dp screen). No width set on the toast itself. |
 
 **The host is the surface, not the toast.** `WiomToastHost` (defined
 in §8) places the toast inside the surface margin and runs the animation
@@ -158,7 +158,7 @@ edges.
 │  ←8→ ┌─────────────────────────────────┐ ←8→         │   ← toast surface margin
 │       │ ●  Message text…       Action │              │
 │       └───────────────────────────────┘              │
-│                         ↕ 8                           │
+│                                                       │
 │  ─────────── safe-area / nav bar ──────────────       │
 └───────────────────────────────────────────────────────┘
 ```
@@ -453,7 +453,7 @@ fun WiomToastHost(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = Wiom.space.s8)                    // 8dp: toast floats wider than the 16dp screen gutter
-            .padding(bottom = Wiom.space.s8 + bottomInset)          // 8dp above any bottom chrome (same as the side margin)
+            .padding(bottom = Wiom.space.s16 + bottomInset)         // above any bottom chrome
             .navigationBarsPadding(),                               // OS gesture inset
         contentAlignment = Alignment.BottomCenter,
     ) {
@@ -628,9 +628,6 @@ says otherwise, trust ship values:
   screen), matching foundations ("Toast: 8 dp left + 8 dp right")
   and the shipped app. The toast deliberately floats wider than the
   16 dp gutter used by CTA, list-item, top-bar and bottom-sheet content.
-- **Bottom gap is 8 dp** (`space-8`) above the safe area or any bottom
-  chrome, same as the side margin and the shipped app (library passes
-  8 dp). Earlier text said 16; owner decision 23 Nov 2026.
 - **Vertical padding is 12 dp** (`space-12`), not 16. Single-line
   height = 12 + 24 LH + 12 = 48 dp.
 - **Typography is `type.body.lg` (16 sp Regular)** for the message and
