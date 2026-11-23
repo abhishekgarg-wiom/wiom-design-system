@@ -181,6 +181,8 @@ The list item **owns the row** as a self-contained surface: full-width fill, 16 
 
 **Disabled overrides Pressed / Selected** — a disabled row never shows press feedback or selection.
 
+**Motion:** the `bg.selected` overlay fades in and out on `WiomMotion.selection()` (200 ms, foundations § Motion), together with the hosted checkbox / radio. Pressed `bg.subtle` snaps (instant feedback). The tap commits immediately; nothing waits for the fade.
+
 ---
 
 ## 5. Tokens
@@ -362,17 +364,21 @@ fun WiomListItem(
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
 
+    // Two layers: Pressed snaps (instant feedback); Selected fades on WiomMotion.selection.
+    // Selected is drawn on top, so it wins when both apply (§4). Disabled shows neither.
+    val pressedFill = if (pressed && !isDisabled) Wiom.bg.subtle else Color.Transparent
+    val selectedFill by animateColorAsState(
+        targetValue = if (selected && !isDisabled) Wiom.bg.selected else Color.Transparent,
+        animationSpec = WiomMotion.selection(),
+        label = "ListItemSelected",
+    )
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 48.dp)
-            .then(
-                when {
-                    selected -> Modifier.background(Wiom.bg.selected)
-                    pressed  -> Modifier.background(Wiom.bg.subtle)
-                    else     -> Modifier
-                }
-            )
+            .background(pressedFill)
+            .background(selectedFill)
             .then(
                 if (!isDisabled && onClick != null)
                     Modifier.clickable(
@@ -837,6 +843,7 @@ Column {                                                   // inside a wiom-bott
 
 (Universal rules in §6 cover the bans. Listed here are extras.)
 
+- ❌ Selected overlay snapping on while the hosted radio / checkbox fades. The row and its control ease together (§4 Motion); only Pressed snaps.
 - ❌ Putting a CTA inside a row — rows route navigation / selection / display. CTAs go on the destination page.
 - ❌ Adding a `Divider()` between stacked rows — the 16 dp vertical padding handles separation. Dividers are noise.
 - ❌ `Modifier.alpha(0.38f)` for Disabled — use the `*.disabled` token family directly (Pattern A). Opacity fails AAA contrast.
