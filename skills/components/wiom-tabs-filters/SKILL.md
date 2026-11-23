@@ -834,7 +834,9 @@ padding.
 **WiomChipRow** — see §3.7 implementation notes.
 
 **Motion (all three):** wrap every state colour in
-`animateColorAsState(target, WiomMotion.selection())`; Pill Tab active
+`animateColorAsState(target, WiomMotion.selection())`; a colour that
+appears or disappears (inactive pill, hidden underline, chip fill)
+fades to `color.clear()`, never `Color.Transparent`; Pill Tab active
 elevation in `animateDpAsState(…, WiomMotion.selection())`; chip close
 icon in `AnimatedVisibility(fadeIn + fadeOut)` on the same spec. Keep
 each item's identity stable (`key(item.id)`, never keyed on selected).

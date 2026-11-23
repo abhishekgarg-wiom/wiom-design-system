@@ -321,11 +321,14 @@ fun WiomCheckbox(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val colors = rememberCheckboxColors(state, selection)
     val shape = RoundedCornerShape(4.dp)                              // radius-tiny
-    // §6 rule 12: fill and stroke cross-fade; filled = stroke fades to Transparent (rule 5).
-    val fill by animateColorAsState(colors.fill, WiomMotion.selection(), label = "CheckboxFill")
-    val stroke by animateColorAsState(colors.stroke, WiomMotion.selection(), label = "CheckboxStroke")
+    // §6 rule 12: fill and stroke cross-fade; filled = stroke fades out (rule 5).
+    // Fade to .clear() of the same colour, never Color.Transparent (foundations § Motion).
+    val on = rememberCheckboxColors(state, WiomCheckboxSelection.Selected)
+    val off = rememberCheckboxColors(state, WiomCheckboxSelection.No)
+    val filled = selection != WiomCheckboxSelection.No
+    val fill by animateColorAsState(if (filled) on.fill else on.fill.clear(), WiomMotion.selection(), label = "CheckboxFill")
+    val stroke by animateColorAsState(if (filled) off.stroke.clear() else off.stroke, WiomMotion.selection(), label = "CheckboxStroke")
 
     Box(
         modifier = modifier
@@ -403,10 +406,11 @@ fun WiomRadio(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val colors = rememberRadioColors(state, selected)
-    // §6 rule 12: fill and ring cross-fade in place.
-    val fill by animateColorAsState(colors.fill, WiomMotion.selection(), label = "RadioFill")
-    val stroke by animateColorAsState(colors.stroke, WiomMotion.selection(), label = "RadioStroke")
+    // §6 rule 12: fill and ring cross-fade in place, via .clear() (foundations § Motion).
+    val on = rememberRadioColors(state, selected = true)
+    val off = rememberRadioColors(state, selected = false)
+    val fill by animateColorAsState(if (selected) on.fill else on.fill.clear(), WiomMotion.selection(), label = "RadioFill")
+    val stroke by animateColorAsState(if (selected) off.stroke.clear() else off.stroke, WiomMotion.selection(), label = "RadioStroke")
 
     Box(
         modifier = modifier
@@ -434,7 +438,7 @@ fun WiomRadio(
             Box(
                 modifier = Modifier
                     .size(10.dp)                                      // inner dot
-                    .background(rememberRadioColors(state, true).dot!!, CircleShape),
+                    .background(on.dot!!, CircleShape),
             )
         }
     }
@@ -476,7 +480,12 @@ fun WiomSwitch(
     // §6 rule 12: track colour eases on selection; pressed colour snaps (instant feedback).
     val trackSpec: AnimationSpec<Color> = if (pressed) snap() else WiomMotion.selection()
     val trackFill by animateColorAsState(colors.trackFill, trackSpec, label = "SwitchTrackFill")
-    val trackStroke by animateColorAsState(colors.trackStroke, trackSpec, label = "SwitchTrackStroke")
+    // On has no stroke: fade the Off stroke to its .clear() version, never Color.Transparent.
+    val offStroke = rememberSwitchColors(state, checked = false, pressed = false).trackStroke
+    val trackStroke by animateColorAsState(
+        if (colors.trackStroke == Color.Transparent) offStroke.clear() else colors.trackStroke,
+        trackSpec, label = "SwitchTrackStroke",
+    )
 
     // Track inner travel = 52 − 24 (thumb) − 4 × 2 (insets) = 20 dp.
     // Thumb x-offset: 0 dp when Off, 20 dp when On. 200 ms glide, same spec as every selection change.

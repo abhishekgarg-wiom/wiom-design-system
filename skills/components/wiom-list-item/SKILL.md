@@ -368,7 +368,7 @@ fun WiomListItem(
     // Selected is drawn on top, so it wins when both apply (§4). Disabled shows neither.
     val pressedFill = if (pressed && !isDisabled) Wiom.bg.subtle else Color.Transparent
     val selectedFill by animateColorAsState(
-        targetValue = if (selected && !isDisabled) Wiom.bg.selected else Color.Transparent,
+        targetValue = if (selected && !isDisabled) Wiom.bg.selected else Wiom.bg.selected.clear(),  // not Color.Transparent
         animationSpec = WiomMotion.selection(),
         label = "ListItemSelected",
     )
