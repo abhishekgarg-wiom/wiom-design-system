@@ -133,7 +133,7 @@ Used for alternate actions: "Learn more", "See details", "Change plan". Pairs na
 
 **No rest-state background.** The button is transparent at rest, with a saturated pink border.
 
-When pressed, add `bg.brand.subtle` fill. Contrast: `text.brand` on `bg.default` = 8.4:1.
+When pressed, add `bg.brand.subtle` fill. Contrast: `text.brand` on `bg.default` = 4.62:1 (AA).
 
 ---
 
@@ -283,6 +283,6 @@ User needs a button. Which token set?
 | `text.onCritical` / `bg.critical` | 4.99 | AA |
 | `text.onBrandAccent` / `bg.brand.accent` | 7.07 | AA+ |
 | `text.brand` / `bg.brand.subtle` | 4.10 | AA-large |
-| `text.brand` / `bg.default` | 8.4 | AA+ |
+| `text.brand` / `bg.default` | 4.62 | AA |
 
 `text.brand` on `bg.brand.subtle` passes AA-large only (for 18pt+ / 14pt-bold). Use `text.default` for small body text on brand-subtle surfaces.
