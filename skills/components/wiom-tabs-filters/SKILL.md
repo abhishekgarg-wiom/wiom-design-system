@@ -62,14 +62,15 @@ Pill Track (bg.muted, radius-medium 12dp, padding space-4 all sides)
 | Slot | Value | Token |
 |---|---|---|
 | Track width | Fills parent (`fillMaxWidth()`) — never a hard width | — |
-| Track height | Derived: `space-4 + item content + space-4` ≈ 40 dp at default tokens (consequence, not input) | — |
+| Track height | Derived: `space-4 + item content + space-4` = 44 dp at default tokens (consequence, not input) | — |
 | Track radius | 12 dp | `radius-medium` |
 | Track fill | `bg.muted` (#E8E4F0) | `bg.muted` |
 | Track padding (all sides) | 4 dp | `space-4` |
 | Item width | Splits track interior evenly (`weight(1f)`) | — |
-| Item height | Fills cross-axis of track (32 dp at default tokens) | — |
+| Item height | 36 dp: `space-8` + 20 LH + `space-8` (as shipped) | — |
 | Item radius | 8 dp | `radius-small` |
 | Item horizontal padding | 12 dp | `space-12` |
+| Item vertical padding | 8 dp | `space-8` |
 | Item label-to-badge gap | 8 dp | `space-8` |
 | Label style | Noto Sans SemiBold 14 / 20 LH | `type.label.md` |
 | Inner row | Horizontally and vertically centered | — |
@@ -165,7 +166,7 @@ Underline Filter Bar (fillMaxWidth, bottom border 1dp stroke.subtle)
 | Bar height | Derived: `item content + bottom border` ≈ 46 dp at default tokens | — |
 | Bar bottom border | 1 dp `stroke.subtle` (#D7D3E0) | `stroke-small` + `stroke.subtle` |
 | Bar background | None (transparent — sits on `bg.default` screen) | — |
-| Item width | Hugs content (multiple labels of varying length) | — |
+| Item width | **Fixed mode (no scroll): equal width** (`weight(1f)`). **Scrolling mode: hugs content** | — |
 | Item layout | Column: Content row above 2 dp Indicator row | — |
 | Content horizontal padding | 16 dp | `space-16` |
 | Content vertical padding | 12 dp | `space-12` |
@@ -173,7 +174,9 @@ Underline Filter Bar (fillMaxWidth, bottom border 1dp stroke.subtle)
 | Inner row (Content) | Horizontally and vertically centered | — |
 | Indicator height | 2 dp | `stroke-medium` |
 | Indicator radius | full pill | `radius-full` |
-| Indicator width | Fills item width (matches the content row above) | — |
+| Indicator position / width | Drawn at the bottom of the label's padded content box (inside the 12 dp vertical padding, not the item's bottom edge): label width when scrolling, item width minus 32 dp when fixed (as shipped). **Needs a design ruling**; may be unintended | — |
+
+> Pill height, filter width, indicator position and chip border aligned with the shipped library and iOS skills, 26 Nov 2026 (`WiomTabsFilters.kt:100`, `:170-232`, `:283-284`).
 | Label style | Noto Sans SemiBold 14 / 20 LH | `type.label.md` |
 | Icon size (icon-only / "More") | 20 dp | `icon.sm` |
 
@@ -360,7 +363,7 @@ Source: `get_design_context` on `1043:302` / `1043:304` / `1043:309`,
 
 | State | Container fill | Border | Label | Trailing icon |
 |---|---|---|---|---|
-| **Unselected** | transparent | 1 dp `stroke.default` (#E8E4F0) | `text.default` (#161021) | none |
+| **Unselected** | transparent | 1 dp `stroke.subtle` (#D7D3E0) | `text.default` (#161021) | none |
 | **Selected** | `bg.selected` (#FFCCED) | 1 dp `stroke.selected` (#D9008D) | `text.selected` (#D9008D) | 16 dp close ✕, `icon.brand` (#D9008D) |
 | **Disabled** | `bg.disabled` (#D7D3E0) | none | `text.disabled` (#A7A1B2) | none |
 
@@ -454,7 +457,7 @@ data class WiomChip(
   `verticalArrangement` both `spacedBy(space.s8)`.
 - Each item is a `Surface` of fixed `height(36.dp)`, `RoundedCornerShape(8.dp)`,
   `clickable(enabled = chip.enabled)`. Selected adds a 1 dp `BorderStroke`
-  with `stroke.selected`; Unselected uses `stroke.default`; Disabled has
+  with `stroke.selected`; Unselected uses `stroke.subtle` (as shipped); Disabled has
   no border (foundations Pattern A).
 - Inner `Row(padding horizontal = space.s12, arrangement spacedBy(space.s4,
   CenterHorizontally), verticalAlignment = CenterVertically)`: label
@@ -493,15 +496,13 @@ Both components follow the same contract as `wiom-cta`:
    `Modifier.fillMaxWidth()`. Width emerges from the surface; do not
    pin it.
 3. **Pill Tab Item width** = track interior width / item count
-   (via `Row.weight(1f)`). **Underline Filter Item width** = hug content
-   (because labels vary in length and indicator must align with label
-   bounds, not divide bar width evenly).
+   (via `Row.weight(1f)`). **Underline Filter Item width** = equal
+   width (`weight(1f)`) when the bar is fixed; hug content when it
+   scrolls (as shipped).
 4. **Heights** derive from padding + content where possible (Underline
    Filter Item: 12 V pad + 20 LH + 12 V pad + 2 indicator = 46 dp).
-   Pill Tab Item is the one place a fixed 32 dp item height is justified —
-   inside the Track all items must align to the same baseline regardless
-   of label length, and the Track's 40 dp height = `space-4` (top) + 32
-   item + `space-4` (bottom).
+   Pill Tab Item = 8 V pad + 20 LH + 8 V pad = 36 dp, and the Track's
+   44 dp height = `space-4` (top) + 36 item + `space-4` (bottom).
 5. **Inner content of every item is centered** both axes. No leading
    alignment; no space-between.
 
@@ -512,7 +513,7 @@ Anti-patterns this rules out:
   (defeats the point of variable-width labels).
 - ❌ `Modifier.padding(horizontal = 16.dp)` on the Pill Track or Bar
   itself — the surface owns the gutter.
-- ❌ Underline Filter items splitting bar width evenly (use hug content).
+- ❌ Underline Filter items hugging content in a fixed (non-scrolling) bar, or splitting evenly in a scrolling bar.
 - ❌ Pill Tab items hugging label width (must split evenly via
   `weight(1f)`).
 
@@ -704,7 +705,8 @@ without scroll on a 360 dp screen.
    from `fillMaxWidth()`; height emerges from internal padding + content
    per the rules above.
 2. **Pill Tab Items split track width evenly** via `weight(1f)`. **Underline
-   Filter Items hug content** (do not split evenly).
+   Filter Items** split evenly in a fixed bar and hug content in a
+   scrolling bar.
 3. **One Active per group.** Pill Tab is exactly-one selection;
    Underline Filter is exactly-one selection. Multi-select is out of
    scope — use chip filters in a sort/filter sheet.
@@ -743,7 +745,7 @@ without scroll on a 360 dp screen.
     same screen. Tab = context, Filter = subset. Flipping the Tab resets
     the Filter to default.
 12. **Touch target 48 dp minimum** even when the visual height is
-    smaller (Pill item 32 dp visual). Wrap in a 48 dp hit Box, or use
+    smaller (Pill item 36 dp visual). Wrap in a 48 dp hit Box, or use
     `Modifier.minimumInteractiveComponentSize()`. Underline Filter Item
     at 46 dp is borderline — pad to 48 if your accessibility audit
     requires.
@@ -812,7 +814,7 @@ Derive component bodies from the anatomy + state tables (§1.1, §1.2,
 `Modifier.weight(1f)` (split track interior evenly). Active item =
 `Surface(color = bg.default, shadowElevation = shadow.sm)`; Inactive =
 transparent; Disabled = `bg.disabled`. Inner `Row(padding horizontal =
-space.s12, arrangement spacedBy(space.s8, CenterHorizontally),
+space.s12, vertical = space.s8, arrangement spacedBy(space.s8, CenterHorizontally),
 verticalAlignment = CenterVertically)` with `type.label.md` label +
 optional `WiomCountBadge` (tone Brand on Active, Neutral otherwise).
 Label color: Active = `text.selected`, Inactive = `text.subtle`,
@@ -823,11 +825,12 @@ Disabled = `text.disabled`.
 `horizontalScroll(rememberScrollState())` only when `overflow ==
 HorizontalScroll`; otherwise plain `Row`. Iterate `filters` then append
 a "More" item only when `overflow is FilterOverflow.More`. Each item is
-a `Column(horizontalAlignment = CenterHorizontally)`: a Content Row
-(`padding horizontal = space.s16, vertical = space.s12, spacedBy
-(space.s8, CenterHorizontally)`) above a 2 dp Indicator
-(`Box.fillMaxWidth().height(2.dp).background(if (isActive) bg.brand
-else Color.Transparent, RoundedCornerShape(radius.full))`). The
+`Modifier.weight(1f)` in a fixed bar and hugs in a scrolling bar: a
+`Column(horizontalAlignment = CenterHorizontally)` with a Content Box
+(`padding horizontal = space.s16, vertical = space.s12`) whose 2 dp
+indicator is drawn at the bottom of that padded box
+(`drawBehind { drawLine(bg.brand, …, strokeWidth = 2.dp, cap = Round) }`
+when active), as shipped. The
 indicator is a **filled `Box`, not a `BorderStroke`** — the token
 `bg.brand` is a fill slot, not a stroke slot. More item is icon-only
 (20 dp `Icons.Rounded.FilterList`, tint `icon.action`) inside the same
@@ -859,7 +862,7 @@ active filter uses `animateScrollTo` on the same spec.
 - ❌ No Active item ("nothing selected" state — there must always be one
   active item, even on first load).
 - ❌ Pill Tab Items hugging content width (must split evenly).
-- ❌ Underline Filter Items splitting bar width evenly (must hug content).
+- ❌ Underline Filter Items hugging in a fixed bar or splitting evenly in a scrolling bar.
 - ❌ `Modifier.width(...)` on the Track or Bar.
 - ❌ `Modifier.padding(horizontal = 16.dp)` on the Track or Bar (surface
   owns the gutter).
@@ -984,7 +987,7 @@ File: `ZPErh7YU7omdbyy2o268Qo` (Wiom Design System V2). Confirmed via
 | `2941:6736` | Underline Filter Bar Scrollable=Yes | `stroke.subtle` 1 dp bottom border · items hug content |
 | `2124:2823` | Chip section | Chip frame + Chip Row instance |
 | `1043:301` | Chip component set | 3 states · 36 dp height · `radius-small` |
-| `1043:302` | Chip Unselected | transparent fill · 1 dp `stroke.default` border · `text.default` |
+| `1043:302` | Chip Unselected | transparent fill · 1 dp `stroke.default` border in Figma; skill and code use `stroke.subtle` · `text.default` |
 | `1043:304` | Chip Selected | `bg.selected` fill · 1 dp `stroke.selected` border · `text.selected` · 16 dp close icon |
 | `1043:309` | Chip Disabled | `bg.disabled` fill · no border · `text.disabled` |
 | `2124:2801` | Chip Row instance | wraps · `space-8` H + V gaps · `space-16` H padding |
@@ -993,14 +996,14 @@ File: `ZPErh7YU7omdbyy2o268Qo` (Wiom Design System V2). Confirmed via
 
 - Pill Tab gap: doc says `space-4`, code uses `space-8`. Ship value
   wins (`space-8`).
-- Pill Track count: doc says 2 / 3 / 4, variants ship 1 / 2 / 3. Ship
-  values win.
+- Pill Track count: 2 / 3 / 4 (owner decision, 23 Nov 2026; library
+  ships 2..4). Figma's Count = 1 / 2 / 3 needs a Count 4.
 - Pill Tab Disabled: doc says "40% opacity", node ships `bg.disabled`.
   Ship value wins (also matches foundations Pattern A).
 - Underline Bar bottom border: doc says `stroke.default`, code uses
   `stroke.subtle`. Ship value wins.
-- Underline Bar items: doc says "Filter items = Fill width", code
-  renders items as `shrink-0` (hug). Ship behavior wins.
+- Underline Bar items: Figma renders `shrink-0` (hug); the library
+  splits evenly in a fixed bar and hugs when scrolling. Library wins.
 - Underline indicator color: doc says `stroke.selected` (a stroke
   slot), code uses `bg.brand` (a fill slot). Element-first wins:
   `bg.brand`.

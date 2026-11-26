@@ -46,7 +46,7 @@ texts / icon swaps. Strings are **case-sensitive**.
 | `Size` | `State` | Node | Use for |
 |---|---|---|---|
 | `Small` | `Default` | `1576:2` | Most screens; back arrow + title + 1–3 trailing actions |
-| `Small` | `Centered` | `1576:19` | Branded / legal / no-back screens (centered title) |
+| `Small` | `Centered` | `1576:19` | Modal / sheet headers: optional close leading, optional subtitle, max 1 trailing (centered title) |
 | `Small` | `Scrolled` | `1576:36` | Same as Default + `shadow.sm` (used when content has scrolled past edge) |
 | `Small` | `Search` | `1576:53` | Back + inline search pill + optional trailing text CTA |
 | `Medium` | `Default` | `1576:71` | Section pages where title needs more presence (`type.heading.lg`) |
@@ -59,7 +59,7 @@ texts / icon swaps. Strings are **case-sensitive**.
 | Property | Type | Default | Purpose |
 |---|---|---|---|
 | `Title` | Text | `"Title"` | Screen title |
-| `Subtitle` | Text | `"Subtitle"` | Optional second line (Small Default only) |
+| `Subtitle` | Text | `"Subtitle"` | Optional second line (Small Default / Centered only) |
 | `Show Subtitle` | Boolean | `false` | Reveals the subtitle slot below the title (Small only) |
 | `Show Leading` | Boolean | `true` | Reveals the leading icon button (typically `arrow_back`) |
 | `Leading Icon` | Instance swap | `arrow_back` | Swap to any 24 dp Material Symbols Rounded icon |
@@ -226,7 +226,7 @@ separate strip. The host activity must:
 | State | Visual signal | Use when |
 |---|---|---|
 | `Default` | No shadow, `bg.default` flat | Resting state of any screen — what you see at scroll position 0 |
-| `Centered` *(Small only)* | Title column centered in the bar (instead of left-aligned next to leading) | Branded / legal / OTP / no-back screens — when there's no leading icon and the title is the only thing in the bar |
+| `Centered` *(Small only)* | Title column (and optional subtitle) centred in the space between leading and trailing, not on the screen | Modal / full-screen sheet headers: close leading allowed, subtitle allowed, max 1 trailing action (as shipped, `WiomTopBar.kt:50`, `:276-310`; aligned with the shipped library and iOS skills, 26 Nov 2026) |
 | `Scrolled` *(all sizes)* | `bg.default` + `shadow.sm` drop shadow | Switch from `Default` once content has scrolled past the bar's bottom edge — the shadow separates the bar from the content underneath |
 | `Search` *(Small only)* | Title replaced by an inline `bg.subtle` search pill, asymmetric padding (`pl-4 pr-16`) | Search screens — back arrow + inline pill + optional `Save` / cancel text CTA |
 
@@ -249,7 +249,9 @@ All tokens are **element-first**. Don't reference raw hex.
 | Leading / Trailing icon tint | `icon.action` (#352D42) |
 | Search pill fill | `bg.subtle` (#F1EDF7) |
 | Search pill placeholder | `text.disabled` (#A7A1B2) |
-| Search pill leading icon | `icon.action` |
+| Search pill leading icon | `icon.nonAction` (decorative, as shipped) |
+| Search pill cursor | `text.default` |
+| Search pill outer margin | `space-8` horizontal around the pill |
 | Scrolled state shadow | `shadow.sm` (drop, `0 1px 3px rgba(0,0,0,0.15)`) |
 | Title typography (Small) | `type.title.lg` (Noto Sans Medium 20 / 28 LH) |
 | Title typography (Medium) | `type.heading.lg` (Bold 24 / 32 LH) |
@@ -359,7 +361,7 @@ enableEdgeToEdge(
 Size is a static design choice — see the *Use for* column in §1.
 State is partly runtime:
 
-- **`Default`** — at rest, content unscrolled. (Or **`Centered`** for branded screens with no leading.)
+- **`Default`** — at rest, content unscrolled. (Or **`Centered`** for modal / sheet headers.)
 - **`Scrolled`** — wired to scroll position, *not* a static design choice. Bind via `rememberScrolledTopBarState(listState)` (§9). Adds `shadow.sm`.
 - **`Search`** — user tapped search, or the screen is search-first. Replaces the title column with an inline `bg.subtle` pill.
 
@@ -371,8 +373,8 @@ State is partly runtime:
 2. **Pair status-bar lightness with the bar.** Light bar → dark status-bar content; dark bar → light. Set it once per screen via `enableEdgeToEdge` or `WiomTopBarStatusBar(isDarkVariant = …)`.
 3. **Trailing area max 3 icons + 1 text CTA.** Beyond that, move overflow into a `more_vert` overflow menu via bottom sheet.
 4. **Trailing Text CTA is `text.brand` (light) / `text.inverse` (dark).** Never a filled button; never `text.critical` (destructive should go through a confirmation dialog).
-5. **Subtitle is Small × Default × light only.** Medium and Large have no subtitle slot; the dark variant has no dimmed-inverse token, so subtitle is also disabled there.
-6. **Centered state implies no leading.** Centered title needs the bar's full width to balance — set `Show Leading = false`.
+5. **Subtitle is Small × Default / Centered × light only.** Medium and Large have no subtitle slot; the dark variant has no dimmed-inverse token, so subtitle is also disabled there.
+6. **Centered = modal header.** A close leading is allowed, a subtitle is allowed, and at most 1 trailing action. The title centres between leading and trailing (as shipped).
 7. **Tokens only — element-first.** No raw hex. No legacy `color.brand.primary`. Dark-variant uses foundations' `bg.brand.bold` / `text.inverse` / `icon.inverse` — not a hardcoded dark theme.
 
 ---
@@ -403,7 +405,7 @@ fun WiomTopBar(
     title: String,
     size: WiomTopBarSize = WiomTopBarSize.Small,
     state: WiomTopBarState = WiomTopBarState.Default,
-    subtitle: String? = null,                         // Small × Default only
+    subtitle: String? = null,                         // Small × Default / Centered only
     leadingIcon: ImageVector? = Icons.AutoMirrored.Rounded.ArrowBack,
     onLeadingClick: (() -> Unit)? = null,             // null disables the leading slot
     trailingText: WiomTrailingText? = null,
@@ -570,7 +572,10 @@ private fun SmallTopBar(
     ) {
         LeadingCell(leadingIcon, onLeadingClick, colors.icon)
         when (state) {
-            is WiomTopBarState.Search -> SearchPill(state, colors, modifier = Modifier.weight(1f))
+            is WiomTopBarState.Search -> SearchPill(
+                state, colors,
+                modifier = Modifier.weight(1f).padding(horizontal = Wiom.space.s8),   // as shipped
+            )
             else -> TitleColumn(
                 title, subtitle, colors,
                 centered = state is WiomTopBarState.Centered,
@@ -702,7 +707,7 @@ private fun SearchPill(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Wiom.space.s12),
         ) {
-            Icon(Icons.Rounded.Search, contentDescription = null, tint = colors.icon,
+            Icon(Icons.Rounded.Search, contentDescription = null, tint = Wiom.icon.nonAction,   // decorative
                  modifier = Modifier.size(20.dp))           // smaller than the 24dp action icons
             Box(modifier = Modifier.weight(1f)) {
                 BasicTextField(
@@ -710,7 +715,7 @@ private fun SearchPill(
                     onValueChange = state.onQueryChange,
                     singleLine = true,
                     textStyle = Wiom.type.body.lg.copy(color = colors.title),
-                    cursorBrush = SolidColor(Wiom.text.brand),
+                    cursorBrush = SolidColor(Wiom.text.default),     // as shipped
                 )
                 if (state.query.isEmpty()) {
                     Text(state.placeholder, style = Wiom.type.body.lg, color = placeholderColor)
@@ -870,15 +875,16 @@ WiomTopBar(
 )
 ```
 
-### Branded landing — Centered, no back
+### Modal header: Centered with close
 
 ```kotlin
 WiomTopBarStatusBar(isDarkVariant = false)
 WiomTopBar(
-    title = "Wiom",
+    title = "Plan details",
+    subtitle = "Step 2 of 3",                                   // optional
     state = WiomTopBarState.Centered,
-    leadingIcon = null,                                          // Centered convention
-    trailingActions = emptyList(),
+    leadingIcon = Icons.Rounded.Close,                           // close leading allowed
+    trailingActions = emptyList(),                               // max 1
 )
 ```
 
@@ -907,7 +913,7 @@ WiomTopBar(
 - ❌ Forgetting to call `WiomTopBarStatusBar` (or `enableEdgeToEdge` with the right `statusBarStyle`) — visible mismatch at the bar/status-bar seam.
 - ❌ Light status-bar background + dark status-bar content (or vice versa) — reads as a system bug.
 - ❌ Manually toggling Scrolled — it's a derived state from scroll position, not a static design choice.
-- ❌ Centered + leading icon — Centered convention is no leading.
+- ❌ Centered with 2+ trailing actions. Centered allows at most 1.
 - ❌ A custom search field instead of the Search state's pill — the pill is part of the variant; replicating it manually drifts.
 - ❌ Using `WiomTopBarState.Search` or `Show Subtitle = true` on a dark-variant top bar — both are unsupported there (foundations gap).
 

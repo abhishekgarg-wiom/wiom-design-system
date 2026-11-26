@@ -64,7 +64,7 @@ Strings are **case-sensitive**. The dialog component ships only `Actions = Singl
 |---|---|---|---|
 | `Title` | Text | `"Title"` | Dialog title — `type.heading.md` |
 | `Body` | Text | `"Body"` | Optional supporting copy — `type.body.md` |
-| `Show Link Button` | Boolean | `true` (Loading only) | Reveals the optional Tertiary "Cancel" CTA on Loading. Set `false` for non-cancellable operations |
+| `Show Link Button` | Boolean | `true` (Loading only) | **Set `false`.** Loading has no button and is never dismissable (as shipped, `WiomDialog.kt:366-381`). Figma's link button is unused |
 | `Header swap` (Alert) | Instance swap | `wiom-icon-badge` `size = md` `tone = neutral` | Swap to a status-coded tone when the alert itself is status-typed |
 | `Header swap` (Illustration) | Instance swap | 48 dp icon inside `bg.brand.subtle` 144 dp container | Swap to any 48 dp glyph or to a proper illustration drawable |
 
@@ -145,7 +145,7 @@ All 5 types share a single envelope:
 | `Alert` | 48 dp circular `wiom-icon-badge` · `size = md` · `tone = neutral` (default `bg.subtle` #F1EDF7 fill, `icon.action` glyph) — swap tone for status-coded alerts |
 | `Input` | (none — title sits at the top) |
 | `Selection` | (none — title sits at the top) |
-| `Illustration` | Full-width × **144 dp** container · `radius-large` (16 dp) · `bg.brand.subtle` (#FFE5F6) by default — holds a 48 dp icon or an illustration drawable. Other subtle bgs allowed for tone (`bg.positive.subtle`, `bg.info.subtle`) |
+| `Illustration` | Full-width × **144 dp** container · `radius-large` (16 dp) · `bg.brand.subtle` (#FFE5F6) by default — holds a 48 dp icon or an illustration drawable. **Brand subtle only** (as shipped, `WiomDialog.kt:318-333`); no other tones |
 | `Loading` | 40 dp container with a **20 dp** `wiom-loader` Spinner centered (`size = sm`, `color = brand`) |
 
 ### Per-type text alignment
@@ -259,8 +259,8 @@ No stroke. No tonal elevation tint. Element-first only — don't deepen colours 
 3. **Scrim is owned by the platform Dialog.** Don't paint your own scrim Box; configure dismiss behaviour via `DialogProperties` instead.
 4. **Don't dismiss on scrim tap.** Set `dismissOnClickOutside = false`. Users always exit via an explicit CTA (or system back, which should mirror the dismiss action's `onClick` regardless of which CTA type fills that slot).
 5. **One dialog at a time.** Sequential confirmations dismiss the first before showing the second. Never stack dialogs.
-6. **Max 2 CTAs · Loading max 1 · Stacked is the default; Side-by-side allowed when both labels are short.** Alert / Input / Selection / Illustration use 1 or 2 CTAs; Loading uses 0 or 1 (a Tertiary "Cancel" only). The button group's `Layout` is **Stacked** by default — switch to **Side-by-side** only when both CTAs are short, parallel actions ("Save" / "Cancel", "Yes" / "No"); otherwise the ~126 dp per-button width truncates labels. For CTA-vs-CTA pairing rules (Primary vs Destructive, when to use Tertiary for Cancel / Dismiss / Skip, copy discipline) see `wiom-cta` — those are owned by the CTA skill, not duplicated here.
-7. **Loading dialog must have an error fallback.** It must never trap the user — every long-running operation routes errors to a follow-up Alert dialog so the user can recover.
+6. **Max 2 CTAs · Loading none · Stacked is the default; Side-by-side allowed when both labels are short.** Alert / Input / Selection / Illustration use 1 or 2 CTAs; Loading uses 0 (no button; never dismissable, as shipped). The button group's `Layout` is **Stacked** by default — switch to **Side-by-side** only when both CTAs are short, parallel actions ("Save" / "Cancel", "Yes" / "No"); otherwise the ~126 dp per-button width truncates labels. For CTA-vs-CTA pairing rules (Primary vs Destructive, when to use Tertiary for Cancel / Dismiss / Skip, copy discipline) see `wiom-cta` — those are owned by the CTA skill, not duplicated here.
+7. **Loading dialog must have an error fallback.** It has no button and ignores back-press and scrim tap, so every long-running operation must route errors and timeouts to a follow-up Alert dialog so the user can recover. Aligned with the shipped library and iOS skills, 26 Nov 2026.
 8. **Body components are skill-instances, not re-implementations.** Input row → `wiom-input-fields`. Selection row → `wiom-list-item` (Type=Radio). Spinner → `wiom-loader`. Header badge → `wiom-icon-badge`. Don't re-paint these inside the dialog.
 9. **Selection caps at 4 items.** A scrollable list inside a dialog is an anti-pattern; that pattern belongs in a bottom-sheet picker.
 10. **Input caps at 1 field.** Two-or-more-field flows belong on a dedicated screen or in a bottom-sheet form.
@@ -493,7 +493,6 @@ fun WiomIllustrationDialog(
     title: String,
     body: String?,
     @DrawableRes illustrationRes: Int = R.drawable.ic_celebration_rounded,
-    illustrationBg: Color = Wiom.bg.brand.subtle,                 // override for tone (positive / info)
     onDismiss: () -> Unit,
     confirm: WiomCtaSpec,
     dismiss: WiomCtaSpec? = null,
@@ -511,7 +510,7 @@ fun WiomIllustrationDialog(
                     .fillMaxWidth()
                     .height(144.dp)
                     .clip(RoundedCornerShape(16.dp))               // radius-large
-                    .background(illustrationBg),
+                    .background(Wiom.bg.brand.subtle),           // brand subtle only
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -530,31 +529,20 @@ fun WiomIllustrationDialog(
 fun WiomLoadingDialog(
     title: String,
     body: String?,
-    onDismiss: () -> Unit,
-    cancel: WiomCtaSpec? = null,                                  // null = non-cancellable (back-press also blocked)
 ) {
+    // No button, never dismissable: back-press and scrim tap do nothing (as shipped).
     WiomDialog(
         type = WiomDialogType.Loading,
         title = title,
         body = body,
-        onDismiss = onDismiss,
-        backDismissible = cancel != null,                         // non-cancellable = no back-press dismiss
+        onDismiss = { /* no-op */ },
+        backDismissible = false
         header = {
             Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
                 WiomLoader(type = WiomLoaderType.Spinner, size = WiomLoaderSize.Sm)
             }
         },
-        buttons = if (cancel != null) {
-            // Loading shows only a Tertiary "Cancel". For other CTA pairing rules see wiom-cta.
-            {
-                WiomCta(
-                    type = WiomCtaType.Tertiary,
-                    label = cancel.label,
-                    onClick = cancel.onClick,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        } else null,
+        buttons = null,
     )
 }
 
@@ -732,24 +720,20 @@ WiomIllustrationDialog(
     title = "You saved ₹150 this month!",
     body = "Keep recharging on time to unlock more savings.",
     illustrationRes = R.drawable.ic_celebration_rounded,
-    illustrationBg = Wiom.bg.positive.subtle,                     // tone the surface to the moment
     onDismiss = onClose,
     confirm = WiomCtaSpec("View savings", onViewSavings, type = WiomCtaType.Primary),
 )
 ```
 
-### Loading — Cancellable processing
+### Loading: processing (no button, not dismissable)
 
 ```kotlin
 WiomLoadingDialog(
     title = "Processing payment",
     body = "Please wait while we confirm your transaction.",
-    onDismiss = { /* system back routes to cancel */ onCancel() },
-    cancel = WiomCtaSpec("Cancel", onCancel),
 )
 
-// Non-cancellable variant: pass cancel = null and ensure the operation has
-// an error-fallback Alert dialog if it fails or times out.
+// Always pair with an error / timeout fallback Alert dialog.
 ```
 
 ---
@@ -761,7 +745,7 @@ WiomLoadingDialog(
 - ❌ Using Material `AlertDialog` directly — wrong width, radius, shadow, and dismiss behaviour.
 - ❌ Painting a manual scrim `Box` over the screen — the platform `Dialog` provides it; configure dismiss via `DialogProperties` instead.
 - ❌ Using `type.heading.lg` (24 / 32 LH) for the title — dialog uses `type.heading.md` (20 / 28).
-- ❌ Allowing back-press to dismiss a non-cancellable Loading dialog — pair `cancel = null` with `backDismissible = false`.
+- ❌ A Cancel button on a Loading dialog, or letting back-press / scrim tap dismiss it. Loading is never dismissable.
 
 ---
 
@@ -783,7 +767,7 @@ Re-pull `get_variable_defs` on `2151:348` if foundations token names ever change
 
 - The **main → button-group gap is `space-48` for ALL 5 types** (Alert, Input, Selection, Illustration, Loading). Older skill drafts said "Alert is 48, all others are 24" — that is incorrect; the Figma ship sets `gap-48` on every type's outer column.
 - **The dialog component ships only `Actions = Single` as a top-level variant**, but the embedded button group instance independently exposes its own `Layout = Stacked / Side by side` switch. Stacked is the default and the safer choice; Side-by-side is supported when both CTAs are short, parallel actions ("Save" / "Cancel", "Yes" / "No") so each ≈ 126 dp cell stays readable. In Compose, set `buttonsLayout = WiomDialogButtonsLayout.SideBySide`. When in doubt, leave it Stacked.
-- **Loading ships with `Show Link Button = true` by default** — the optional Tertiary "Cancel" is visible unless explicitly hidden. Set `cancel = null` in code (or `Show Link Button = false` in Figma) for non-cancellable operations.
+- **Loading has no button in code.** Figma ships `Show Link Button = true` by default; set it `false`. The library's Loading dialog has no Cancel and is never dismissable.
 - **Dialog has no Disabled / Pressed / Focused state** at the surface level — it isn't interactive. The CTAs inside carry their own states.
 - **Surface uses `shadow.xl`, no stroke.** The legacy stroke-and-shadow combination is banned; foundations rule is shadow XOR border, and dialog is shadow.
 - **Selection list-item rows already include `space-16` all-sides padding and `min-height = 48 dp`** — that's owned by `wiom-list-item`. Don't re-pad inside the dialog body.

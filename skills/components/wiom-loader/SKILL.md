@@ -85,11 +85,13 @@ Anatomy: 3 dots (8 dp each, 4 dp gap, uniform opacity) inside a chat bubble (`ra
 
 | `Type` | Node | Anatomy |
 |---|---|---|
-| `Line` | `2053:2` | 3 stacked text-line bars (280 / 200 / 160 × 16 dp · `radius-tiny`) · padding 16 · gap 8 |
-| `Card` | `2053:9` | 72 × 72 dp image block + 3 text-line bars (right) · 328 wide · `radius-large` · 1 dp `stroke.subtle` border · gap 16 |
-| `ListItem` | `2053:19` | 40 dp avatar circle + 2 text bars + trailing 60 × 16 dp meta · 328 × 64 dp · padding `16h × 12v` · gap 16 |
+| `Line` | `2053:2` | 3 stacked text-line bars (100 / 75 / 50 % of the width × 16 dp · `radius-tiny`) · padding 16 · gap 8 |
+| `Card` | `2053:9` | 72 × 72 dp image block + 3 text-line bars (right; 100 / 75 / 50 %) · 328 wide · `radius-large` · no border · gap 16 |
+| `ListItem` | `2053:19` | 40 dp avatar circle + 2 text bars (75 / 50 %) + trailing 40 × 16 dp meta · 328 × 64 dp · padding `16h × 12v` · gap 16 |
 
 All placeholder blocks fill `bg.muted` (#E8E4F0).
+
+> Skeleton values aligned with the shipped library and iOS skills, 26 Nov 2026: bars use width fractions (not fixed 280 / 200 / 160), Card has no border, ListItem trailing block is 40 dp, shimmer is a 1.2 s `bg.default` 55 % sweep (`WiomLoader.kt:200-277`, `:532-551`).
 
 ### Brand — `2061:26` (3 ship variants)
 
@@ -178,13 +180,13 @@ The Figma container is illustrative — in code, the parent (snackbar / inline s
 ```
 Type=Line — text block placeholder
 ┌───── 312 × 96 dp · padding 16 · gap 8 ─────┐
-│  ████████████████████████████████          │  280 × 16 · radius-tiny
-│  ██████████████████████                    │  200 × 16
-│  ████████████████                          │  160 × 16
+│  ████████████████████████████████          │  100 % × 16 · radius-tiny
+│  ██████████████████████                    │  75 % × 16
+│  ████████████████                          │  50 % × 16
 └─────────────────────────────────────────────┘
 
 Type=Card — image + text
-┌───── 328 × 104 dp · radius-large · 1 dp stroke.subtle border · gap 16 ────┐
+┌───── 328 × 104 dp · radius-large · no border · gap 16 ────────────────────┐
 │  ┌──────┐  █████████████████████████████                                  │
 │  │ 72×72│  ███████████████████████                                        │
 │  │      │  █████████████████                                              │
@@ -204,8 +206,8 @@ Type=ListItem — avatar + text + trailing
 | Image / avatar block fill | `bg.muted` |
 | Image radius | `radius-medium` (12 dp) |
 | Avatar radius | `radius-full` |
-| Card container fill | `bg.default` · `radius-large` (16 dp) · 1 dp `stroke.subtle` border |
-| Shimmer animation | `bg.muted` → 10 % lighter sweep · 1.5 s linear loop · left → right |
+| Card container fill | `bg.default` · `radius-large` (16 dp) · no border |
+| Shimmer animation | `bg.default` highlight at 55 % alpha sweeping over `bg.muted` · 1.2 s linear loop · left → right |
 
 ### Brand — full-screen splash / overlay
 
@@ -253,7 +255,7 @@ Every Wiom loader **renders the wait indicator and stops**. Message text, surfac
 | `Linear` Indeterminate | 40 % fill segment travels L → R · 1.5 s loop | Loader composable (built-in) |
 | `Linear` Determinate | Fill width animates from previous → caller value | Loader composable (built-in) |
 | `Dots` | 3-dot bounce, 150 ms phase shift · 1.0 s loop | Loader composable (built-in) |
-| `Skeleton` | 10 %-lighter shimmer sweep · 1.5 s loop · L → R | Loader composable (built-in) |
+| `Skeleton` | `bg.default` 55 % shimmer sweep · 1.2 s loop · L → R | Loader composable (built-in) |
 | `Brand` | Stroke-dash chase on the infinity glyph · 25 % visible · 75 % gap · 1.3 s linear loop · clockwise | Lottie `.json` (pending — falls back to a plain rotating spinner until shipped) |
 
 ### Brand-loader stroke-dash chase — implementation note
@@ -340,8 +342,8 @@ All tokens are **element-first**. Don't reference raw hex.
 | Avatar block radius | `radius-full` |
 | Card container fill | `bg.default` |
 | Card container radius | `radius-large` (16 dp) |
-| Card container border | 1 dp · `stroke.subtle` |
-| Shimmer | `bg.muted` → 10 % lighter sweep · 1.5 s linear loop |
+| Card container border | none |
+| Shimmer | `bg.default` 55 % highlight sweep · 1.2 s linear loop |
 
 ### Brand
 
@@ -601,9 +603,9 @@ private fun SkeletonLine(modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        ShimmerBar(width = 280.dp, height = 16.dp)
-        ShimmerBar(width = 200.dp, height = 16.dp)
-        ShimmerBar(width = 160.dp, height = 16.dp)
+        ShimmerBar(fraction = 1f)
+        ShimmerBar(fraction = 0.75f)
+        ShimmerBar(fraction = 0.5f)
     }
 }
 
@@ -612,16 +614,15 @@ private fun SkeletonCard(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Wiom.bg.default, RoundedCornerShape(16.dp))
-            .border(1.dp, Wiom.stroke.subtle, RoundedCornerShape(16.dp))
+            .background(Wiom.bg.default, RoundedCornerShape(16.dp))       // no border
             .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ShimmerBlock(modifier = Modifier.size(72.dp), shape = RoundedCornerShape(12.dp))
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
-            ShimmerBar(width = 240.dp, height = 16.dp)
-            ShimmerBar(width = 200.dp, height = 16.dp)
-            ShimmerBar(width = 160.dp, height = 16.dp)
+            ShimmerBar(fraction = 1f)
+            ShimmerBar(fraction = 0.75f)
+            ShimmerBar(fraction = 0.5f)
         }
     }
 }
@@ -637,17 +638,17 @@ private fun SkeletonListItem(modifier: Modifier = Modifier) {
     ) {
         ShimmerBlock(modifier = Modifier.size(40.dp), shape = CircleShape)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)) {
-            ShimmerBar(width = 200.dp, height = 16.dp)
-            ShimmerBar(width = 160.dp, height = 16.dp)
+            ShimmerBar(fraction = 0.75f)
+            ShimmerBar(fraction = 0.5f)
         }
-        ShimmerBlock(modifier = Modifier.size(width = 60.dp, height = 16.dp), shape = RoundedCornerShape(4.dp))
+        ShimmerBlock(modifier = Modifier.size(width = 40.dp, height = 16.dp), shape = RoundedCornerShape(4.dp))
     }
 }
 
 @Composable
-private fun ShimmerBar(width: Dp, height: Dp) {
+private fun ShimmerBar(fraction: Float, height: Dp = 16.dp) {
     ShimmerBlock(
-        modifier = Modifier.size(width = width, height = height),
+        modifier = Modifier.fillMaxWidth(fraction).height(height),
         shape = RoundedCornerShape(4.dp),
     )
 }
@@ -659,13 +660,14 @@ private fun ShimmerBlock(modifier: Modifier = Modifier, shape: Shape) {
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = LinearEasing),
+            animation = tween(1200, easing = LinearEasing),     // 1.2 s, as shipped
             repeatMode = RepeatMode.Restart,
         ),
         label = "translate",
     )
+    // bg.muted block with a bg.default highlight at 55 % alpha sweeping across it.
     val brush = Brush.linearGradient(
-        colors = listOf(Wiom.bg.muted, Wiom.bg.muted.copy(alpha = 0.5f), Wiom.bg.muted),
+        colors = listOf(Wiom.bg.muted, Wiom.bg.default.copy(alpha = 0.55f).compositeOver(Wiom.bg.muted), Wiom.bg.muted),
         start = Offset(translate * 1000f - 1000f, 0f),
         end = Offset(translate * 1000f, 0f),
     )

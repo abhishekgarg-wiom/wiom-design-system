@@ -2,7 +2,7 @@
 name: wiom-badge
 description: >
   Wiom Badge system — passive status indicators. 3 types (Dot / Count /
-  Label), 24 ship variants. Reference for generating Jetpack Compose
+  Label), 23 ship variants. Reference for generating Jetpack Compose
   code with WiomBadgeDot / WiomBadgeCount / WiomBadgeLabel and for
   instancing the existing Figma Badge component sets via MCP. Use this
   skill EVERY TIME you create, edit, or review any screen, card, list
@@ -19,12 +19,12 @@ Built from Figma file `ZPErh7YU7omdbyy2o268Qo` (Wiom DS V2), badge
 component sets `1499:953` (Dot), `1499:957` (Count), `1499:962` (Label),
 and the `wiom-design-foundations` token set.
 
-**3 types · 24 ship variants · element-first tokens.**
+**3 types · 23 ship variants · element-first tokens.**
 | Type | Count | Variants |
 |---|---|---|
 | Dot | 3 | Color: Brand · Critical · Neutral |
 | Count | 3 | Color: Brand · Critical · Neutral |
-| Label | 18 | Size (Default / Small) × Color (6) × Style (Filled / Tinted) — Small ships Tinted only |
+| Label | 17 | Size (Default / Small) × Color (6) × Style (Filled / Tinted). Small ships Tinted only; Brand ships Tinted only |
 
 Badges are **passive** — never tappable, never interactive. If it needs
 a tap target, it's a Chip (`wiom-tabs-filters` §3), not a badge.
@@ -159,9 +159,10 @@ tokens, never hex.
 
 ### 4.3 Label — Filled (Default size only)
 
+No Brand Filled: Brand is a Tinted-only tone; `style = Filled` with `Brand` renders Brand Tinted (as shipped, `WiomBadge.kt:214-215`). Figma's Default Filled Brand (`3104:7296`) is unused. Aligned with the shipped library and iOS skills, 26 Nov 2026.
+
 | Color | Container fill | Label color |
 |---|---|---|
-| Brand | `bg.brand` | `text.onBrand` |
 | Positive | `bg.positive` | `text.onPositive` |
 | Warning | `bg.warning` (gold) | `text.onWarning` (#372902 olive) |
 | Critical | `bg.critical` | `text.onCritical` |
@@ -217,14 +218,16 @@ text.
    from padding + content. Dot is the exception — fixed 8 × 8 dp.
 4. **Small ships Tinted only.** If the badge is important enough to
    be Filled, use Default size. There is no `Small × Filled` Figma
-   variant.
+   variant; `Small` + `Filled` renders Small Tinted (no crash), as
+   shipped (`WiomBadge.kt:169`).
 5. **Hide Count at zero.** A `0` count means "no badge at all."
    Never render "0".
 6. **Cap Count display.** `1`–`9` render as the digit; `10+` render
    as `9+`; `100+` render as `99+`. Never show raw 3-digit counts.
 7. **Text never wraps.** Single line only — `maxLines = 1`,
-   `overflow = TextOverflow.Visible` (the badge hugs content; if it
-   doesn't fit on the row, rewrite copy shorter).
+   `overflow = TextOverflow.Ellipsis` (the badge hugs content; if it
+   would truncate, rewrite copy shorter). Aligned with the iOS skills,
+   26 Nov 2026.
 8. **One badge per row.** No stacking.
 9. **Color matches status family.** Don't put a Positive badge on a
    row whose other signals are Critical. Status families are
@@ -283,8 +286,8 @@ Step 4 — Color
 enum class WiomBadgeColor { Brand, Positive, Warning, Critical, Info, Neutral }
 enum class WiomBadgeSize  { Default, Small }
 enum class WiomBadgeStyle { Filled, Tinted }
-// Compile-time guarantee: Small + Filled doesn't ship. WiomBadgeLabel rejects
-// (size = Small, style = Filled) at runtime via require(); see resolver.
+// Small + Filled doesn't ship. WiomBadgeLabel renders (size = Small, style = Filled)
+// as Small Tinted, as the library does; Brand + Filled renders Brand Tinted.
 
 @Composable
 fun WiomBadgeDot(
@@ -305,7 +308,7 @@ fun WiomBadgeLabel(
     text: String,
     color: WiomBadgeColor = WiomBadgeColor.Neutral,  // any of 6
     size: WiomBadgeSize = WiomBadgeSize.Default,
-    style: WiomBadgeStyle = WiomBadgeStyle.Tinted,   // Small forces Tinted; runtime require()
+    style: WiomBadgeStyle = WiomBadgeStyle.Tinted,   // Small forces Tinted (no crash)
     modifier: Modifier = Modifier,
 )
 ```
@@ -319,7 +322,7 @@ private fun rememberLabelBadgeColors(
     style: WiomBadgeStyle,
 ): BadgeColors = when (style) {
     WiomBadgeStyle.Filled -> when (color) {
-        WiomBadgeColor.Brand    -> BadgeColors(Wiom.bg.brand,    Wiom.text.onBrand)
+        WiomBadgeColor.Brand    -> BadgeColors(Wiom.bg.brand.subtle, Wiom.text.brand)   // no Brand Filled: falls back to Tinted
         WiomBadgeColor.Positive -> BadgeColors(Wiom.bg.positive, Wiom.text.onPositive)
         WiomBadgeColor.Warning  -> BadgeColors(Wiom.bg.warning,  Wiom.text.onWarning)   // dark olive on gold
         WiomBadgeColor.Critical -> BadgeColors(Wiom.bg.critical, Wiom.text.onCritical)
@@ -409,10 +412,9 @@ fun WiomBadgeLabel(
     style: WiomBadgeStyle,
     modifier: Modifier,
 ) {
-    require(!(size == WiomBadgeSize.Small && style == WiomBadgeStyle.Filled)) {
-        "WiomBadgeLabel: Small + Filled is not a ship variant. Use Default for Filled."
-    }
-    val colors = rememberLabelBadgeColors(color, style)
+    // Small is Tinted only: Small + Filled renders Small Tinted (no crash), as shipped.
+    val effectiveStyle = if (size == WiomBadgeSize.Small) WiomBadgeStyle.Tinted else style
+    val colors = rememberLabelBadgeColors(color, effectiveStyle)
     val (hPad, textStyle) = when (size) {
         WiomBadgeSize.Default -> Wiom.space.s12 to Wiom.type.label.md
         WiomBadgeSize.Small   -> Wiom.space.s8  to Wiom.type.label.sm
@@ -429,6 +431,7 @@ fun WiomBadgeLabel(
             style = textStyle,
             color = colors.label,
             maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -446,7 +449,7 @@ Box(
     WiomBadgeLabel(
         text = "Pending",
         size = WiomBadgeSize.Small,
-        style = WiomBadgeStyle.Filled,                    // crashes via require()
+        style = WiomBadgeStyle.Filled,                    // silently renders Small Tinted
         color = WiomBadgeColor.Warning,
     )
 }
@@ -564,8 +567,8 @@ change — those are the only values that should drift.
 **Description-vs-ship discrepancies** — if a stale Figma description or
 old skill says otherwise, trust ship values:
 
-- **24 ship variants total** (3 Dot + 3 Count + 18 Label), not the
-  20 that earlier docs implied.
+- **23 ship variants total** (3 Dot + 3 Count + 17 Label; Figma's
+  Brand Filled is unused), not the 20 that earlier docs implied.
 - **Count ships 3 colors**, not 2 (Neutral was added).
 - **Count is 20 dp tall with `space-4` horizontal padding** —
   earlier docs claimed 18 dp / 5 px.

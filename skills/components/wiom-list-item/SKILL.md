@@ -165,7 +165,7 @@ The list item **owns the row** as a self-contained surface: full-width fill, 16 
 
 ### Disabled = foundations Pattern A · not opacity
 
-`state = Disabled` swaps every content token to its `*.disabled` variant — text → `text.disabled`, icons → `icon.disabled`, icon-badge fill → `bg.disabled`; nested checkbox / radio / switch flip to their own Disabled state. Row tap is suppressed. **Never `Modifier.alpha(0.38f)`** — opacity fails AAA contrast and disagrees with foundations. Per-slot tokens in §5.
+`state = Disabled` swaps every content token to its `*.disabled` variant — text → `text.disabled`, icons → `icon.disabled`; an icon-with-bg leading keeps the Neutral badge look (`bg.subtle` + `icon.nonAction`), as shipped; nested checkbox / radio / switch flip to their own Disabled state. Row tap is suppressed. **Never `Modifier.alpha(0.38f)`** — opacity fails AAA contrast and disagrees with foundations. Per-slot tokens in §5.
 
 ---
 
@@ -223,7 +223,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Secondary text | `type.body.sm` + `text.disabled` |
 | Trailing meta text | `type.body.sm` + `text.disabled` |
 | Leading icon (Default · Switch) | 24 dp · `icon.disabled` (#A7A1B2) |
-| Leading icon-with-bg | `bg.disabled` (#D7D3E0) fill + `icon.disabled` glyph |
+| Leading icon-with-bg | Neutral badge look: `bg.subtle` fill + `icon.nonAction` glyph (as shipped, `WiomListItem.kt:257-271`; aligned with the shipped library and iOS skills, 26 Nov 2026). Text and chevron still carry the disabled signal |
 | Leading Checkbox · Radio | per `wiom-selection-controls` Disabled state |
 | Trailing chevron | 20 dp · `icon.disabled` |
 | Trailing Switch | per `wiom-selection-controls` Disabled state |
@@ -401,9 +401,9 @@ fun WiomListItem(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(Wiom.space.s4),
             ) {
-                Text(primary, style = Wiom.type.body.lg, color = primaryColor, maxLines = 1)
+                Text(primary, style = Wiom.type.body.lg, color = primaryColor)           // wraps; no maxLines (as shipped)
                 if (secondary != null) {
-                    Text(secondary, style = Wiom.type.body.sm, color = secondaryColor, maxLines = 1)
+                    Text(secondary, style = Wiom.type.body.sm, color = secondaryColor)
                 }
             }
             if (trailing != null || trailingMeta != null) {
@@ -412,7 +412,7 @@ fun WiomListItem(
                     horizontalArrangement = Arrangement.spacedBy(Wiom.space.s8),
                 ) {
                     if (trailingMeta != null) {
-                        Text(trailingMeta, style = Wiom.type.body.sm, color = metaColor, maxLines = 1)
+                        Text(trailingMeta, style = Wiom.type.body.sm, color = metaColor)
                     }
                     trailing?.invoke()
                 }
@@ -491,22 +491,14 @@ fun WiomListItemIconBg(
         primary = primary,
         secondary = secondary,
         leading = {
-            // Disabled list-item swaps the icon-badge tokens to bg.disabled + icon.disabled
-            // (foundations Pattern A) — synthesised here since icon-badge has no Disabled tone.
+            // Disabled row: the leading shows the Neutral badge look (bg.subtle + icon.nonAction),
+            // as shipped (WiomListItem.kt:257-271). Text and chevron carry the disabled signal.
             if (isDisabled) {
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(Wiom.bg.disabled, CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter = painterResource(leadingIconRes),
-                        contentDescription = null,
-                        tint = Wiom.icon.disabled,
-                        modifier = Modifier.size(24.dp),
-                    )
-                }
+                WiomIconBadge(
+                    iconRes = leadingIconRes,
+                    size = WiomIconBadgeSize.Md,
+                    tone = WiomIconBadgeTone.Neutral,
+                )
             } else {
                 WiomIconBadge(
                     iconRes = leadingIconRes,
@@ -879,7 +871,7 @@ Re-pull `get_variable_defs` on `1655:487` if foundations token names ever change
 
 - The component set ships **10 variants** (5 Type × 2 State), not 5. Older skill drafts described `Disabled` as a boolean — the Figma ship promotes it to a State variant alongside `Default`. The Compose API surfaces this as `state: WiomListItemState`, not a boolean.
 - **Trailing chevron is `icon.brand` (#D9008D pink)**, not `icon.nonAction` / `icon.action`. The chevron is the row's affordance signal — it ships in brand pink to call out the tap. Decorative leading icons stay `icon.nonAction`. Older skill drafts said the chevron uses neutral; the V2 ship corrects this.
-- **Disabled uses foundations Pattern A** — content tokens swap to the `*.disabled` family (`text.disabled` / `icon.disabled` / `bg.disabled` for icon-badge fill). Older drafts implemented disabled as `alpha(0.38f)`; that's a foundations violation and is corrected here.
+- **Disabled uses foundations Pattern A** — content tokens swap to the `*.disabled` family (`text.disabled` / `icon.disabled`; the icon-with-bg leading keeps the Neutral badge look, as shipped). Older drafts implemented disabled as `alpha(0.38f)`; that's a foundations violation and is corrected here.
 - **`Has Leading` applies to `Default` / `Switch`; `Has Trailing Icon` applies to `Default` / `icon with bg`** — not all booleans apply to all types. Checkbox / Radio's leading IS the control (can't be hidden); Switch's trailing IS the switch.
 - **Selected boolean does NOT apply to Switch** — the switch position is the selection signal. Adding a `bg.selected` overlay on top would double-encode. Other types (Default · icon with bg · Checkbox · Radio) all support Selected.
 

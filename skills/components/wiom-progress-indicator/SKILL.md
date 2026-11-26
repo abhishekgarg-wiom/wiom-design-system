@@ -7,7 +7,7 @@ description: >
   completion meter with title + status pill + value · 4 state
   variants) · `Milestones` (named-stage bar · 14 = 4 stage counts
   (2/3/4/5) × current stage 1..N + Has Labels boolean) · `Circular`
-  (compact 48 dp donut with centre % · 5 progress variants). All
+  (donut, sm 24 dp / lg 48 dp, no centre label · 5 progress variants). All
   reversed semantics — more = better, greener — since Wiom is an
   unlimited-data ISP and never renders a "usage meter". State
   colour ladder: < 35 % `bg.info` (purple) → 35–80 % `bg.brand`
@@ -43,7 +43,7 @@ Built from Figma file `ZPErh7YU7omdbyy2o268Qo` (Wiom DS V2), component sets `281
 | `Linear` | `2814:14` | 6 = 2 sizes × 3 states | Plain bar with no chrome — file upload · inline % next to other content |
 | `Completion` | `2815:38` | 4 = `Just Started` / `In Progress` / `Almost There` / `Complete` | Rich completion meter with title + status pill + value numbers · KYC / referral / earnings cards |
 | `Milestones` | `3108:496` | 14 = `Stage Count` 2/3/4/5 × `Current Stage` 1..N | Multi-stage compact tracker with named stages · install / delivery / verification |
-| `Circular` | `3109:110` | 5 = `Progress` 0/25/50/75/100 % | 48 dp donut with centre % label · compact dashboards · status tile |
+| `Circular` | `3109:110` | 5 = `Progress` 0/25/50/75/100 % | Donut, sm 24 dp or lg 48 dp, no centre label (the host shows the %) · compact dashboards · status tile |
 
 > **Wiom progress is reversed-semantics.** Wiom is an unlimited-data ISP; we never render a "usage meter" where full = bad. Every progress visual in the app shows forward motion toward something the user wants — KYC done, install done, target hit, file uploaded.
 
@@ -111,7 +111,9 @@ Subtitle line ("Step 3 of 5 · Router") is **NOT** a component property — it's
 | `75` | `3109:102` | 75 % arc · brand | `75%` |
 | `100` | `3109:106` | 100 % arc · positive | `100%` |
 
-48 × 48 dp donut · 4 dp ring stroke · centre text `type.label.sm` (12/16 SemiBold) · `text.default`. Fill arc colour follows the §3 ladder — info / brand / positive depending on the % bucket — though the 5 ship variants pre-bake the brand / positive ones (info bucket isn't shipped at the 0 / 25 stops; in code the helper applies info colour for `< 35 %`).
+Two sizes: **sm 24 dp / 3 dp stroke** (default) and **lg 48 dp / 4 dp stroke**. **No centre label**: the host text carries the % (Figma's 48 dp variants still show a centre %, Figma to update). Arc colour is the `tone` the caller passes (default Brand); use `ladderTone(progress)` for the §3 ladder.
+
+> Aligned with the shipped library and iOS skills, 26 Nov 2026 (`WiomProgressIndicator.kt:36-48`, `:167-223`).
 
 ### Code enum ↔ Figma variant string
 
@@ -169,7 +171,7 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 │ ↑ space-20 ↓                                                     │
 │  ●━━━━●━━━━●━━━━○━━━━○                                           │   Bar row · 24 dp circles · 4 dp connectors · fluid spacing
 │  Survey Cable Router  Activate  Done                             │   Stage labels (when Has Labels = true)
-│  ↑ space-20 ↓                                                    │     · type.body.sm (12/16) · centred under each stage
+│  ↑ space-20 ↓                                                    │     · type.body.sm (12/16) · centred in equal-width columns
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -188,26 +190,26 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 | Stage label — current | **`text.brand` (#D9008D pink)** — the current-stage emphasis |
 | Stage label — future | `text.subtle` |
 
-> **Layout is fluid, not fixed.** Stage circles are auto-sized; connectors are `flex 1` between them; labels are auto-hugged and centred under each circle. Older skill drafts described fixed pixel positions (12 / 86 / 160 / 234 / 308) — V2 ships flexbox-style geometry, so the same anatomy works for 2 / 3 / 4 / 5 stages without manual re-positioning.
+> **Layout is fluid, not fixed.** Stage circles are auto-sized; connectors are `flex 1` between them; labels sit in equal-width columns, each label centred in its column (as shipped; the first and last labels are not exactly under their circles). Older skill drafts described fixed pixel positions (12 / 86 / 160 / 234 / 308) — V2 ships flexbox-style geometry, so the same anatomy works for 2 / 3 / 4 / 5 stages without manual re-positioning.
 
-### Circular — 48 dp donut with centre %
+### Circular: sm 24 dp / lg 48 dp donut, no centre label
 
 ```
-┌─ 48 × 48 dp ─┐
+┌─ 48 × 48 dp ─┐       lg · sm is 24 × 24 dp with a 3 dp stroke
 │   ╭──────╮   │       Track:    full ring · 4 dp stroke · bg.muted
-│   │  50% │   │       Progress: arc from 12 o'clock clockwise · 4 dp stroke ·
-│   │      │   │                 bg.{state} (info / brand / positive per ladder)
-│   ╰──────╯   │       Centre:   "{N}%" · type.label.sm · text.default
+│   │      │   │       Progress: arc from 12 o'clock clockwise · 4 dp stroke ·
+│   │      │   │                 bg.{tone} (caller-passed; default brand)
+│   ╰──────╯   │       Centre:   empty (host text carries the %)
 └──────────────┘
 ```
 
 | Slot | Token |
 |---|---|
-| Bounding box | 48 × 48 dp |
-| Ring stroke | 4 dp |
+| Bounding box | sm 24 × 24 dp (default) · lg 48 × 48 dp |
+| Ring stroke | sm 3 dp · lg 4 dp |
 | Track | `bg.muted` |
-| Progress arc | `bg.info` (< 35 %) · `bg.brand` (35–80 %) · `bg.positive` (> 80 %) |
-| Centre label | `type.label.sm` (12/16 SemiBold) · `text.default` |
+| Progress arc | caller `tone` (default `bg.brand`); `ladderTone(progress)` gives `bg.info` (< 35 %) · `bg.brand` (35–80 %) · `bg.positive` (> 80 %) |
+| Centre label | none |
 | Stroke cap | round |
 | Start angle | -90° (12 o'clock) |
 | Direction | clockwise |
@@ -216,11 +218,11 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 
 ## 3. Surface contract — bar / arc + light chrome
 
-Each progress component **owns its bar / arc / chrome** as a self-contained surface: track, fill, optional title / status pill / centre text. Hosting cards, screen padding, and tap affordances live on the parent.
+Each progress component **owns its bar / arc / chrome** as a self-contained surface: track, fill, optional title / status pill. Hosting cards, screen padding, and tap affordances live on the parent.
 
 ### What this means in code
 
-- `Modifier.fillMaxWidth()` is fine on Linear / Completion / Milestones; Circular has a fixed 48 dp box.
+- `Modifier.fillMaxWidth()` is fine on Linear / Completion / Milestones; Circular has a fixed box (24 or 48 dp).
 - **No tap target** on any progress visual — they're display-only. If a card hosts a Completion meter and tapping should open a detail screen, the **card** is the tap target (e.g. a `wiom-list-item` row), not the progress visual.
 - **Progress is NOT a CTA.** A progress visual plus an ambiguous label is not a call to action. If the user can act, route via a `wiom-cta` next to the progress, or wrap the card in a tap-to-open row.
 
@@ -241,7 +243,7 @@ Each progress component **owns its bar / arc / chrome** as a self-contained surf
 | `Linear` | Fill width tweens to new `progress` over 600 ms cubic-bezier; colour cross-fades over 300 ms when crossing a threshold | On `progress` value change |
 | `Completion` | Same as Linear, plus pill copy + bg cross-fade over 300 ms | On `state` change |
 | `Milestones` | Connector colour cross-fades over 300 ms; stage circle fill + glyph swap over 300 ms; current-stage label colour cross-fades | On `currentStage` change |
-| `Circular` | Arc length tweens over 600 ms cubic-bezier; centre % counts up over 600 ms; colour cross-fades when crossing a threshold | On `progress` value change |
+| `Circular` | Arc length tweens over 600 ms cubic-bezier; colour cross-fades when the caller's tone changes | On `progress` value change |
 
 All transitions are caller-driven — no infinite animation. Determinate progress shouldn't *appear* to be doing something when nothing is changing.
 
@@ -333,24 +335,24 @@ All tokens are **element-first**. Don't reference raw hex.
 | Stage circle fill | `bg.brand` (reached) · `bg.muted` (unreached) |
 | Connector | 4 dp · `radius-full` · `bg.brand` / `bg.muted` |
 | Label — past · current · future | `text.default` · `text.brand` · `text.subtle` |
-| Label style | `type.body.sm` (12/16) · centre-aligned under each circle |
+| Label style | `type.body.sm` (12/16) · centred in equal-width columns |
 
 ### Circular
 
 | Slot | Token |
 |---|---|
-| Bounding box | 48 × 48 dp |
-| Ring stroke | 4 dp · round cap |
+| Bounding box | sm 24 × 24 dp (default) · lg 48 × 48 dp |
+| Ring stroke | sm 3 dp · lg 4 dp · round cap |
 | Track | `bg.muted` |
-| Progress arc | per ladder (`bg.info` / `bg.brand` / `bg.positive`) · arc start −90° · clockwise |
-| Centre label | `type.label.sm` (12/16 SemiBold) · `text.default` |
+| Progress arc | caller `tone` (default brand; `ladderTone(progress)` for the ladder) · arc start −90° · clockwise |
+| Centre label | none |
 
 ---
 
 ## 6. Universal rules
 
 1. **Reversed semantics — more = better, greener.** No usage meters. No `bg.warning` / `bg.critical` on the fill. Stuck / failed flows route to an outcome surface (bottom sheet illustration) or a status pill *next to* the progress, never colour the bar red.
-2. **Colour ladder by threshold, not by intent.** `< 35 %` → info · `35 – 80 %` → brand · `> 80 %` → positive. Don't override the ladder per use case; the visual contract is consistent across the app.
+2. **Colour ladder by threshold, applied by the caller.** `< 35 %` → info · `35 – 80 %` → brand · `> 80 %` → positive. Linear and Circular take a `tone` (default Brand) and do not auto-ladder (as shipped); pass `ladderTone(progress)` when the ladder applies, never hand-pick a tone per screen. Aligned with the shipped library and iOS skills, 26 Nov 2026.
 3. **Progress is display-only.** No tap target, no CTA, no dismiss. The hosting card / row owns interaction.
 4. **Pick the right component per §4.** Plain bar → Linear · rich card → Completion · named stages → Milestones · compact donut → Circular. Don't stack multiple progress visuals on the same card.
 5. **Milestones supports 2 / 3 / 4 / 5 stages — pick the right count for the flow.** Don't pad a 3-stage flow to 5 just to fit the original Figma layout; V2 ships all four stage counts.
@@ -393,12 +395,20 @@ data class WiomMilestoneStage(
     val icon: WiomMilestoneIcon,
 )
 
+/** The §3 ladder, shared by Linear and Circular. */
+fun ladderTone(progress: Float): WiomProgressLinearState = when {
+    progress < 0.35f -> WiomProgressLinearState.Info
+    progress > 0.80f -> WiomProgressLinearState.Positive
+    else             -> WiomProgressLinearState.Brand
+}
+
+enum class WiomProgressCircularSize { Sm, Lg }                // 24 dp / 3 dp · 48 dp / 4 dp
+
 @Composable
 fun WiomProgressLinear(
     progress: Float,                                          // 0f..1f
-    size: WiomProgressLinearSize = WiomProgressLinearSize.Md,
-    autoState: Boolean = true,                                // resolve state from progress per ladder; override with `state`
-    state: WiomProgressLinearState? = null,
+    size: WiomProgressLinearSize = WiomProgressLinearSize.Sm, // default sm (4 dp), as shipped
+    tone: WiomProgressLinearState = WiomProgressLinearState.Brand, // pass ladderTone(progress) for the ladder
     modifier: Modifier = Modifier,
 )
 
@@ -423,9 +433,10 @@ fun WiomProgressMilestones(
 @Composable
 fun WiomProgressCircular(
     progress: Float,                                          // 0f..1f
-    showPercent: Boolean = true,
+    size: WiomProgressCircularSize = WiomProgressCircularSize.Sm,
+    tone: WiomProgressLinearState = WiomProgressLinearState.Brand,
     modifier: Modifier = Modifier,
-)
+)                                                             // no centre label: the host shows the %
 ```
 
 ### `WiomProgressLinear` impl
@@ -434,20 +445,11 @@ fun WiomProgressCircular(
 @Composable
 fun WiomProgressLinear(
     progress: Float,
-    size: WiomProgressLinearSize = WiomProgressLinearSize.Md,
-    autoState: Boolean = true,
-    state: WiomProgressLinearState? = null,
+    size: WiomProgressLinearSize = WiomProgressLinearSize.Sm,
+    tone: WiomProgressLinearState = WiomProgressLinearState.Brand,
     modifier: Modifier = Modifier,
 ) {
-    val resolvedState = state ?: if (autoState) {
-        when {
-            progress < 0.35f -> WiomProgressLinearState.Info
-            progress > 0.80f -> WiomProgressLinearState.Positive
-            else             -> WiomProgressLinearState.Brand
-        }
-    } else WiomProgressLinearState.Brand
-
-    val fillColor = when (resolvedState) {
+    val fillColor = when (tone) {
         WiomProgressLinearState.Brand    -> Wiom.bg.brand
         WiomProgressLinearState.Info     -> Wiom.bg.info
         WiomProgressLinearState.Positive -> Wiom.bg.positive
@@ -512,7 +514,7 @@ fun WiomProgressCompletion(
             }
             Text(value, style = Wiom.type.body.sm, color = Wiom.text.subtle)
         }
-        WiomProgressLinear(progress = fraction, size = WiomProgressLinearSize.Md, autoState = false, state = fillState)
+        WiomProgressLinear(progress = fraction, size = WiomProgressLinearSize.Md, tone = fillState)
     }
 }
 
@@ -596,12 +598,11 @@ fun WiomProgressMilestones(
                         stageNumber == currentStage -> Wiom.text.brand
                         else                        -> Wiom.text.subtle
                     }
-                    // Each label is auto-hugged and centred under its circle —
-                    // wrap in a Box that takes the same flex slot the circle does.
-                    Box(contentAlignment = Alignment.Center) {
+                    // Each label is centred in an equal-width column (as shipped,
+                    // WiomProgressIndicator.kt:505-507).
+                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                         Text(stage.label, style = Wiom.type.body.sm, color = labelColor, textAlign = TextAlign.Center)
                     }
-                    if (i != stages.lastIndex) Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -645,28 +646,33 @@ private fun StageCircle(stage: WiomMilestoneStage, reached: Boolean) {
 @Composable
 fun WiomProgressCircular(
     progress: Float,
-    showPercent: Boolean = true,
+    size: WiomProgressCircularSize = WiomProgressCircularSize.Sm,
+    tone: WiomProgressLinearState = WiomProgressLinearState.Brand,
     modifier: Modifier = Modifier,
 ) {
+    val (diameter, strokeDp) = when (size) {
+        WiomProgressCircularSize.Sm -> 24.dp to 3.dp
+        WiomProgressCircularSize.Lg -> 48.dp to 4.dp
+    }
     val fraction = progress.coerceIn(0f, 1f)
     val animatedFraction by animateFloatAsState(
         targetValue = fraction,
         animationSpec = tween(600, easing = FastOutSlowInEasing),
         label = "circular",
     )
-    val arcColor = when {
-        fraction < 0.35f -> Wiom.bg.info
-        fraction > 0.80f -> Wiom.bg.positive
-        else             -> Wiom.bg.brand
+    val arcColor = when (tone) {                              // caller-passed; ladderTone(progress) for the ladder
+        WiomProgressLinearState.Info     -> Wiom.bg.info
+        WiomProgressLinearState.Positive -> Wiom.bg.positive
+        WiomProgressLinearState.Brand    -> Wiom.bg.brand
     }
     val animatedColor by animateColorAsState(arcColor, tween(300), label = "arcColor")
 
     Box(
-        modifier = modifier.size(48.dp),
+        modifier = modifier.size(diameter),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val stroke = 4.dp.toPx()
+            val stroke = strokeDp.toPx()
             val arcSize = Size(size.width - stroke, size.height - stroke)
             val topLeft = Offset(stroke / 2, stroke / 2)
             // Track
@@ -684,13 +690,7 @@ fun WiomProgressCircular(
                 style = Stroke(width = stroke, cap = StrokeCap.Round),
             )
         }
-        if (showPercent) {
-            Text(
-                text = "${(fraction * 100).toInt()}%",
-                style = Wiom.type.label.sm,
-                color = Wiom.text.default,
-            )
-        }
+        // No centre label (as shipped); the host text carries the %.
     }
 }
 ```
@@ -832,7 +832,7 @@ Card(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        WiomProgressCircular(progress = 0.75f)
+        WiomProgressCircular(progress = 0.75f, size = WiomProgressCircularSize.Lg, tone = ladderTone(0.75f))
         Column {
             Text("Network health",  style = Wiom.type.label.md, color = Wiom.text.default)
             Text("3 of 4 nodes up", style = Wiom.type.body.sm,  color = Wiom.text.subtle)

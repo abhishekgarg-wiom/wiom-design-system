@@ -45,7 +45,7 @@ Built from Figma file `ZPErh7YU7omdbyy2o268Qo` (Wiom DS V2), component set `3022
 | `Full` | 7+ rows (scrollable) | Visible | Long lists · T&C · scrollable content |
 | `Illustration` | 96 dp icon-badge + heading + subtext (centered) | Visible (Stacked) | Payment confirm · success · error · destructive confirm · celebration |
 | `Illustration Left` | 96 dp icon-badge + heading + subtext (left-aligned) | Visible (Stacked) | Compact feedback with image left of text |
-| `Share` | Horizontal row of share targets | Optional | System share · Wiom share affordance |
+| `Share` | Header + sheet action rows (one per target) | Optional | System share · Wiom share affordance |
 | `Form` | 1–3 inline `wiom-input-fields` | Visible | Enter PIN · short label · single-step input |
 
 The bottom sheet **owns the surface**: width fill, top radius, shadow, scrim, drag-handle, divider, action bar gutter, safe-space mechanics. It hosts but never re-implements its children — list rows live in `wiom-list-item`, CTAs in `wiom-cta` (via Button Group), the illustration in `wiom-icon-badge` Lg.
@@ -65,7 +65,7 @@ Instance the component set `3022:424` and set `Size`. Strings are **case-sensiti
 | `Expanded` | `3020:227` | Handle · Header · Divider · 7 list rows · Action Bar |
 | `Full` | `3020:371` | Handle · Header · Divider · 7+ rows (scroll) · Action Bar |
 | `Illustration` | `3021:403` | Handle · Illustration Block (centered) · Action Bar |
-| `Share` | `3090:1365` | Handle · Header · share-target row · optional Action Bar |
+| `Share` | `3090:1365` | Handle · Header · share-target rows (sheet action rows) · optional Action Bar |
 | `Illustration Left` | `3091:1379` | Handle · Illustration Block (left-aligned) · Action Bar |
 | `Form` | `3092:1391` | Handle · Header · 1–3 input fields · Action Bar |
 
@@ -105,7 +105,7 @@ For list / picker / form variants, the nested children expose their own variants
 |---|---|
 | Header (always present except Illustration variants) | All header booleans + text + leading-icon swap (above) |
 | Action Bar → Button Group | `Count` (1 / 2 / 3) · `Layout` (Side by side / Stacked) · per-CTA Type swap (Primary / Secondary / Tertiary / Destructive / Pre-booking / Acknowledge) — see `wiom-cta` |
-| List rows (Compact / Half / Expanded / Full) | Per-row `wiom-list-item` Type + booleans — see `wiom-list-item` |
+| List rows (Compact / Half / Expanded / Full) | Pickers: per-row `wiom-list-item` Type + booleans. Action menus / Share: sheet action rows (rule 7) |
 | Illustration Block badge (Illustration · Illustration Left) | Glyph (instance swap). **Tone is not bubbled in Figma** — Figma ships Neutral (`bg.brand.subtle` + `icon.brand`); in code the `WiomBottomSheet` `illustrationTone` parameter resolves to a `WiomIconBadgeTone` |
 | Form fields (Form variant) | Per-field `wiom-input-fields` Type / State / Has Helper / Has Trailing Icon |
 
@@ -260,16 +260,18 @@ Figma's `visible` binding is direct-state only — `Show Top Safe Space` and `Sh
 
 ## 4. Sizes — when to use what
 
-| Size | Sheet height (approx) | Picks |
+| Size | Sheet height | Picks |
 |---|---|---|
-| `Compact` | ~200 dp | ≤ 2 quick actions · single-row confirm |
-| `Half` | ~370 dp | 3–4 options · short picker · filter sheet |
-| `Expanded` | ~600 dp | 5+ options with CTAs · multi-select |
-| `Full` | ~600 dp (scrollable) | Long lists · T&C · search-header pickers |
+| `Compact` | min 240 dp (~30 % of screen) | ≤ 2 quick actions · single-row confirm |
+| `Half` | min 400 dp (~50 %) | 3–4 options · short picker · filter sheet |
+| `Expanded` | min 600 dp (~75 %) | 5+ options with CTAs · multi-select |
+| `Full` | fills to the 92 % cap (scrollable) | Long lists · T&C · search-header pickers |
 | `Illustration` | ~300 dp (hug) | Centered visual feedback (success / error / pay confirm / celebration) |
 | `Illustration Left` | ~300 dp (hug) | Compact feedback with image left of text |
-| `Share` | ~220 dp (hug) | System share · Wiom share affordance with horizontal targets |
+| `Share` | hug | System share · Wiom share affordance (header + action rows) |
 | `Form` | ~400 dp (hug) | 1–3 inline inputs (PIN / short label / single-step input) |
+
+> Heights are **minimums** (the sheet grows with content up to the cap), as shipped (`WiomBottomSheet.kt:128-141`). Aligned with the shipped library and iOS skills, 26 Nov 2026.
 
 ### Pick the right surface — Bottom Sheet is one of five
 
@@ -398,7 +400,7 @@ All tokens are **element-first**. Don't reference raw hex.
 4. **No top border on Action Bar.** Content's 48 dp `pb` provides the loose gap; a border is redundant clutter.
 5. **Action Bar always uses Button Group from `wiom-cta`.** Never hand-roll buttons inside the action bar — use the Button Group instance and configure `Count` / `Layout` per recipe.
 6. **Header is composable.** Always instance `WiomBottomSheetHeader` — don't recreate the header markup inline. The sheet supplies title / subtitle / leading icon / trailing action through the Header's booleans.
-7. **List rows are `wiom-list-item` instances.** Never re-implement rows. The list-item owns its 16 dp inner gutter, 48 dp min-height, and selection-control nesting.
+7. **Two row kinds.** Radio / checkbox pickers and multi-select use `wiom-list-item` (16 dp gutter, selection-control nesting). **Action menus and Share** use the sheet's own action row, `WiomBottomSheetListItem`, as shipped (`WiomBottomSheet.kt:254-318`): 24 dp sides (`space-24`) × 12 dp vertical, 48 dp min-height, optional 40 dp `bg.brand.subtle` circle with a 20 dp `icon.brand` glyph, `type.label.lg` label (`text.default`), optional `type.body.md` description (`text.subtle`), trailing 20 dp `chevron_right` in `icon.disabled`. Aligned with the shipped library and iOS skills, 26 Nov 2026.
 8. **Illustration badge is `wiom-icon-badge` Lg.** Tone-swappable via `WiomIconBadgeTone`. Don't replicate a circle + glyph inline.
 9. **Pair Safe Space with the absent neighbour.** When `Show Title = false` keep `Show Top Safe Space = true`. When `Show Button Group = false` flip `Show Bottom Safe Space = true`. Figma's `visible` binding can't auto-mirror.
 10. **`Is Modal = true` for commit moments.** Pickers, payment confirms, deletes, consent — always Modal. Standard sheets are for non-commit, ambient content only.
@@ -537,9 +539,10 @@ private fun WiomBottomSheetHandle() {
 }
 
 private fun Modifier.heightConstraintFor(size: WiomBottomSheetSize): Modifier = when (size) {
-    WiomBottomSheetSize.Compact          -> heightIn(min = 200.dp, max = 240.dp)
-    WiomBottomSheetSize.Half             -> heightIn(min = 320.dp, max = 400.dp)
-    WiomBottomSheetSize.Expanded         -> heightIn(min = 480.dp, max = 600.dp)
+    // Minimums only (as shipped): the sheet grows with content up to the cap.
+    WiomBottomSheetSize.Compact          -> heightIn(min = 240.dp)
+    WiomBottomSheetSize.Half             -> heightIn(min = 400.dp)
+    WiomBottomSheetSize.Expanded         -> heightIn(min = 600.dp)
     WiomBottomSheetSize.Full             -> fillMaxHeight(0.92f)
     // Hug-content sizes — let the Column measure intrinsically.
     WiomBottomSheetSize.Illustration,
@@ -802,10 +805,11 @@ if (menuVisible) {
         header = { WiomBottomSheetHeader(title = "Choose action") },
         actionBar = null,
     ) {
-        WiomListItem(primary = "Edit",       leadingIconRes = null, showTrailingChevron = false, onClick = { onEdit();      menuVisible = false })
-        WiomListItem(primary = "Duplicate",  leadingIconRes = null, showTrailingChevron = false, onClick = { onDuplicate(); menuVisible = false })
-        WiomListItem(primary = "Share",      leadingIconRes = null, showTrailingChevron = false, onClick = { onShare();     menuVisible = false })
-        WiomListItem(primary = "Delete",     leadingIconRes = R.drawable.ic_delete_rounded, showTrailingChevron = false, onClick = { onDelete(); menuVisible = false })
+        // Action menu: the sheet's own action row (24 dp sides, 40 dp brand-subtle circle).
+        WiomBottomSheetListItem(label = "Edit",      icon = Icons.Rounded.Edit,          onClick = { onEdit();      menuVisible = false })
+        WiomBottomSheetListItem(label = "Duplicate", icon = Icons.Rounded.ContentCopy,   onClick = { onDuplicate(); menuVisible = false })
+        WiomBottomSheetListItem(label = "Share",     icon = Icons.Rounded.Share,         onClick = { onShare();     menuVisible = false })
+        WiomBottomSheetListItem(label = "Delete",    icon = Icons.Rounded.Delete,        onClick = { onDelete();    menuVisible = false })
     }
 }
 ```
@@ -970,7 +974,7 @@ Re-pull `get_variable_defs` on `3022:424` if foundations token names change.
 ## See also
 
 - `wiom-design-foundations` — token source. Especially: `bg.default` / `overlay.scrim` / `bg.selected`, `text.default` / `text.subtle` / `text.brand`, `stroke.strong` / `stroke.subtle`, `icon.nonAction` / `icon.brand`, `space-4` / `space-8` / `space-12` / `space-16` / `space-24` / `space-48`, `radius-xlarge` (24 dp), `radius-full`, `shadow.md`, `type.heading.md` / `type.body.md` / `type.body.sm` / `type.label.md`.
-- `wiom-list-item` — every row inside Compact / Half / Expanded / Full and inside picker / multi-select / action-menu sheets.
+- `wiom-list-item`: picker and multi-select rows (radio / checkbox). Action-menu and Share rows use the sheet's own `WiomBottomSheetListItem` (rule 7).
 - `wiom-selection-controls` — `WiomCheckbox` / `WiomRadio` embedded in the picker / multi-select rows (via `wiom-list-item` helpers).
 - `wiom-icon-badge` — the 96 dp Lg badge inside the Illustration / Illustration Left variants. Tone selection lives there (Brand / Positive / Critical / Warning / Info / Neutral).
 - `wiom-cta` — Button Group inside the Action Bar (`Count` / `Layout` rules; 3-side-by-side primary ban).
