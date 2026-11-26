@@ -460,10 +460,11 @@ fun WiomToastHost(
     ) {
         AnimatedVisibility(
             visible = current != null,
-            enter = slideInVertically(initialOffsetY = { it },
-                                      animationSpec = tween(300, easing = EaseOut)) + fadeIn(),
-            exit  = slideOutVertically(targetOffsetY  = { it },
-                                       animationSpec = tween(300, easing = EaseIn))  + fadeOut(),
+            // 300 ms, standard easing, slide + fade both ways (as shipped, WiomToast.kt:256-263).
+            enter = slideInVertically(initialOffsetY = { it }, animationSpec = tween(300)) +
+                    fadeIn(animationSpec = tween(300)),
+            exit  = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(300)) +
+                    fadeOut(animationSpec = tween(300)),
         ) {
             current?.let { WiomToast(it) }
         }
@@ -593,11 +594,13 @@ aren't already a numbered rule.)
 
 | Transition | Duration | Easing |
 |---|---|---|
-| Slide in (from bottom) | 300 ms | `EaseOut` |
-| Slide out (to bottom) | 300 ms | `EaseIn` |
+| Slide in (from bottom) + fade in | 300 ms | Standard (`tween(300)` default, `FastOutSlowInEasing`) |
+| Slide out (to bottom) + fade out | 300 ms | Standard (`tween(300)` default, `FastOutSlowInEasing`) |
 | Auto-dismiss timer (Informational) | 2 s | — |
 | Auto-dismiss timer (Actionable) | 8 s | — |
 | Persistent | until close ✕ / state change | — |
+
+> Easing aligned with the shipped library and iOS skills, 26 Nov 2026 (was `EaseOut` in / `EaseIn` out).
 
 Match Smart Animate in the Figma prototype to keep design ↔ code parity.
 

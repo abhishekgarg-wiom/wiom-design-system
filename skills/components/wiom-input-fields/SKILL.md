@@ -225,7 +225,7 @@ Input.** Don't draw custom fields; tokens won't bind.
 | **Success** | 2 dp `stroke.positive.focus` border, check icon (trailing), helper `text.positive` | Validated OK (e.g., OTP matched, mobile confirmed). Use sparingly. |
 | **Warning** (Input only) | 2 dp `stroke.warning` border, warning icon (trailing), helper `text.onWarning` | Value is valid but risky / unusual. **Not** a substitute for Error. |
 | **Disabled** | 1 dp `stroke.subtle`, fill `bg.disabled`, all text `text.disabled` | Field is truly inactive — user cannot edit AND cannot copy. |
-| **Read-only** (Input only) | 1 dp `stroke.subtle`, fill `bg.subtle`, Body `text.default`, Title `text.default` | Value is displayable + copyable but not editable (Customer ID, account number, dropdown trigger value). **Not the same as Disabled.** |
+| **Read-only** (Input only) | 1 dp `stroke.subtle`, fill `bg.subtle`, Body `text.default`, Title `text.subtle` | Value is displayable + copyable but not editable (Customer ID, account number, dropdown trigger value). **Not the same as Disabled.** |
 
 ---
 
@@ -242,7 +242,9 @@ All tokens are **element-first**. Always reference tokens, never hex.
 | Success | `bg.default` | 2 dp `stroke.positive.focus` | `text.subtle` | `text.default` | `text.positive` | hardcoded `check_circle` · `icon.positive` |
 | Warning | `bg.default` | 2 dp `stroke.warning` | `text.subtle` | `text.default` | `text.onWarning` | hardcoded `warning` · `icon.action` on a `bg.warning.subtle` circle (gold is ratings-only) |
 | Disabled | `bg.disabled` | 1 dp `stroke.subtle` | `text.disabled` | `text.disabled` | `text.disabled` | dimmed |
-| Read-only | `bg.subtle` | 1 dp `stroke.subtle` | `text.default` | `text.default` | `text.subtle` | typically `expand_more` for dropdown |
+| Read-only | `bg.subtle` | 1 dp `stroke.subtle` | `text.subtle` | `text.default` | `text.subtle` | typically `expand_more` for dropdown |
+
+> Aligned with the shipped library and iOS skills, 26 Nov 2026: Read-only title `text.subtle` (`WiomInput.kt:226`), leading icon `icon.nonAction` (`:254`), OTP status borders on every resting box (`WiomOtp.kt:95-142`).
 
 > **Warning is special.** White-on-`bg.warning` fails AA, but Warning's
 > message text in this skill sits on `bg.default` (not `bg.warning`).
@@ -380,7 +382,7 @@ private fun rememberFieldColors(state: FieldState): FieldColors = when (state) {
     FieldState.Success  -> FieldColors(Wiom.bg.default,  border(2.dp, Wiom.stroke.positive.focus), Wiom.text.subtle,   Wiom.text.default,    Wiom.text.positive)
     FieldState.Warning  -> FieldColors(Wiom.bg.default,  border(2.dp, Wiom.stroke.warning),        Wiom.text.subtle,   Wiom.text.default,    Wiom.text.onWarning)
     FieldState.Disabled -> FieldColors(Wiom.bg.disabled, border(1.dp, Wiom.stroke.subtle),         Wiom.text.disabled, Wiom.text.disabled,   Wiom.text.disabled)
-    FieldState.ReadOnly -> FieldColors(Wiom.bg.subtle,   border(1.dp, Wiom.stroke.subtle),         Wiom.text.default,  Wiom.text.default,    Wiom.text.subtle)
+    FieldState.ReadOnly -> FieldColors(Wiom.bg.subtle,   border(1.dp, Wiom.stroke.subtle),         Wiom.text.subtle,   Wiom.text.default,    Wiom.text.subtle)
 }
 
 @Composable
@@ -449,7 +451,7 @@ fun WiomInput(
             ) {
                 leadingIcon?.let {
                     Icon(it, contentDescription = null,
-                         tint = if (state == FieldState.Disabled) Wiom.icon.disabled else Wiom.icon.action,
+                         tint = if (state == FieldState.Disabled) Wiom.icon.disabled else Wiom.icon.nonAction,   // decorative, as shipped
                          modifier = Modifier.size(20.dp))
                 }
                 prefix?.let {
@@ -531,6 +533,7 @@ fun WiomOtp(
     val count = if (sixDigit) 6 else 4
     val colors = rememberFieldColors(state)
     val focusedIndex = value.length.coerceAtMost(count - 1)
+    var isFocused by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Wiom.space.s8)) {
         Text(title, style = Wiom.type.label.lg, color = colors.title)
@@ -540,16 +543,23 @@ fun WiomOtp(
             onValueChange = { onValueChange(it.filter(Char::isDigit).take(count)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().onFocusChanged { isFocused = it.isFocused },
             decorationBox = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Wiom.space.s8),
                 ) {
                     repeat(count) { i ->
-                        val isActive = i == focusedIndex && state != FieldState.Disabled
-                        val borderWidth = if (isActive) 2.dp else 1.dp
-                        val borderColor = if (isActive) Wiom.stroke.brand.focus else Wiom.stroke.subtle
+                        // Active box only while editing; on Error / Success every resting box
+                        // takes the status border (as shipped, WiomOtp.kt:95-142).
+                        val isActive = isFocused && i == focusedIndex && state != FieldState.Disabled
+                        val (restWidth, restColor) = when (state) {
+                            FieldState.Error   -> 2.dp to Wiom.stroke.critical.focus
+                            FieldState.Success -> 2.dp to Wiom.stroke.positive.focus
+                            else               -> 1.dp to Wiom.stroke.subtle
+                        }
+                        val borderWidth = if (isActive) 2.dp else restWidth
+                        val borderColor = if (isActive) Wiom.stroke.brand.focus else restColor
 
                         Box(
                             modifier = Modifier
@@ -586,9 +596,11 @@ Key properties:
   autofill, and backspace work without any per-cell focus management.
 - **`decorationBox` renders N visual cells** via `repeat(count)` + a
   `Row` of `weight(1f)` boxes. Cells are pure visual chrome.
-- **Active cell = next-position cell**, i.e. cell at `value.length`
-  (clamped to `count - 1`). Active = 2 dp `stroke.brand.focus`;
-  others = 1 dp `stroke.subtle`.
+- **Active cell = next-position cell, only while the field is focused**,
+  i.e. cell at `value.length` (clamped to `count - 1`). Active = 2 dp
+  `stroke.brand.focus`. Resting cells = 1 dp `stroke.subtle`, or on
+  Error / Success every resting cell takes the 2 dp status border
+  (`stroke.critical.focus` / `stroke.positive.focus`), as shipped.
 - **Digit text style = `type.label.lg`** (SemiBold 16/24) — see §6.
 
 ### Common mistake → fix

@@ -83,7 +83,7 @@ When generating both code and Figma in the same task, map them like so:
 | Inner row | Centered both axes, 8 dp gap | `space-8` |
 | Icon (leading / trailing) | 20 dp | `icon.sm` |
 | Label | Noto Sans SemiBold 16 / 24 LH | `type.label.lg` |
-| Loading spinner | 24 dp (replaces icon + label) | — |
+| Loading spinner | 24 dp · 2 dp stroke, centred over the content; label and icons stay laid out at 0 opacity so the width doesn't change (as shipped, `WiomButton.kt:139-174`; aligned with the shipped library and iOS skills, 26 Nov 2026) | — |
 
 **No fixed dimensions on the CTA — ever.** No `width(...)`,
 `height(...)`, `heightIn`, `widthIn`, `size(...)`. The CTA defines
@@ -116,7 +116,7 @@ All tokens are **element-first** — `bg.*` / `text.*` / `icon.*` /
 | Default | `bg.brand` | none | `text.onBrand` | `icon.inverse` |
 | Pressed | `bg.brand.pressed` | none | `text.onBrand` | `icon.inverse` |
 | Disabled | `bg.disabled` | none | `text.disabled` | `icon.disabled` |
-| Loading | `bg.brand` | none | hidden | spinner — `icon.inverse` 24 dp |
+| Loading | `bg.brand` | none | 0 opacity (keeps width) | spinner — `icon.inverse` 24 dp |
 
 ### 4.2 Secondary (2 dp border in all states)
 
@@ -125,7 +125,7 @@ All tokens are **element-first** — `bg.*` / `text.*` / `icon.*` /
 | Default | transparent | `stroke.brand.focus` | `text.brand` | `icon.brand` |
 | Pressed | `bg.brand.subtle` | `stroke.brand.focus` | `text.brand` | `icon.brand` |
 | Disabled | transparent | `stroke.subtle` | `text.disabled` | `icon.disabled` |
-| Loading | transparent | `stroke.brand.focus` | hidden | spinner — `icon.brand` 24 dp |
+| Loading | transparent | `stroke.brand.focus` | 0 opacity (keeps width) | spinner — `icon.brand` 24 dp |
 
 ### 4.3 Tertiary
 
@@ -134,7 +134,7 @@ All tokens are **element-first** — `bg.*` / `text.*` / `icon.*` /
 | Default | transparent | `text.brand` | `icon.brand` |
 | Pressed | `bg.brand.subtle` | `text.brand` | `icon.brand` |
 | Disabled | transparent | `text.disabled` | `icon.disabled` |
-| Loading | transparent | hidden | spinner — `icon.brand` 24 dp |
+| Loading | transparent | 0 opacity (keeps width) | spinner — `icon.brand` 24 dp |
 
 ### 4.4 Destructive
 
@@ -143,7 +143,7 @@ All tokens are **element-first** — `bg.*` / `text.*` / `icon.*` /
 | Default | `bg.critical` | `text.onCritical` | `icon.inverse` |
 | Pressed | `bg.critical.pressed` | `text.onCritical` | `icon.inverse` |
 | Disabled | `bg.disabled` | `text.disabled` | `icon.disabled` |
-| Loading | `bg.critical` | hidden | spinner — `icon.inverse` 24 dp |
+| Loading | `bg.critical` | 0 opacity (keeps width) | spinner — `icon.inverse` 24 dp |
 
 ### 4.5 Pre-booking (dark label — `bg.brand.accent` is light pink, white-on-pink fails AA)
 
@@ -152,7 +152,7 @@ All tokens are **element-first** — `bg.*` / `text.*` / `icon.*` /
 | Default | `bg.brand.accent` | `text.onBrandAccent` | `icon.action` |
 | Pressed | `bg.brand.accent.pressed` | `text.onBrandAccent` | `icon.action` |
 | Disabled | `bg.disabled` | `text.disabled` | `icon.disabled` |
-| Loading | `bg.brand.accent` | hidden | spinner — `icon.action` 24 dp |
+| Loading | `bg.brand.accent` | 0 opacity (keeps width) | spinner — `icon.action` 24 dp |
 
 ### 4.6 Acknowledge (compound — checkbox row + paired Primary CTA)
 
@@ -444,16 +444,12 @@ Surface(
             ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-        if (state == WiomButtonState.Loading) {
-            CircularProgressIndicator(
-                color = colors.icon,
-                strokeWidth = 2.dp,
-                modifier = Modifier.size(24.dp),
-            )
-        } else {
+            // Loading keeps label and icons laid out at 0 opacity, so the CTA keeps its width;
+            // the spinner is drawn on top (as shipped, WiomButton.kt:139-174).
+            val contentAlpha = if (state == WiomButtonState.Loading) 0f else 1f
             leadingIcon?.let {
                 Icon(it, contentDescription = iconContentDescription,
-                    tint = colors.icon, modifier = Modifier.size(20.dp))
+                    tint = colors.icon, modifier = Modifier.size(20.dp).alpha(contentAlpha))
             }
             Text(
                 text = text,
@@ -461,11 +457,19 @@ Surface(
                 color = colors.label,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.alpha(contentAlpha),
             )
             trailingIcon?.let {
                 Icon(it, contentDescription = null,
-                    tint = colors.icon, modifier = Modifier.size(20.dp))
+                    tint = colors.icon, modifier = Modifier.size(20.dp).alpha(contentAlpha))
             }
+        }
+        if (state == WiomButtonState.Loading) {
+            CircularProgressIndicator(
+                color = colors.icon,
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(24.dp),               // centred by the Box
+            )
         }
         }
     }

@@ -77,8 +77,8 @@ Properties (apply per instance):
 | Property | Type | Default | Purpose |
 |---|---|---|---|
 | `Label` | Text | `"1 / 10"` | Counter text. Keep format consistent across a flow |
-| `Back Icon` | Instance swap | `chevron_left` (line) | Outline chevron at 24 dp |
-| `Forward Icon` | Instance swap | `chevron_right` (line) | Outline chevron at 24 dp |
+| `Back Icon` | Instance swap | `chevron_left` | Material Rounded `chevron_left` at 24 dp (as shipped) |
+| `Forward Icon` | Instance swap | `chevron_right` | Material Rounded `chevron_right` at 24 dp (as shipped) |
 
 The variant maps to user position: `At Start` = page 1 (Back disabled), `At End` = last page (Forward disabled). The component does **not** expose `Show Back / Show Forward` booleans — chevrons stay rendered; the variant tints + disables the unavailable one.
 
@@ -176,7 +176,7 @@ Dot anatomy:                       Bar anatomy:
 |---|---|
 | Layout | Row · `verticalAlignment = CenterVertically` · `horizontalArrangement = Arrangement.Center` |
 | Icon-button cell | `space-12` all-sides padding around 24 dp glyph → 48 dp hit target |
-| Chevron size | 24 dp · outline (line) — `chevron_left` / `chevron_right` rounded drawable |
+| Chevron size | 24 dp · Material Rounded `Icons.Rounded.ChevronLeft` / `ChevronRight` (not an outline glyph; as shipped, aligned with the shipped library and iOS skills, 26 Nov 2026) |
 | Chevron tint — tappable | `icon.action` (#352D42) — foundations rule for tappable chrome |
 | Chevron tint — non-tappable | `icon.disabled` (#A7A1B2) — chevron stays visible, click is consumed (no-op) |
 | Label typography | `type.label.md` (SemiBold 14 / 20 LH) |
