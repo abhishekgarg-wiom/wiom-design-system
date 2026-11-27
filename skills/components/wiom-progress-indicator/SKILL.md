@@ -155,7 +155,7 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 | Title | `type.label.md` (14/20 SemiBold) · `text.default` |
 | Value (right-aligned) | `type.body.sm` (12/16) · `text.subtle` |
 | Status pill | `type.label.sm` (12/16 SemiBold) · pill bg + text per state |
-| Pill padding · radius | 8 h · 2 v · `radius-full` |
+| Pill padding · radius | `space-8` h · `space-4` v · `radius-full` (D42) |
 | Header → bar gap | `space-12` (12 dp) |
 | Title → pill gap | `space-4` (4 dp) |
 | Bar | 328 × 8 dp · per `Linear` Md spec |
@@ -180,7 +180,7 @@ Milestones and Circular take a `progress: Float` (0 f..1 f) or a `currentStage: 
 | Title | `type.label.lg` (16/24 SemiBold) · `text.default` |
 | Subtitle | `type.body.sm` · `text.subtle` |
 | Title → subtitle gap | `space-4` |
-| Header → bar row gap | `space-20` (20 dp) — non-canonical token; lays out as raw `20.dp` |
+| Header → bar row gap | `space-20` (20 dp), Owner decision 27 Nov 2026, same on iOS (D42) |
 | Bar row → labels gap | `space-20` |
 | Stage circle | 24 × 24 dp · `radius-full` · padding 4 |
 | Stage glyph | 16 × 16 dp · `icon.inverse` (reached) · `icon.nonAction` (unreached) |
@@ -240,12 +240,12 @@ Each progress component **owns its bar / arc / chrome** as a self-contained surf
 
 | Component | Animation | When |
 |---|---|---|
-| `Linear` | Fill width tweens to new `progress` over 600 ms cubic-bezier; colour cross-fades over 300 ms when crossing a threshold | On `progress` value change |
+| `Linear` | Fill width tweens to new `progress` over 300 ms (`tween(300, easing = FastOutSlowInEasing)`); colour fades over 300 ms; no count-up | On `progress` value change |
 | `Completion` | Same as Linear, plus pill copy + bg cross-fade over 300 ms | On `state` change |
 | `Milestones` | Connector colour cross-fades over 300 ms; stage circle fill + glyph swap over 300 ms; current-stage label colour cross-fades | On `currentStage` change |
-| `Circular` | Arc length tweens over 600 ms cubic-bezier; colour cross-fades when the caller's tone changes | On `progress` value change |
+| `Circular` | Arc length tweens over 300 ms (`FastOutSlowInEasing`); colour fades when the caller's tone changes; no count-up | On `progress` value change |
 
-All transitions are caller-driven — no infinite animation. Determinate progress shouldn't *appear* to be doing something when nothing is changing.
+All transitions are caller-driven, no infinite animation. Numbers change at once (no count-up). The system "Remove animations" setting is honoured. Owner decision 27 Nov 2026, same on iOS (D56). Indeterminate waits use `wiom-loader` Linear; this package's indeterminate bar is retired (D58).
 
 ---
 
@@ -316,7 +316,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Title | `type.label.md` (14/20 SemiBold) · `text.default` |
 | Value (right) | `type.body.sm` (12/16 Regular) · `text.subtle` |
 | Status pill label | `type.label.sm` (12/16 SemiBold) · per state |
-| Pill padding | 8 h · 2 v |
+| Pill padding | `space-8` h · `space-4` v (D42) |
 | Title → pill gap | `space-4` |
 | Header → bar gap | `space-12` |
 | Bar | 328 × 8 dp (`Md`) · per state colour |
@@ -357,7 +357,7 @@ All tokens are **element-first**. Don't reference raw hex.
 4. **Pick the right component per §4.** Plain bar → Linear · rich card → Completion · named stages → Milestones · compact donut → Circular. Don't stack multiple progress visuals on the same card.
 5. **Milestones supports 2 / 3 / 4 / 5 stages — pick the right count for the flow.** Don't pad a 3-stage flow to 5 just to fit the original Figma layout; V2 ships all four stage counts.
 6. **Stage labels and icons are direct-edit per instance.** Figma TEXT / INSTANCE_SWAP properties have a single shared default across variants; the V2 file works around this by leaving them as direct layers. In code, the helper composable accepts `List<WiomMilestoneStage>` so call sites name their stages explicitly. **Stage icons:** prefer Material3 `Icons.Rounded.*` (`WiomMilestoneIcon.vector(...)`) wherever the family has a fit; fall back to a brand drawable (vector / animated json / raster) via `WiomMilestoneIcon.resource(R.drawable.ic_*_rounded)` only when no Material3 rounded icon matches. Never `Icons.Default / Filled / Outlined / Sharp / TwoTone`.
-7. **Animate caller-driven changes only.** Determinate progress shouldn't appear animated when nothing is changing. Tween fill / arc / colour over 300–600 ms when `progress` / `state` / `currentStage` updates.
+7. **Animate caller-driven changes only.** Determinate progress shouldn't appear animated when nothing is changing. Tween fill / arc / colour over 300 ms (D56) when `progress` / `state` / `currentStage` updates.
 8. **For long indeterminate / blocking waits, use a loader instead.** `Loader/Spinner` for short, `Loader/Brand` Overlay for blocking critical ops (payment, KYC upload). When the wait completes, route to a `wiom-bottomsheet` Illustration outcome surface — don't linger on a progress visual.
 9. **Progress vs per-step screens:** if the user is acting per step (filling a form, tapping CTAs), build per-step screens — one screen / bottom sheet per step, with its own header, body and CTA — and surface position with `Pagination/Bars` or a compact `Milestones` strip. If they're observing forward motion, use this skill. Compact tracker cards on home screens link through to the per-step detail.
 10. **Tokens only — element-first.** No raw hex. No legacy `colors.bg.brand` / `WiomColor.brandPrimary` namespaces; use `Wiom.bg.brand` / `Wiom.text.subtle` / `Wiom.bg.muted`.
@@ -457,7 +457,7 @@ fun WiomProgressLinear(
     val animatedColor by animateColorAsState(fillColor, tween(300), label = "fill")
     val animatedFraction by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
-        animationSpec = tween(600, easing = FastOutSlowInEasing),
+        animationSpec = tween(300, easing = FastOutSlowInEasing),   // D56
         label = "progress",
     )
     val height = when (size) {
@@ -523,7 +523,7 @@ private fun StatusPill(label: String, bg: Color, fg: Color) {
     Row(
         modifier = Modifier
             .background(bg, RoundedCornerShape(percent = 50))
-            .padding(horizontal = 8.dp, vertical = 2.dp),
+            .padding(horizontal = Wiom.space.s8, vertical = Wiom.space.s4),   // D42
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -657,7 +657,7 @@ fun WiomProgressCircular(
     val fraction = progress.coerceIn(0f, 1f)
     val animatedFraction by animateFloatAsState(
         targetValue = fraction,
-        animationSpec = tween(600, easing = FastOutSlowInEasing),
+        animationSpec = tween(300, easing = FastOutSlowInEasing),   // D56
         label = "circular",
     )
     val arcColor = when (tone) {                              // caller-passed; ladderTone(progress) for the ladder

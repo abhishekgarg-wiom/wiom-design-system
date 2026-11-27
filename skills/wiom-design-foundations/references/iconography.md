@@ -23,6 +23,7 @@ These are the ONLY icon glyph sizes allowed in new code. No exceptions.
 | `icon.sm` | 20dp | 32dp | `WiomIcon.SM` | Button icons, compact controls, small trailing actions, dense UI elements |
 | `icon.md` | 24dp | 40dp | `WiomIcon.MD` | **Default.** Toolbar actions, list icons, nav items, chips, card actions, tabs |
 | `icon.lg` | 48dp | 56dp | `WiomIcon.LG` | Empty states, onboarding illustrations, hero feature icons, status pages |
+| `icon.xl` | 32dp | 48dp | `WiomIcon.XL` | Rating stars (`wiom-rating`) only; owner decision 27 Nov 2026, same on iOS, D43 |
 
 ### The Scale
 
@@ -140,6 +141,7 @@ When writing or reviewing code, ask: **"What is this icon's job on the screen?"*
 Is it inline with text or inside an input field?       → icon.xs  (16dp) ⚠ restricted
 Is it a button icon or compact control?                → icon.sm  (20dp)
 Is it a toolbar/nav/list/chip/card action?             → icon.md  (24dp) ← DEFAULT
+Is it a rating star?                                   → icon.xl  (32dp)
 Is it a hero/empty-state/onboarding/status page?       → icon.lg  (48dp)
 Is it a brand mark or partner logo?                    → Custom drawable (ic_wiom_* or ic_partner_*)
 ```
@@ -397,7 +399,7 @@ Owner decision, 23 Nov 2026 (same on iOS). These are the only ones.
 | Warning indicator, solid | `icon.action` (#352D42) | `bg.warning` (#E2B203) | 6.60:1 |
 
 - Gold `icon.warning` is **never** a Warning triangle, alert or status glyph, on any background (white, pale yellow or solid gold).
-- Toast and input stay `bg.default`; their Warning glyph sits on a `bg.warning.subtle` circle. The circle's size is still open: keep the glyph size, flag the gap.
+- Toast and input stay `bg.default`; their Warning glyph sits in an **Icon Badge Sm** (24 dp `bg.warning.subtle` circle, 16 dp glyph). Owner decision 27 Nov 2026, same on iOS.
 - `icon.action` here names the colour, not a tap target. Decorative Warning glyphs stay `contentDescription = null`; the host's text carries the meaning.
 - Lint: allow `icon.warning` only inside a `RatingBar` / `StarIcon`; flag it everywhere else.
 
@@ -475,6 +477,7 @@ LIBRARY   Material 3 Icons Rounded
 GLYPH     icon.xs   16dp glyph  24dp container  ⚠ restricted
 SIZES     icon.sm   20dp glyph  32dp container    buttons/compact
           icon.md   24dp glyph  40dp container  ← DEFAULT
+          icon.xl   32dp glyph  48dp container    rating stars
           icon.lg   48dp glyph  56dp container    hero
           Touch targets — see spacing.md
 ─────────────────────────────────────────────────────────────

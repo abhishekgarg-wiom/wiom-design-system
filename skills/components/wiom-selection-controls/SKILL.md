@@ -138,7 +138,7 @@ Three component sets, instanced separately. Strings are **case-sensitive**.
 ┌──── 52 dp ────────────────┐
 │                            │   Track: 52 × 32 dp · radius-full
 │  ●──────────                │   Track fill: per state (see §5)
-│                            │   Thumb: 24 × 24 dp · radius-full · #FFFFFF
+│                            │   Thumb: 24 × 24 dp · radius-full · icon.inverse
 │                            │   Thumb position: Off → flush left · On → flush right
 └──────── 32 dp ─────────────┘   Thumb inset: 4 dp on all sides when at rest
 
@@ -153,7 +153,7 @@ Three component sets, instanced separately. Strings are **case-sensitive**.
 | Track stroke (Off · Disabled) | `stroke-medium` · `stroke.subtle` |
 | Track stroke (On, any state) | none |
 | Track fill | per state (see §5) |
-| Thumb | 24 × 24 dp · `radius-full` · `#FFFFFF` (always white, all states — physical affordance, not a tokened surface) |
+| Thumb | 24 × 24 dp · `radius-full` · `icon.inverse` (#FAF9FC), all states |
 | Thumb inset | 4 dp on all sides (so 32 − 24 − 8 = 0; thumb fits flush within the 4 dp padding) |
 | Shadow | none on track and thumb (flat inline control) |
 
@@ -239,7 +239,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | Slot | Value |
 |---|---|
 | Track | 52 × 32 dp · `radius-full` |
-| Thumb | 24 × 24 dp · `#FFFFFF` (raw hex — physical thumb, not a tokened surface) |
+| Thumb | 24 × 24 dp · `icon.inverse` (#FAF9FC) |
 | Thumb inset | 4 dp all sides |
 | Off track fill — Default | `bg.muted` (#E8E4F0) |
 | Off track fill — Pressed | `bg.subtle` (#F1EDF7) |
@@ -248,7 +248,7 @@ All tokens are **element-first**. Don't reference raw hex.
 | On track fill — Pressed | `bg.brand.pressed` |
 | On track fill — Disabled | `bg.disabled` (#D7D3E0) |
 
-> **Switch thumb is the only place raw `#FFFFFF` ships in this skill.** The thumb reads as a physical affordance (a real switch nub), not a tokened surface. Everywhere else use element-first tokens.
+> **Switch thumb uses `icon.inverse`** (#FAF9FC), the same off-white used on pink. It replaces the old raw `#FFFFFF`; the difference is not visible. Owner decision 27 Nov 2026, same on iOS.
 
 ---
 
@@ -266,7 +266,7 @@ All tokens are **element-first**. Don't reference raw hex.
 10. **Standalone Radio is not a valid pattern.** Always part of a group of 2+ mutually-exclusive options.
 11. **Switch is for instant-apply only.** If the change requires a "Save" tap to take effect, use a Checkbox. (Switches that wait for submission are a pattern bug.)
 12. **Selection eases; the value doesn't wait.** Fill, stroke, glyph and switch track colours change with `WiomMotion.selection()` (200 ms, `FastOutSlowInEasing`, foundations § Motion) in both directions. The thumb slides on the same 200 ms spec. Pressed colours snap. The callback fires on tap, never after the animation.
-13. **Tokens only — element-first.** No raw hex except the Switch thumb's `#FFFFFF`. No legacy `color.brand.primary`.
+13. **Tokens only, element-first.** No raw hex anywhere (the Switch thumb is `icon.inverse`). No legacy `color.brand.primary`.
 
 ---
 
@@ -517,7 +517,7 @@ fun WiomSwitch(
             modifier = Modifier
                 .offset(x = thumbOffsetX)
                 .size(24.dp)
-                .background(Color.White, CircleShape),                 // physical thumb — raw white by design
+                .background(Wiom.icon.inverse, CircleShape),           // thumb: icon.inverse (owner decision 27 Nov 2026)
         )
     }
 }
@@ -727,7 +727,7 @@ WiomListItem(
 - ❌ Standalone Radio without a peer group — wrong control; use Checkbox or a confirmation dialog.
 - ❌ Switch in a form that requires a Save tap — switches are instant-apply only; use Checkbox.
 - ❌ Re-implementing the indicator with raw `Box` + `Text("✓")` — always use `WiomCheckbox` / `WiomRadio` / `WiomSwitch`.
-- ❌ Custom thumb fill on Switch (anything other than `#FFFFFF`) — the thumb is a physical affordance.
+- ❌ Custom thumb fill on Switch (anything other than `icon.inverse`), or raw `Color.White`.
 - ❌ Animating the thumb on press (it should only move on selection change). Compose ripple is also banned on the switch — disable indication via `indication = null` per the impl.
 
 ---
@@ -757,7 +757,7 @@ Re-pull `get_variable_defs` on each component set if foundations token names eve
 - **Switch ships a Pressed state** (V2 addition). It's runtime-driven from `InteractionSource`, not authored at the call site. The track fill steps one level on press (`bg.muted` → `bg.subtle` for Off; `bg.brand` → `bg.brand.pressed` for On); the thumb does **not** move on press — only on selection change.
 - **Switch has no Error state.** Switches are instant-apply settings; no form submission to validate against. Don't fabricate one.
 - **The `Selected + Error` fill swap** (`bg.brand` → `bg.critical`) applies to Checkbox and Radio. Glyph stays `icon.inverse` regardless. The unselected error path uses `stroke.critical.focus` (#D92130) on the outline — foundations does not expose a non-`.focus` `stroke.critical` token; the `.focus` variant is the canonical error-border token.
-- **The thumb is `#FFFFFF`** — not a tokened surface. It reads as a physical switch nub, and ships raw white on every track tone (including `bg.disabled` greys). This is the only place this skill ships raw hex.
+- **The thumb is `icon.inverse`** (#FAF9FC) on every track tone. Earlier versions shipped raw `#FFFFFF`; the library should switch to the token.
 - The on-canvas frame `3063:10031` (`icon_with_bg`) is **not a selection control** — it's a stray instance from `wiom-icon-badge`. Ignore it for this skill.
 
 ---

@@ -79,7 +79,7 @@ Container is 376 × 48 dp · `bg.default` · `radius-medium` (12 dp) · padding 
 | `neutral` | `2052:7` | Peer / human-agent typing — de-emphasised |
 | `onColor` | `2052:12` | Inside a brand-filled chat bubble |
 
-Anatomy: 3 dots (8 dp each, 4 dp gap, uniform opacity) inside a chat bubble (`radius-large 16 dp` with `radius-tiny 4 dp` on the bottom-left tail · padding `12h × 10v`).
+Anatomy: 3 dots (8 dp each, 4 dp gap, uniform opacity) inside a chat bubble (`radius-large 16 dp` with `radius-tiny 4 dp` on the bottom-left tail · padding `space-12` on all sides, Owner decision 27 Nov 2026, same on iOS (D42)).
 
 ### Skeleton — `2053:28` (3 ship variants)
 
@@ -256,7 +256,9 @@ Every Wiom loader **renders the wait indicator and stops**. Message text, surfac
 | `Linear` Determinate | Fill width animates from previous → caller value | Loader composable (built-in) |
 | `Dots` | 3-dot bounce, 150 ms phase shift · 1.0 s loop | Loader composable (built-in) |
 | `Skeleton` | `bg.default` 55 % shimmer sweep · 1.2 s loop · L → R | Loader composable (built-in) |
-| `Brand` | Stroke-dash chase on the infinity glyph · 25 % visible · 75 % gap · 1.3 s linear loop · clockwise | Lottie `.json` (pending — falls back to a plain rotating spinner until shipped) |
+| `Brand` | Stroke-dash chase on the infinity glyph · 25 % visible · 75 % gap · 1.3 s linear loop · clockwise | Lottie `loader_infinity.json` (as shipped in both apps; Spinner Lg only if it fails to load) |
+
+Loop timings (spinner 1.0 s, Linear 1.5 s, Dots 1.0 s with 150 ms stagger, shimmer 1.2 s) stay fixed component values, not motion tokens. **One indeterminate bar:** this loader's `Linear`; the progress package's indeterminate bar is retired (owner decision 27 Nov 2026, same on iOS, D58).
 
 ### Brand-loader stroke-dash chase — implementation note
 
@@ -265,7 +267,7 @@ A single 25 %-long stroke segment travels the closed infinity path with no visib
 - `<path>` declares `pathLength="100"` — normalises the dash pattern to the actual path length and guarantees a seamless loop.
 - `stroke-dasharray: 25 75;` · `stroke-dashoffset: 0;` · animate offset `0 → -100` over `1.3 s linear` infinite.
 
-In Compose, until the Lottie file ships, render a plain `WiomSpinner.Lg` `OnBrand` color in the infinity slot — visually similar enough for staging.
+**The animation file is `loader_infinity.json`** (res/raw in the Android app; the iOS app bundles the same file). Play it with `LottieAnimation(…, iterations = LottieConstants.IterateForever)` at **200 × 200 dp**, as the app does (the file is a 1920 × 1080 canvas with wide margins; never squeeze it to 128 × 53). Fall back to `WiomSpinner.Lg` only if it fails to load. The corrected file loops in 1.3 s and uses brand pink #D9008D: take it from `wiom-design-system-ios/assets/animations/loader_infinity.json` and swap it into the app's `res/raw` (owner decision 27 Nov 2026, same on iOS, D54). Owner decision 27 Nov 2026, same on iOS.
 
 ---
 
@@ -543,7 +545,7 @@ fun WiomDots(
     Box(
         modifier = modifier
             .background(bubble, shape)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(Wiom.space.s12),                       // space-12 all sides (D42)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             repeat(3) { i ->
@@ -707,12 +709,17 @@ fun WiomBrandLoader(
             if (showWordmark) {
                 Text("Wiom", style = Wiom.type.heading.xl, color = wordmarkColor)
             }
-            // Until the Lottie ships, use a spinner Lg as a structural stand-in.
-            // When Lottie ships, replace with LottieAnimation(infinity_chase.json).
-            WiomSpinner(
-                size = WiomSpinnerSize.Lg,
-                color = if (style == WiomBrandLoaderStyle.Light) WiomSpinnerColor.Brand else WiomSpinnerColor.OnColor,
-            )
+            // Brand mark: the shipped loader_infinity.json Lottie, looping.
+            // Spinner Lg is only the fallback if the file fails to load.
+            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loader_infinity))
+            if (composition != null) {
+                LottieAnimation(composition, iterations = LottieConstants.IterateForever, modifier = Modifier.size(200.dp))   // file has wide margins; 200 dp as the app plays it
+            } else {
+                WiomSpinner(
+                    size = WiomSpinnerSize.Lg,
+                    color = if (style == WiomBrandLoaderStyle.Light) WiomSpinnerColor.Brand else WiomSpinnerColor.OnColor,
+                )
+            }
             if (message != null) {
                 Text(message, style = Wiom.type.body.md, color = messageColor, textAlign = TextAlign.Center)
             }
@@ -886,7 +893,7 @@ Re-pull `get_variable_defs` on each component set if foundations token names eve
 
 - The ship has **5 component sets · 20 variants total** (Spinner 9 + Linear 2 + Dots 3 + Skeleton 3 + Brand 3). Older skill drafts described a `Loader/Status` set ("Wait → Success → Error") with TBD node IDs — that set was aspirational and **never shipped**. Outcome confirmation is now owned by **`wiom-bottomsheet` Illustration** (Positive / Critical tone) — the loader runs during the wait, the bottom sheet renders the outcome.
 - **Linear is NOT deprecated.** Older drafts marked it "deprecated; use Status." The V2 ship has Linear alive with two variants — `Indeterminate` and `Determinate`. Use it for short waits with no milestones; for KYC / install / milestone progress use `wiom-progress-indicator`.
-- **Brand-loader animation is stroke-dash chase via Lottie** — Lottie `.json` is pending. Until it ships, the Compose impl renders a `WiomSpinner.Lg` (`Brand` or `OnColor` per style) in the infinity slot as a structural stand-in. The Figma frame shows the static infinity glyph; motion is documented in §3.
+- **Brand-loader animation is `loader_infinity.json`** (Lottie, as shipped in both apps). `WiomSpinner.Lg` is only the load-failure fallback. The Figma frame shows the static infinity glyph; motion is documented in §3.
 - **`Loader/Linear` ships inside a 376 × 48 dp `bg.default` card** in the Figma file — that's illustrative only. In code the parent surface (snackbar / inline strip) provides the chrome; the loader contributes the 4 dp bar via `WiomLinearProgress`.
 
 ---

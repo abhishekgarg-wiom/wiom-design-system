@@ -84,6 +84,10 @@ tell the user and update this file.
   genuinely cannot be expressed with nested Column/Row/Box. Default to the linear
   layouts.
 
+### Screen scaffold
+
+Every screen starts from the same frame: `Scaffold` with `wiom-top-bar` on top, one scrolling content column (16 dp gutter, `space-16` between cards, `space-32` between sections), an optional sticky CTA bar (`wiom-cta`) at the bottom, and `wiom-toast`'s host above it. Handle insets once: `enableEdgeToEdge`, `Scaffold` padding, `imePadding()` so inputs and the CTA bar stay above the keyboard. Full-page loading, empty and error use `wiom-page-states`.
+
 ## 5. Icons and graphics
 
 - **Production icons:** `painterResource(R.drawable.ic_<name>_rounded)` — the Wiom

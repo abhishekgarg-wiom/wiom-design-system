@@ -558,7 +558,7 @@ fun WiomLoadingDialog(
 @Composable
 private fun CtaPair(
     confirm: WiomCtaSpec?,            // prominent slot — typically Primary or Destructive
-    dismiss: WiomCtaSpec?,            // secondary slot — typically Tertiary or Secondary
+    dismiss: WiomCtaSpec?,            // secondary slot: Secondary when paired (D51); Tertiary only when alone
     layout: WiomDialogButtonsLayout,
 ) {
     when (layout) {
@@ -637,7 +637,7 @@ WiomInputDialog(
     },
     onDismiss = onCancel,
     confirm = WiomCtaSpec("Send OTP", onConfirm, type = WiomCtaType.Primary),
-    dismiss = WiomCtaSpec("Cancel", onCancel, type = WiomCtaType.Tertiary),
+    dismiss = WiomCtaSpec("Cancel", onCancel, type = WiomCtaType.Secondary),
 )
 ```
 
@@ -645,9 +645,9 @@ WiomInputDialog(
 
 ## 8. Screen-level recipes
 
-> **CTA pairing is open — pick types per `wiom-cta`.** The `confirm` slot can take any CTA type (Primary, Destructive, Acknowledge…); the `dismiss` slot can take any (Tertiary, Secondary…). The recipes below show common pairings; they're examples, not the only valid combinations. Whenever you're picking which CTA type goes where, defer to `wiom-cta`.
+> **Two-CTA pairings: Primary + Secondary, or Destructive + Secondary** (owner decision 27 Nov 2026, same on iOS, D51). A single acknowledgement is a Tertiary alone ("ठीक है"). Defer to `wiom-cta` for everything else.
 
-### Alert — Payment success (Primary + Tertiary, stacked)
+### Alert — Payment success (Primary + Secondary, stacked)
 
 ```kotlin
 WiomAlertDialog(
@@ -657,11 +657,11 @@ WiomAlertDialog(
     iconBgTone = WiomIconBadgeTone.Positive,
     onDismiss = onClose,
     confirm = WiomCtaSpec("View receipt", onViewReceipt, type = WiomCtaType.Primary),
-    dismiss = WiomCtaSpec("Dismiss", onClose, type = WiomCtaType.Tertiary),
+    dismiss = WiomCtaSpec("Dismiss", onClose, type = WiomCtaType.Secondary),
 )
 ```
 
-### Alert — Destructive confirmation (Destructive + Tertiary, stacked)
+### Alert — Destructive confirmation (Destructive + Secondary, stacked)
 
 ```kotlin
 WiomAlertDialog(
@@ -671,7 +671,7 @@ WiomAlertDialog(
     iconBgTone = WiomIconBadgeTone.Critical,
     onDismiss = onCancel,
     confirm = WiomCtaSpec("Delete", onDelete, type = WiomCtaType.Destructive),
-    dismiss = WiomCtaSpec("Cancel", onCancel, type = WiomCtaType.Tertiary),
+    dismiss = WiomCtaSpec("Cancel", onCancel, type = WiomCtaType.Secondary),
 )
 ```
 
@@ -693,7 +693,7 @@ WiomAlertDialog(
 )
 ```
 
-### Selection — Choose language (Primary + Tertiary)
+### Selection — Choose language (Primary + Secondary)
 
 ```kotlin
 val languages = listOf("English", "हिन्दी", "मराठी")
@@ -707,7 +707,7 @@ WiomSelectionDialog(
     onSelect = { selected = it },
     onDismiss = onCancel,
     confirm = WiomCtaSpec("Confirm", { onConfirm(languages[selected]) }, type = WiomCtaType.Primary),
-    dismiss = WiomCtaSpec("Cancel", onCancel, type = WiomCtaType.Tertiary),
+    dismiss = WiomCtaSpec("Cancel", onCancel, type = WiomCtaType.Secondary),
 )
 ```
 

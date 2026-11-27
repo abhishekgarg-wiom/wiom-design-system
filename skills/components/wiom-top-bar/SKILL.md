@@ -114,7 +114,7 @@ on Small; icons only on Medium/Large) optionally followed by a
 | Slot | Value |
 |---|---|
 | Container width | Edge-to-edge — `fillMaxWidth()` |
-| Container height | 64 dp (fixed) |
+| Container height | 64 dp minimum (grows for a 2-line title, D51) |
 | Outer padding | `space-4` H · `space-8` V |
 | Each icon-button cell | `space-12` all-sides padding around 24 dp glyph → 48 dp hit target |
 | Title column padding | `space-12` H |
@@ -158,7 +158,7 @@ Search-specific:
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Action row** (top, same layout as Small Default) — `space-4` H, `space-8` V, height 48 dp
+- **Action row** (top): `space-4` H, no vertical padding, height 48 dp with full 48 dp icon cells (D51)
 - **Title area** (bottom) — `space-16` H, `space-8` V, fills remaining height (~64 dp); title is `type.heading.lg` 24 sp Bold / 32 LH `text.default`, no subtitle
 - No title / subtitle in the Action row — title moves to the dedicated area below
 
@@ -180,7 +180,7 @@ Search-specific:
 
 **No fixed dimensions** can be stretched — sizes are part of the
 component contract. Width is `fillMaxWidth()` (edge-to-edge). Heights
-are fixed per Size variant: 64 / 112 / 152 dp.
+are minimums per Size variant: 64 / 112 / 152 dp; the bar grows when a title wraps to 2 lines at large font scale (D51).
 
 ---
 
@@ -369,7 +369,7 @@ State is partly runtime:
 
 ## 8. Universal rules
 
-1. **Heights are fixed per size** — 64 / 112 / 152 dp. Don't override with `Modifier.height(...)` / `heightIn(...)`.
+1. **Heights are minimums per size**: 64 / 112 / 152 dp via `heightIn(min = …)`. Titles wrap to 2 lines at large font scale and the bar grows; never clip. No home-tab hamburger on the customer app: root screens have no leading item. Owner decision 27 Nov 2026, same on iOS (D51).
 2. **Pair status-bar lightness with the bar.** Light bar → dark status-bar content; dark bar → light. Set it once per screen via `enableEdgeToEdge` or `WiomTopBarStatusBar(isDarkVariant = …)`.
 3. **Trailing area max 3 icons + 1 text CTA.** Beyond that, move overflow into a `more_vert` overflow menu via bottom sheet.
 4. **Trailing Text CTA is `text.brand` (light) / `text.inverse` (dark).** Never a filled button; never `text.critical` (destructive should go through a confirmation dialog).
@@ -561,7 +561,7 @@ private fun SmallTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)                                    // ship-fixed
+            .heightIn(min = 64.dp)                            // minimum; grows for a 2-line title (D51)
             .padding(
                 start  = if (state is WiomTopBarState.Search) 4.dp else Wiom.space.s4,
                 end    = if (state is WiomTopBarState.Search) Wiom.space.s16 else Wiom.space.s4,
@@ -600,7 +600,7 @@ private fun MediumTopBar(
     trailingActions: List<WiomTrailingAction>,
     colors: TopBarColors,
 ) {
-    Column(modifier = Modifier.fillMaxWidth().height(112.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().heightIn(min = 112.dp)) {
         ActionRow(leadingIcon, onLeadingClick, trailingText, trailingActions, colors)
         TitleArea(
             title = title,
@@ -622,7 +622,7 @@ private fun LargeTopBar(
     trailingActions: List<WiomTrailingAction>,
     colors: TopBarColors,
 ) {
-    Column(modifier = Modifier.fillMaxWidth().height(152.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().heightIn(min = 152.dp)) {
         ActionRow(leadingIcon, onLeadingClick, trailingText, trailingActions, colors)
         TitleArea(
             title = title,
@@ -740,7 +740,7 @@ private fun ActionRow(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .padding(horizontal = Wiom.space.s4, vertical = Wiom.space.s8),
+            .padding(horizontal = Wiom.space.s4),                 // full 48 dp cells, no vertical padding (D51)
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LeadingCell(leadingIcon, onLeadingClick, colors.icon)
@@ -764,7 +764,7 @@ private fun TitleColumn(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = if (centered) Alignment.CenterHorizontally else Alignment.Start,
     ) {
-        Text(title, style = Wiom.type.title.lg, color = colors.title, maxLines = 1)
+        Text(title, style = Wiom.type.title.lg, color = colors.title, maxLines = 2, overflow = TextOverflow.Ellipsis)   // D51
         val subtitleColor = colors.subtitle
         if (subtitle != null && subtitleColor != null) {
             Text(subtitle, style = Wiom.type.body.sm, color = subtitleColor, maxLines = 1)
@@ -781,7 +781,7 @@ private fun TitleArea(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.BottomStart) {
-        Text(title, style = style, color = color, maxLines = 1)
+        Text(title, style = style, color = color, maxLines = 2)   // D51: wraps; the bar grows
     }
 }
 ```

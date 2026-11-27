@@ -28,7 +28,7 @@ Every spacing, sizing, padding, and margin value must be a **multiple of 4px**.
 
 ## 2. Spacing Tokens
 
-### Primitives (13 values)
+### Primitives (14 values)
 
 | Token | Value | On 4px Grid | Usage |
 |-------|-------|-------------|-------|
@@ -38,6 +38,7 @@ Every spacing, sizing, padding, and margin value must be a **multiple of 4px**.
 | `space/8` | 8px | Yes | Tight padding, inline gaps |
 | `space/12` | 12px | Yes | Component internal spacing |
 | `space/16` | 16px | Yes | Default padding, card insets |
+| `space/20` | 20px | Yes | Progress Milestones gaps (D42) |
 | `space/24` | 24px | Yes | Section spacing, comfortable gaps |
 | `space/32` | 32px | Yes | Large component gaps |
 | `space/40` | 40px | Yes | Section breaks |
@@ -46,11 +47,11 @@ Every spacing, sizing, padding, and margin value must be a **multiple of 4px**.
 | `space/72` | 72px | Yes | Hero/section padding |
 | `space/84` | 84px | Yes | Extra-large layout areas |
 
-### Semantic Tokens (11 values)
+### Semantic Tokens (12 values)
 
 These alias the primitives and are **identical in Light and Dark modes**.
 
-`space-4` `space-8` `space-12` `space-16` `space-24` `space-32` `space-40` `space-48` `space-64` `space-72` `space-84`
+`space-4` `space-8` `space-12` `space-16` `space-20` `space-24` `space-32` `space-40` `space-48` `space-64` `space-72` `space-84`
 
 > `space/1` and `space/2` intentionally have no semantic aliases — they're utility-only, not for general layout.
 

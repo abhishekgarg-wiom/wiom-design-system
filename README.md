@@ -38,6 +38,10 @@ This repo contains:
 | `wiom-loader` | Loader — Spinner, Linear (Indeterminate / Determinate), Dots, Skeleton, Brand full-screen |
 | `wiom-progress-indicator` | Determinate progress — Linear, Completion meter, Milestones, Circular |
 | `wiom-pagination` | Pagination — Dots-Simple / Dots-Expanded / Bars, Counter, Scroll Indicator |
+| `wiom-rating` | 5-star rating (the only gold use) |
+| `wiom-card` | Card: flat or elevated container, static / tappable / selectable |
+| `wiom-inline-banner` | Inline status banner: info, positive, warning, critical |
+| `wiom-page-states` | Full-page loading, empty, and error with retry |
 
 ---
 

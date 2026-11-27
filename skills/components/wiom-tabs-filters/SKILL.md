@@ -174,9 +174,9 @@ Underline Filter Bar (fillMaxWidth, bottom border 1dp stroke.subtle)
 | Inner row (Content) | Horizontally and vertically centered | — |
 | Indicator height | 2 dp | `stroke-medium` |
 | Indicator radius | full pill | `radius-full` |
-| Indicator position / width | Drawn at the bottom of the label's padded content box (inside the 12 dp vertical padding, not the item's bottom edge): label width when scrolling, item width minus 32 dp when fixed (as shipped). **Needs a design ruling**; may be unintended | — |
+| Indicator position / width | On the bar's bottom edge, full item width (owner decision 27 Nov 2026, same on iOS, D55) | n/a |
 
-> Pill height, filter width, indicator position and chip border aligned with the shipped library and iOS skills, 26 Nov 2026 (`WiomTabsFilters.kt:100`, `:170-232`, `:283-284`).
+> Pill height, filter width and chip border aligned with the shipped library and iOS skills, 26 Nov 2026 (`WiomTabsFilters.kt:100`, `:170-232`, `:283-284`).
 | Label style | Noto Sans SemiBold 14 / 20 LH | `type.label.md` |
 | Icon size (icon-only / "More") | 20 dp | `icon.sm` |
 
@@ -827,10 +827,10 @@ HorizontalScroll`; otherwise plain `Row`. Iterate `filters` then append
 a "More" item only when `overflow is FilterOverflow.More`. Each item is
 `Modifier.weight(1f)` in a fixed bar and hugs in a scrolling bar: a
 `Column(horizontalAlignment = CenterHorizontally)` with a Content Box
-(`padding horizontal = space.s16, vertical = space.s12`) whose 2 dp
-indicator is drawn at the bottom of that padded box
-(`drawBehind { drawLine(bg.brand, …, strokeWidth = 2.dp, cap = Round) }`
-when active), as shipped. The
+(`padding horizontal = space.s16, vertical = space.s12`) above a
+2 dp indicator `Box` on the bar's bottom edge, full item width
+(`fillMaxWidth().height(2.dp).background(bg.brand, radius.full)` when
+active; D55). The
 indicator is a **filled `Box`, not a `BorderStroke`** — the token
 `bg.brand` is a fill slot, not a stroke slot. More item is icon-only
 (20 dp `Icons.Rounded.FilterList`, tint `icon.action`) inside the same

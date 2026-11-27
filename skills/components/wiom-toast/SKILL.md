@@ -229,9 +229,12 @@ Step 3 — Behavior
    `type.label.lg`). No filled buttons inside a toast.
 6. **No retry loops.** One attempt — revert state + show toast — user
    re-taps the originating control manually if they want to retry.
-7. **Message: 1 line target, 2 lines tolerated.** `maxLines = 2`,
-   `overflow = TextOverflow.Ellipsis`. If it truncates, that's a
-   signal to rewrite copy shorter.
+7. **Message: 1 line target, 2 lines max at the default text size**
+   (about 80 Hindi characters). At larger font scales the toast grows
+   so the whole message shows; it is never cut off (no `maxLines`).
+   The toast caps at 40 % of the screen height; beyond that the message
+   scrolls inside it (`Modifier.heightIn(max = …)` + `verticalScroll`).
+   Owner decision 27 Nov 2026, same on iOS.
 8. **Tokens only.** Element-first (`bg.*` / `text.*` / `icon.*`).
    No raw hex. No legacy `color.*` role-first tokens.
 9. **All 4 types share `bg.default`.** Only the icon (and Warning's
@@ -367,22 +370,28 @@ fun WiomToast(spec: WiomToastSpec, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(Wiom.space.s8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Leading icon. Warning: dark glyph on a bg.warning.subtle circle
-            // (circle size still open, see notes; don't invent one).
-            Icon(
-                imageVector = spec.icon ?: rememberDefaultIcon(spec.type),
-                contentDescription = null,                          // message carries the meaning
-                tint = colors.icon,
-                modifier = Modifier.size(24.dp),
-            )
+            // Leading icon. Warning: dark glyph in an Icon Badge Sm
+            // (24 dp bg.warning.subtle circle, 16 dp glyph).
+            if (spec.type == WiomToastType.Warning) {
+                WiomIconBadge(
+                    icon = spec.icon ?: rememberDefaultIcon(spec.type),
+                    size = WiomIconBadgeSize.Sm,
+                    tone = WiomIconBadgeTone.Warning,               // bg.warning.subtle + icon.action
+                )
+            } else {
+                Icon(
+                    imageVector = spec.icon ?: rememberDefaultIcon(spec.type),
+                    contentDescription = null,                      // message carries the meaning
+                    tint = colors.icon,
+                    modifier = Modifier.size(24.dp),
+                )
+            }
 
-            // Message — fills, max 2 lines
+            // Message: fills; never truncated (copy guide: 2 lines at default size)
             Text(
                 text = spec.message,
                 style = Wiom.type.body.lg,
                 color = colors.message,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
 
@@ -646,8 +655,7 @@ says otherwise, trust ship values:
 - **Warning icon is dark, never gold.** `icon.action` on a
   `bg.warning.subtle` circle behind the glyph; the toast itself stays
   `bg.default`. Gold `icon.warning` is for rating stars only (foundations
-  iconography § Warning icons). **Open:** the circle's size is not yet
-  specified. Keep the 24 dp glyph; don't invent a size, flag it in review.
+  iconography § Warning icons). **Size:** Icon Badge Sm, a 24 dp circle with a 16 dp glyph (Owner decision 27 Nov 2026, same on iOS).
 - **Icon colours come from `icon.critical` / `icon.action` (Warning) /
   `icon.info` / `icon.positive`** — element-first `icon.*` tokens,
   not `color.*.primary` legacy.
