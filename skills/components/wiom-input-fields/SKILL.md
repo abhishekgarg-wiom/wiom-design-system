@@ -12,7 +12,7 @@ description: >
   when assembling Figma frames with text fields. Trigger on: Input,
   TextField, TextInput, OutlinedTextField, Textarea, multiline,
   search bar, OTP, verification code, mobile number, password,
-  currency / amount, dropdown trigger, "+91", "₹", placeholder, helper
+  currency / amount, dropdown trigger, "₹", placeholder, helper
   text, counter, label, validation, error, focused, read-only.
 ---
 
@@ -27,7 +27,7 @@ the `wiom-design-foundations` token set.
 | Component | States | Variants |
 |---|---|---|
 | Field / Input | 8 | Default · Focused · Filled · Error · Success · Warning · Disabled · Read-only |
-| Field / Textarea | 6 | Default · Focused · Filled · Error · Success · Disabled (no Warning, no Read-only) |
+| Field / Textarea | 6 (+2) | Default · Focused · Filled · Error · Success · Disabled; **Warning and Read-only also allowed**, same rules as Input (owner decision 27 Nov 2026, same on iOS, D59) |
 | Field / OTP | 6 | Default · Focused · Filled · Error · Success · Disabled (no Warning, no Read-only) |
 
 > **Search bar is Input**, not a separate component — it's a
@@ -53,7 +53,7 @@ permutation.
 | `Title`, `Show Title` | Text, Boolean | `"Label"`, `true` | Field label above the wrap. Hide only when externally labelled by a parent section. |
 | `Body` | Text | `"Enter your value"` | Value or placeholder text inside the wrap |
 | `Show Leading Icon`, `Leading Icon` | Boolean, Instance swap | `false`, `search` | Reveal + pick a 20 dp Material Symbols Rounded icon |
-| `Show Prefix`, `Prefix` | Boolean, Text | `false`, `"+91"` | Affix before the value (e.g. `+91`, `₹`) — `text.subtle` |
+| `Show Prefix`, `Prefix` | Boolean, Text | `false`, `"₹"` | Affix before the value (e.g. `₹`). Mobile numbers take none (D47). `text.subtle` |
 | `Show Suffix`, `Suffix` | Boolean, Text | `false`, `".00"` | Affix after the value (e.g. `.00`, `kg`) — `text.subtle` |
 | `Show Trailing Icon`, `Trailing Icon` | Boolean, Instance swap | `false`, `cancel` | Reveal + pick a 20 dp icon. **Hardcoded for status states** — Error/Success/Warning win over user-set trailing icon. |
 | `Show Helper`, `Helper` | Boolean, Text | `true`, `"Helper text"` | Helper / validation message under the wrap |
@@ -78,7 +78,7 @@ No icon slots, no prefix/suffix.
 | `State` | Variant | `Default` | 6 values (no Warning, no Read-only) |
 | `6-digit` | Boolean | `false` (4 boxes default) | `true` = 6 boxes (~48 dp each); `false` = 4 boxes (~76 dp each). Container stays 328 dp wide; boxes split via `weight(1f)`. |
 | `Title`, `Show Title` | Text, Boolean | `"Enter OTP"`, `true` | Same rule |
-| `Show Helper`, `Helper` | Boolean, Text | `true`, e.g. `"Sent to +91 98765 43210"` | Helper / resend prompt |
+| `Show Helper`, `Helper` | Boolean, Text | `true`, e.g. `"Sent to 98765 43210"` | Helper / resend prompt |
 
 > **Focused-state timer is hardcoded.** The Focused variant ships with
 > a visible **timer (e.g. `00:24`)** at the right of the helper row.
@@ -108,7 +108,7 @@ wrap → Helper row**, gap `space-8` (8 dp) between rows.
 ### Input
 
 ```
-Title (type.label.lg, optional via Show Title)
+Title (type.title.sm empty → type.body.lg focused/filled, D50; optional via Show Title)
    ↓ space-8
 ┌─── wrap (radius-medium, padding 16H/12V, border per state) ────┐
 │  ●Lead    Prefix    Body / placeholder   Suffix    ●Trail      │
@@ -129,7 +129,7 @@ Title (type.label.lg, optional via Show Title)
 | Wrap vertical padding | 12 dp | `space-12` |
 | Wrap inner gap (slot ↔ slot) | 12 dp | `space-12` |
 | Vertical stack gap (Title ↔ wrap ↔ helper) | 8 dp | `space-8` |
-| Title style | Noto Sans SemiBold 16 / 24 LH | `type.label.lg` |
+| Title style | Empty and not focused: `type.title.sm` (Bold 16/24). Focused, filled or read-only: `type.body.lg` (Regular 16/24). Owner decision 27 Nov 2026, same on iOS (D50) | `type.title.sm` / `type.body.lg` |
 | Body / Prefix / Suffix style | Noto Sans Regular 16 / 24 LH | `type.body.lg` |
 | Helper / Counter style | Noto Sans Regular 14 / 20 LH | `type.body.md` |
 | Icon size (leading / trailing) | 20 dp | `icon.sm` |
@@ -145,7 +145,7 @@ middle of a tall field.
 ### OTP
 
 ```
-Title (type.label.lg)
+Title (type.title.sm empty → type.body.lg focused/filled, D50)
    ↓ space-8
 ┌─── Boxes row (gap space-8 between boxes, fillMaxWidth) ────────┐
 │  ┌──┐  ┌──┐  ┌──┐  ┌──┐                  ← 4-digit (default)  │
@@ -157,7 +157,7 @@ Title (type.label.lg)
 └─── each box: weight(1f), radius-medium, 12 V/H pad ────────────┘
    ↓ space-8
 ┌─── helper row ────────────────────────────────────────────────┐
-│ Sent to +91 98765 43210                              00:24   │  ← timer (Focused only)
+│ Sent to 98765 43210                                  00:24   │  ← timer (Focused only)
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -167,7 +167,7 @@ widths — the container's width and the count split it.
 
 | Slot | Value | Token |
 |---|---|---|
-| Title style | Noto Sans SemiBold 16 / 24 LH | `type.label.lg` |
+| Title style | Empty and not focused: `type.title.sm` (Bold 16/24). Focused, filled or read-only: `type.body.lg` (Regular 16/24). Owner decision 27 Nov 2026, same on iOS (D50) | `type.title.sm` / `type.body.lg` |
 | **Digit (inside each box)** | **Noto Sans SemiBold 16 / 24 LH** | **`type.label.lg`** |
 | Helper / Timer style | Noto Sans Regular 14 / 20 LH | `type.body.md` |
 | Box wrap radius | 12 dp | `radius-medium` |
@@ -280,14 +280,18 @@ All tokens are **element-first**. Always reference tokens, never hex.
 
 ## 7. Universal rules
 
-1. **Label-emphasis ramp is fixed.** Default = `text.default`
-   (highlighted). All other active states = `text.subtle`. Disabled =
-   `text.disabled`. Don't override per-instance.
+1. **Label ramp: weight and colour change together (D50).** Empty and
+   not focused: `type.title.sm` (Bold) in `text.default`. Focused,
+   filled or read-only: `type.body.lg` (Regular) in `text.subtle`.
+   Disabled: same weight rule, `text.disabled`. Don't override
+   per-instance. Owner decision 27 Nov 2026, same on iOS (D50).
 2. **Error helper must be actionable.** Don't ship `Helper="Helper
    text"` in production — specify what's wrong and how to fix it.
-3. **Affixes go in the Prefix / Suffix slot.** Never type `+91 ` or
-   `₹` into Body — it breaks validation, copy/paste, and semantic
-   meaning.
+3. **Affixes go in the Prefix / Suffix slot.** Never type `₹` into
+   Body: it breaks validation, copy/paste, and semantic meaning.
+   **Mobile numbers take no prefix:** only Indian numbers can sign up
+   or log in, so the field is 10 digits starting 6 to 9, number keypad,
+   no `+91` and no phone icon (owner decision 27 Nov 2026, same on iOS, D47).
 4. **Read-only ≠ Disabled.** Read-only displays values the user can
    read and copy (text stays `text.default`). Disabled is for truly
    inactive fields (`text.disabled`, `bg.disabled`).
@@ -364,7 +368,7 @@ fun WiomOtp(
     title: String = "Enter OTP",
     state: FieldState = FieldState.Default,            // 6 states
     sixDigit: Boolean = false,                         // false = 4 boxes; true = 6 boxes
-    helper: String? = null,                            // e.g. "Sent to +91 98765 43210" or resend prompt
+    helper: String? = null,                            // e.g. "Sent to 98765 43210" or resend prompt
     timer: String? = null,                             // e.g. "00:24" — shown right of helper in Focused
     modifier: Modifier = Modifier,
 )
@@ -389,7 +393,7 @@ private fun rememberFieldColors(state: FieldState): FieldColors = when (state) {
 private fun rememberStatusIcon(state: FieldState): Pair<ImageVector, Color>? = when (state) {
     FieldState.Error   -> Icons.Rounded.Error       to Wiom.icon.critical
     FieldState.Success -> Icons.Rounded.CheckCircle to Wiom.icon.positive
-    FieldState.Warning -> Icons.Rounded.Warning     to Wiom.icon.action   // dark, on a bg.warning.subtle circle (size open); never gold
+    FieldState.Warning -> Icons.Rounded.Warning     to Wiom.icon.action   // dark, in an Icon Badge Sm (24 dp bg.warning.subtle circle, 16 dp glyph); never gold
     else -> null
 }
 
@@ -433,7 +437,9 @@ fun WiomInput(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Wiom.space.s8),
     ) {
-        Text(title, style = Wiom.type.label.lg, color = colors.title)
+        // D50: Bold when empty and not focused; Regular once focused, filled or read-only.
+        val titleStyle = if (value.isEmpty() && state == FieldState.Default) Wiom.type.title.sm else Wiom.type.body.lg
+        Text(title, style = titleStyle, color = colors.title)
 
         // Wrap
         Surface(
@@ -536,7 +542,8 @@ fun WiomOtp(
     var isFocused by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Wiom.space.s8)) {
-        Text(title, style = Wiom.type.label.lg, color = colors.title)
+        val titleStyle = if (value.isEmpty() && !isFocused) Wiom.type.title.sm else Wiom.type.body.lg   // D50
+        Text(title, style = titleStyle, color = colors.title)
 
         BasicTextField(
             value = value,
@@ -608,7 +615,7 @@ Key properties:
 ```kotlin
 // ❌ WRONG — affix typed into the value, fixed height, error without helper, body.sm counter
 WiomInput(
-    value = "+91 9876543210",                          // affix in body breaks validation
+    value = "+91 9876543210",                          // prefix typed into the value; Indian numbers need none
     onValueChange = { ... },
     title = "Mobile",
     state = FieldState.Error,
@@ -617,14 +624,13 @@ WiomInput(
     modifier = Modifier.height(56.dp),                 // never hardcode height
 )
 
-// ✅ RIGHT — prefix slot, helper explains, height derived
+// ✅ RIGHT: 10 digits, no prefix (D47), helper explains, height derived
 WiomInput(
     value = phoneDigits,
     onValueChange = { phoneDigits = it.filter(Char::isDigit).take(10) },
     title = "Mobile number",
-    state = if (phoneDigits.length < 10) FieldState.Error else FieldState.Filled,
-    prefix = "+91",
-    helper = if (phoneDigits.length < 10) "Enter 10 digits" else "We'll send an OTP",
+    state = if (isValidIndianMobile(phoneDigits)) FieldState.Filled else FieldState.Error,
+    helper = if (isValidIndianMobile(phoneDigits)) "We'll send an OTP" else "Enter 10 digits",
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
     modifier = Modifier.fillMaxWidth(),
 )
@@ -636,13 +642,15 @@ WiomInput(
 
 Quick recipes — all property overrides on the right component.
 
-### Mobile number (+91)
+### Mobile number (Indian only, no prefix, D47)
 
 ```kotlin
+// 10 digits starting 6 to 9. No +91 prefix, no phone icon.
+fun isValidIndianMobile(d: String) = d.length == 10 && d.first() in '6'..'9'
+
 WiomInput(
     value = phone, onValueChange = { phone = it.filter(Char::isDigit).take(10) },
     title = "Mobile number",
-    prefix = "+91",
     helper = "We'll send an OTP",
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
     modifier = Modifier.fillMaxWidth(),
@@ -657,7 +665,7 @@ WiomOtp(
     title = "Enter OTP",
     sixDigit = true,
     state = FieldState.Focused,
-    helper = "Sent to +91 98765 43210",
+    helper = "Sent to 98765 43210",
     timer = "00:24",                                   // Focused state shows timer at the right
     modifier = Modifier.fillMaxWidth(),
 )

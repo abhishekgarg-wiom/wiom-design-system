@@ -58,6 +58,8 @@ Step numbers match the Tailwind/Radix convention so AI pattern-matching works. N
 
 ## What's intentionally missing
 
+**No blue or orange tokens.** Server-driven screens that send blue info map to the `info` family (purple); orange or yellow warning maps to the `warning` family (gold) (owner decision 27 Nov 2026, same on iOS, D22).
+
 These gaps are by design. Do not invent tokens to fill them.
 
 **No separate `text.warning` token — warning is a deliberate one-token family.** `text.onWarning` (#372902) is the single text token for every warning context: solid `bg.warning` badge (7.16:1 AA), subtle `bg.warning.subtle` banner (8.76:1 AA), and inline warning-tinted text on `bg.default` (14.18:1 AAA). Warning is the only family where the `text.on*` token doubles as the family's default-surface text — its bg is light (yellow/gold) so its `text.on*` is dark (olive), which works on white too. Critical, positive, and info `text.on*` tokens are all white, so they fail on `bg.default` — those families need saturated colored variants (`text.critical`, `text.positive`, `text.info`) for default-surface text. Warning inverts the pattern and doesn't need a second token.

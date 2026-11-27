@@ -117,7 +117,7 @@ Font: **Noto Sans**. All values in sp. Never use sizes outside the scale.
 
 → Full details: `references/typography.md`
 
-### Iconography — 4 Size Tokens
+### Iconography — 5 Size Tokens
 
 Library: **Material 3 Icons Rounded** (`Icons.Rounded.*` from `androidx.compose.material:material-icons-extended`). Filled is default. Outlined only for toggle-off/nav-unselected. Brand/partner icons (`ic_wiom_*`, `ic_partner_*`) are the ONLY icons that use `painterResource()`.
 
@@ -127,21 +127,22 @@ Library: **Material 3 Icons Rounded** (`Icons.Rounded.*` from `androidx.compose.
 | `icon.sm` | 20dp | 32dp | 40dp | Button icons, compact controls |
 | `icon.md` | 24dp | 40dp | 48dp | **Default.** Toolbar, nav, list, chips, cards |
 | `icon.lg` | 48dp | 56dp | 56dp | Empty states, onboarding, hero |
+| `icon.xl` | 32dp | 48dp | 48dp | Rating stars (`wiom-rating`); owner decision 27 Nov 2026, same on iOS, D43 |
 
 **Never:** `Icons.Default/Filled/Outlined/Sharp/TwoTone`. Never create custom SVGs — ask for drawables.
 
 → Full details: `references/iconography.md`
 
-### Spacing — 4px Grid · 13 primitives · 11 semantic tokens
+### Spacing — 4px Grid · 14 primitives · 12 semantic tokens
 
 Every spacing/sizing/padding/margin value must be a **multiple of 4px**. Primitives `space/1` and `space/2` are utility-only (hairlines, optical adjustments) — they have no semantic alias.
 
-| Semantic tokens (11) | 4px | 8px | 12px | 16px | 24px | 32px | 40px | 48px | 64px | 72px | 84px |
-|-------|-----|-----|------|------|------|------|------|------|------|------|------|
+| Semantic tokens (12) | 4px | 8px | 12px | 16px | 20px | 24px | 32px | 40px | 48px | 64px | 72px | 84px |
+|-------|-----|-----|------|------|------|------|------|------|------|------|------|------|
 
 **Hierarchy:** Tight (8–12px) = one unit. Medium (16–24px) = same section. Loose (32–40px+) = separate sections.
 **Margins:** Never. Parents own gap between children (Arrangement.spacedBy). Children own internal padding.
-**Screen margins:** 16px default, 12px chat screens. Between cards: 16px. Card padding: 16px.
+`space-20` (20px) added for the progress Milestones gaps (owner decision 27 Nov 2026, same on iOS, D42). **Screen margins:** 16px default, 12px chat screens. Between cards: 16px. Card padding: 16px.
 **Dialog padding:** 24px all sides. **Bottom sheet padding:** 16px all sides.
 
 → Full details: `references/spacing.md`
@@ -225,7 +226,22 @@ fun Color.clear(): Color = copy(alpha = 0f)
 - **Nothing moves between controls.** No sliding pill or underline from one item to another, no bounce, no scale, no width animation.
 - **Keep control identity stable** (no `key()` change on toggle) so a quick second tap reverses from the current colour.
 - **System "Remove animations"** is honoured automatically by Compose. Don't override it.
+
+**App animations (as shipped, keep as they are).** Lottie files in the app's `res/raw`; the iOS app bundles the same files. Use each only for its moment; no new animations without design. Owner decision 27 Nov 2026, same on iOS.
+
+| File | Used for | Plays |
+|---|---|---|
+| `loader_infinity` | Brand loader (`wiom-loader`) | loop |
+| `payment_loading` / `payment_failed` | Payment in progress / failed | loop / once |
+| `location_checking_loader` / `location_marker_pin_loop` | Checking location / map pin | loop |
+| `confetti` · `clapping` · `thumbs_up_animation` | Celebration · appreciation · positive confirmation | once |
+| `update_success` | Update done | once |
+| `chat_typing_dots` | Chat typing indicator | loop |
 - Same rule on iOS, so both apps feel the same. Owner decision, 23 Nov 2026.
+
+### Copy
+
+User-facing copy follows the app repo's `claude_context/english_copy_rules.md` and the Wiom live copy audit (Hindi and English; no कृपया, no celebration before the service works). Retry is always "दोबारा कोशिश करें" / "Try again". Length limits in component skills are **targets for drafted copy**; the UI wraps and grows where a skill says grow, never truncates (owner decision 27 Nov 2026, same on iOS, D44).
 
 ## Cross-Foundation Rules
 

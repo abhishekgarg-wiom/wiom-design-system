@@ -200,3 +200,9 @@ When adding a new semantic token, verify against the relevant background using t
 5. Flag any ratio below 4.5 for body text or below 3.0 for graphics.
 
 Lint enforcement: a CI rule can parse the WiomColors.kt file, read each `PAIRS X (ratio:1)` comment, and re-verify that the hex values still produce that ratio. Drift is caught at build time.
+
+## Accepted exceptions (final)
+
+Two pairs stay below AA on purpose (owner decision 27 Nov 2026, same on iOS, D57):
+- `stroke.subtle` input rest border on `bg.default` (1.40:1). The label and the focus border identify the field.
+- `text.brand` on `bg.brand.subtle` (4.10:1) on a pressed Secondary or Tertiary CTA. The pairing shows only while pressed.
